@@ -1,0 +1,17 @@
+{
+    "name": "corsonavigo/ristorante",
+    "autoload": {
+        "psr-4": {
+            "Corsonavigo\\Ristorante\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "corsonavigo-cyber",
+            "email": "corsonavigo@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

@@ -1,0 +1,34 @@
+
+# Dipendenze
+/node_modules/
+/vendor/
+
+# Ambiente
+.env
+.env.*
+!.env.example        # ← serve ad aggiungiungere un file fra quelli ignorati
+
+# Config sensibili
+config/      
+# Log e cache
+/logs/
+/cache/
+/tmp/
+*.log
+!/logs/.gitkeep  # tranne .gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# Asset (valuta: spesso gli asset SI committano)
+assets/img/
+assets/js/
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+#utility
+hash.php
