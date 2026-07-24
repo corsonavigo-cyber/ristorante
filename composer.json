@@ -2,7 +2,8 @@
     "name": "corsonavigo/ristorante",
     "autoload": {
         "psr-4": {
-            "Corsonavigo\\Ristorante\\": "src/"
+            "Config\\": "config/",
+            "App\\": "src/"
         }
     },
     "authors": [
