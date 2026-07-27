@@ -335,7 +335,7 @@ class MenuRepositories extends BaseRepositories {
             ]);
 
             // reinserisci
-            $this->inserisciRelazioneAllergene($id_piatto,$allergeni_selezionati);
+            $this->inserisciRelazioneAllergene($id_item,$allergeni_selezionati);
             $this->confermaTransazione();
             return true;
       }catch (\Throwable $e) {
@@ -346,12 +346,12 @@ class MenuRepositories extends BaseRepositories {
         }
     }
 
-    public function aggiornaStatoIva(int $id_item, Categoria $categoria): bool
+    public function aggiornaIvaItem(int $id_item, int $id_iva): bool
      {
         $stmt = $this->pdo->prepare('UPDATE item_menu SET id_iva = :id_iva WHERE id_item = :id_item');
         $stmt->execute([
             'id_item' => $id_item,
-            'in_menu' => $in_menu->value
+            'id_iva' => $$id_iva->value
         ]);
         return $stmt->rowCount()>0; 
 
