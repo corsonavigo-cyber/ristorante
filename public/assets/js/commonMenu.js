@@ -95,3 +95,34 @@ export async function nomeGiaEsistente(nome) {
 
 }
 
+//render
+// rendering condiviso: adatta il contenuto in base a tipo/categoria
+export function renderCardItem(item, { conAzioni = 'menu' } = {}) {
+
+  const alcolLabel = item.tipo === 'bevanda' && item.categoria === 'bevanda_alcolica'
+    ? '<p class="comment">Contiene alcol</p>'
+    : '';
+
+  const allergeniHtml = ['piatto', 'bevanda'].includes(item.tipo)
+    ? `<ul class="elenco_allergeni">
+        ${item.allergeni ? item.allergeni.split(', ').map(a => `<li class="comment">${a}</li>`).join('') : '<li>Nessun allergene</li>'}
+       </ul>`
+    : ''; // servizio/altro non hanno allergeni, non ha senso mostrare la lista vuota
+
+  const azioni = conAzioni === 'menu'
+    ? `<a class="btn" href="modificaitem.php?id=${item.id_item}">Modifica ✏️</a>
+       <button class="btn-disattiva-item" data-id="${item.id_item}">Disattiva 🚫</button>`
+    : `<button class="btn-attiva-item" data-id="${item.id_item}">Mostra 👁️</button>
+       <a class="btn" href="modificaitem.php?id=${item.id_item}">Modifica ✏️</a>
+       <button class="btn-elimina-item" data-id="${item.id_item}">Elimina 🗑️</button>`;
+
+  return `<div class="item item-${item.tipo}" id="${item.id_item}">
+    <h3 class="comment"><b>${item.nome}</b></h3>
+    <p class="comment">${item.descrizione ?? ''}</p>
+    <p class="comment">Prezzo: ${item.prezzo} €</p>
+    ${allergeniHtml}
+    <p class="comment">${item.categoria.toUpperCase()}</p>
+    ${alcolLabel}
+    ${azioni}
+  </div>`;
+}

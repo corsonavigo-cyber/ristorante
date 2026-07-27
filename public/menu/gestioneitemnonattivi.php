@@ -21,7 +21,7 @@ require_once __DIR__ . '/../navbar.php';
     </div>
     
 
-<script src="/ristorante_classic/public/assets/js/menu.js" defer></script>    
+<script  type="module" src="/ristorante/public/assets/js/menunonattivo.js" defer></script>    
 
 </main>
 

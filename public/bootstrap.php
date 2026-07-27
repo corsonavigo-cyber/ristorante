@@ -8,19 +8,19 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 use Config\Database;
-/*
+
+
+use App\Repositories\MenuRepositories;/*
 use App\Repositories\TavoloRepositories;
 use App\Repositories\UserRepositories;
-use App\Repositories\MenuRepositories;
 use App\Repositories\PrenotazioniRepositories;
 use App\Repositories\LeggiStoricoRepositories;
 use App\Repositories\ScontrinoRepositories;
 use App\Repositories\OrdiniRepositories;
 
 use App\Services\AuthService;
-use App\Services\LoggerService;  
+  
 use App\Services\TavoloService;
-use App\Services\MenuService;
 use App\Services\PrenotazioniService;
 use App\Services\StoricoPrenotazioniService;
 use App\Services\LeggiStoricoService;
@@ -28,8 +28,10 @@ use App\Services\OrdiniService;
 use App\Services\ScontrinoService;
 use App\Services\StoricoOrdiniService;
 
+*/
+use App\Services\MenuService;
 
-
+use App\Services\LoggerService;
 $dotenv =Dotenv::createImmutable(__DIR__.'/../');
 $dotenv->load();
 
@@ -37,13 +39,15 @@ if(session_status() === PHP_SESSION_NONE){
     session_start();
 }
 //chiamo in modo centralizzato la connessione
-$logger = new LoggerService();*/
+$logger = new LoggerService();
 
 $pdo = Database::getInstance();
-//chiamo le repositories
-/*$userRepository = new UserRepositories($pdo);
-$tavoloRepository= new TavoloRepositories($pdo);
 $menuRepository= new MenuRepositories($pdo);
+$menuService= new MenuService($menuRepository, $logger);
+
+
+/*userRepository = new UserRepositories($pdo);
+$tavoloRepository= new TavoloRepositories($pdo);
 $prenotazioniRepository= new PrenotazioniRepositories($pdo);
 $leggistoricoRepository = new LeggiStoricoRepositories(
     dirname(__DIR__) . '/storage/logs/storicoprenotazioni.txt'
@@ -61,7 +65,6 @@ $storicoOrdini = new StoricoOrdiniService();
 //estrapolazione dati
 $authService = new AuthService($userRepository, $logger);
 $tavoloService= new TavoloService($tavoloRepository, $logger);
-$menuService= new MenuService($menuRepository, $logger);
 $prenotazioniService= new PrenotazioniService($prenotazioniRepository, $logger,$storicoPrenotazioni,$pdo);
 $leggiStoricoService = new LeggiStoricoService($leggistoricoRepository); 
 $leggiStoricoOrdiniService = new LeggiStoricoService($leggistoricoordiniRepository);
