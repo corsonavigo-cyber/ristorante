@@ -4,12 +4,12 @@ namespace App\Repositories; #namespace è come un "cartella virtuale" per organi
 use PDO; #importa la classe PDO per lavorare con il database
 use App\Enums\Categoria;
 use App\Enums\InMenu;
-use App\Enums\Alcol;
-#creo una nuova classe UserRepositories che rappresenta un repository per gestire gli utenti nel database
-class MenuRepositories {
+use App\Enums\Tipo;
 
-     public function __construct(private PDO $pdo){}
-     //PIATTI
+#creo una nuova classe UserRepositories che rappresenta un repository per gestire gli utenti nel database
+class MenuRepositories extends BaseRepositories {
+     
+     //ITEM
      public function visualizzaItem():?array
      {
           $stmt = $this->pdo->prepare(<<<'SQL'
@@ -55,7 +55,7 @@ class MenuRepositories {
         FROM item_menu
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
-        LEFT JOIN iva ON iva.id_iva = item_menu.
+        LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
         WHERE id_item = :id_item LIMIT 1
     SQL);
         $stmt->execute(['id_item' => $id_item]);
@@ -89,7 +89,7 @@ class MenuRepositories {
         FROM item_menu
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
-        LEFT JOIN iva ON iva.id_iva = item_menu.
+        LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
         WHERE categoria = :categoria 
     SQL);
         $stmt->execute(['categoria' => $categoria->value]);
@@ -115,7 +115,7 @@ class MenuRepositories {
         FROM item_menu
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
-        LEFT JOIN iva ON iva.id_iva = item_menu.
+        LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
         WHERE tipo = :tipo 
     SQL);
         $stmt->execute(['tipo' => $tipo->value]);
@@ -141,7 +141,7 @@ class MenuRepositories {
         FROM item_menu
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
-        LEFT JOIN iva ON iva.id_iva = item_menu.
+        LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
         WHERE in_menu = :in_menu 
     SQL);
         $stmt->execute(['in_menu' => $in_menu->value]);
@@ -171,7 +171,7 @@ class MenuRepositories {
         FROM item_menu
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
-        LEFT JOIN iva ON iva.id_iva = item_menu.
+        LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
         WHERE id_item = :id_item 
     SQL); 
         $stmt->execute(['id_item' => $id_item]); #esegue la query sostituendo il parametro con il valore passato
@@ -197,178 +197,153 @@ class MenuRepositories {
         ]);
         return (int)$this->pdo->lastInsertId();
      }
- /*
-     public function inserisciBevanda(string $nome_bevanda, float $prezzo, string $descrizione, Alcol $alcol, InMenu $in_menu, array $allergeni_selezionati):bool{
 
-        $stmt = $this->pdo->prepare('INSERT INTO bevanda (nome_bevanda, prezzo, descrizione, alcol, in_menu) VALUES (:nome_bevanda, :prezzo, :descrizione, :alcol, :in_menu)');
-        $stmt->execute([
-            'nome_bevanda'=>$nome_bevanda,
-            'prezzo'=>$prezzo,
-            'descrizione'=>$descrizione,
-            'alcol'=>$alcol->value,
-            'in_menu'=>$in_menu->value
-        ]);
-        $id_bevanda = (int)$this->pdo->lastInsertId();
+     public function inserisciRelazioneAllergene(string $id_item, array $allergeni_selezionati):int{
 
         //inserimento nella tabella delle relazioni nell' inserimento ho intezione di aggiungere una selezione multipla per ottenere un array di id allergene
         foreach($allergeni_selezionati as $id_allergene) {
-        $stmt2 = $this->pdo->prepare('INSERT INTO allergene_bevanda (id_allergene, id_bevanda) VALUES (:id_allergene, :id_bevanda)');
-        $stmt2->execute([
-        ':id_allergene' => $id_allergene,
-        ':id_bevanda'   => $id_bevanda
+            $stmt2 = $this->pdo->prepare('INSERT INTO relazione_allergeni_item (id_item, id_allergene) VALUES (:id_item, :id_allergene)');
+            $stmt2->execute([
+            ':id_item'   => $id_item,
+            ':id_allergene' => $id_allergene
         ]);
         }
-        return $id_bevanda > 0;
+        return (int)$this->pdo->lastInsertId();
      }
+ 
+     public function inserisciItem(Tipo $tipo, Categoria $categoria, InMenu $in_menu, string $nome,float $prezzo, string $descrizione, int $id_iva, array $allergeni_selezionati):bool{
+       
+        $this->iniziaTransazione();
+        try{
+            $stmt = $this->pdo->prepare('INSERT INTO item_menu (tipo,categoria,in_menu,nome,prezzo,descrizione,id_iva) VALUES (:tipo, :categoria, :in_menu, :nome, :prezzo, :descrizione, :id_iva)');
+            $stmt->execute([
+                'tipo'=>$tipo->value,
+                'categoria'=>$categoria->value,
+                'in_menu'=>$in_menu->value,
+                'nome'=>$nome,
+                'prezzo'=>$prezzo,
+                'descrizione'=>$descrizione,
+                'id_iva'=>$id_iva
+                
+            ]);
+            $id_item = (int)$this->pdo->lastInsertId();
 
-     public function inserisciPiatto(string $nome_piatto, float $prezzo, string $descrizione, InMenu $in_menu, Categoria $categoria, array $allergeni_selezionati):bool{
+            $this->inserisciRelazioneAllergene($id_item,$allergeni_selezionati);
+            
+            $this->confermaTransazione();
+            return $id_item > 0;
 
-        $stmt = $this->pdo->prepare('INSERT INTO piatto (nome_piatto, prezzo, descrizione, in_menu, categoria) VALUES (:nome_piatto, :prezzo, :descrizione, :in_menu, :categoria )');
-        $stmt->execute([
-            'nome_piatto'=>$nome_piatto,
-            'prezzo'=>$prezzo,
-            'descrizione'=>$descrizione,
-            'in_menu'=>$in_menu->value,
-            'categoria'=>$categoria->value
-        ]);
-        $id_piatto = (int)$this->pdo->lastInsertId();
+        }catch (\Throwable $e) {
 
-        //inserimento nella tabella delle relazioni nell' inserimento ho intezione di aggiungere una selezione multipla per ottenere un array di id allergene
-        foreach($allergeni_selezionati as $id_allergene) {
-        $stmt2 = $this->pdo->prepare('INSERT INTO allergene_piatto (id_allergene, id_piatto) VALUES (:id_allergene, :id_piatto)');
-        $stmt2->execute([
-        ':id_allergene' => (int)$id_allergene,
-        ':id_piatto'   => $id_piatto
-        ]);
+            $this->annullaTransazione();
+            throw $e;
+
         }
-        return true;
+
      }
+
+    
 
      //DELETE
 
      public function eliminaAllergene(int $id_allergene):bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM allergeni WHERE id_allergene = :id_allergene');
+        $stmt = $this->pdo->prepare('DELETE FROM allergene WHERE id_allergene = :id_allergene');
         $stmt->execute([
             'id_allergene' => $id_allergene
         ]);
         return $stmt->rowCount()>0;
      }
-     //delete di supporto per le relazioni
-     public function eliminaRelazioneAllergenePiatto(int $id_piatto):bool
+
+     public function eliminaRelazioneAllergeneItem(int $id_item):bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM allergene_piatto WHERE id_piatto = :id_piatto');
+        $stmt = $this->pdo->prepare('DELETE FROM relazione_allergeni_item WHERE id_item = :id_item');
         $stmt->execute([
-            'id_piatto' => $id_piatto
+            'id_item' => $id_item
         ]);
         return $stmt->rowCount()>0;
      }
      
 
-     public function eliminaRelazioneAllergeneBevanda(int $id_bevanda):bool
+     
+
+     public function eliminaItem(int $id_item):bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM allergene_bevanda WHERE id_bevanda = :id_bevanda');
+        $stmt = $this->pdo->prepare('DELETE FROM item_menu WHERE id_item = :id_item');
         $stmt->execute([
-            'id_bevanda' => $id_bevanda
+            'id_item' => $id_item
         ]);
         return $stmt->rowCount()>0;
      }
 
-     public function eliminaPiatto(int $id_piatto):bool
-     {
-        $this->eliminaRelazioneAllergenePiatto($id_piatto);
-        $stmt = $this->pdo->prepare('DELETE FROM piatto WHERE id_piatto = :id_piatto');
-        $stmt->execute([
-            'id_piatto' => $id_piatto
-        ]);
-        return $stmt->rowCount()>0;
-     }
+    public function eliminaItemComposto(int $id_item): bool
+{
+        $this->iniziaTransazione();
 
-     public function eliminaBevanda(int $id_bevanda):bool
-     {
-        $this->eliminaRelazioneAllergeneBevanda($id_bevanda);
-        $stmt = $this->pdo->prepare('DELETE FROM bevanda WHERE id_bevanda = :id_bevanda');
-        $stmt->execute([
-            'id_bevanda' => $id_bevanda
-        ]);
-        return $stmt->rowCount()>0;
-     }
+        try {
+
+            $this->eliminaRelazioneAllergeneItem($id_item);
+
+            $this->eliminaItem($id_item);
+
+            $this->confermaTransazione();
+
+            return true;
+
+        } catch (\Throwable $e) {
+
+            $this->annullaTransazione();
+
+            throw $e;
+        }
+    }
+    
 
 
      //UPDATE
 
      //1.cambio stato se in menu o no
-     public function aggiornaStatoBevanda(int $id_bevanda, InMenu $in_menu): bool
+     public function aggiornaStatoItem(int $id_item, InMenu $in_menu): bool
      {
-        $stmt = $this->pdo->prepare('UPDATE bevanda SET in_menu = :in_menu WHERE id_bevanda = :id_bevanda');
+        $stmt = $this->pdo->prepare('UPDATE item_menu SET in_menu = :in_menu WHERE id_item = :id_item');
         $stmt->execute([
-            'id_bevanda' => $id_bevanda,
+            'id_item' => $id_item,
             'in_menu' => $in_menu->value
         ]);
-        return $stmt->rowCount()>0; #restituisce true se almeno una riga è stata aggiornata, altrimenti false
-     }
+        return $stmt->rowCount()>0; 
 
-     public function aggiornaStatoPiatto(int $id_piatto, InMenu $in_menu): bool
-     {
-        $stmt = $this->pdo->prepare('UPDATE piatto SET in_menu = :in_menu WHERE id_piatto = :id_piatto');
-        $stmt->execute([
-            'id_piatto' => $id_piatto,
-            'in_menu' => $in_menu->value
-        ]);
-        return $stmt->rowCount()>0; #restituisce true se almeno una riga è stata aggiornata, altrimenti false
      }
      //2.aggiorna il l'elemento del menu
-    public function aggiornaPiatto(int $id_piatto, string $nome_piatto, float $prezzo, string $descrizione, InMenu $in_menu, Categoria $categoria, array $allergeni_selezionati): bool
+    public function aggiornaItem(int $id_item, Tipo $tipo, InMenu $in_menu, Categoria $categoria, string $nome, float $prezzo, string $descrizione,  int $id_iva): bool
       {
-         $stmt = $this->pdo->prepare('UPDATE piatto SET nome_piatto = :nome_piatto, prezzo = :prezzo, descrizione = :descrizione, in_menu = :in_menu, categoria = :categoria WHERE id_piatto = :id_piatto');
-         $stmt->execute([
-            'id_piatto'   => $id_piatto,
-            'nome_piatto' => $nome_piatto,
+
+         $this->iniziaTransazione();
+        try{
+            // elimina e reinserisci sempre, indipendentemente da rowCount
+            $this->eliminaRelazioneAllergeneItem($id_item);
+            //fai l'update
+            $stmt = $this->pdo->prepare('UPDATE item_menu SET tipo = :tipo, categoria = :categoria, in_menu = :in_menu, nome = :nome , prezzo = :prezzo, descrizione = :descrizione, id_iva = :id_iva WHERE id_item = :id_item');
+            $stmt->execute([
+            'id_item'   => $id_item,   
+            'tipo'=> $tipo->value,
+            'in_menu'     => $in_menu->value,
+            'categoria'   => $categoria->value,
+            'nome' => $nome,
             'prezzo'      => $prezzo,
             'descrizione' => $descrizione,
-            'in_menu'     => $in_menu->value,
-            'categoria'   => $categoria->value
-         ]);
-
-         // elimina e reinserisci sempre, indipendentemente da rowCount
-         $this->eliminaRelazioneAllergenePiatto($id_piatto);
-
-         foreach ($allergeni_selezionati as $id_allergene) {
-            $stmt2 = $this->pdo->prepare('INSERT INTO allergene_piatto (id_allergene, id_piatto) VALUES (:id_allergene, :id_piatto)');
-            $stmt2->execute([
-                  ':id_allergene' => (int)$id_allergene,
-                  ':id_piatto'    => $id_piatto
+            'id_iva'=>$id_iva
             ]);
-         }
 
-         return true;
-      }
-     public function aggiornaBevanda(int $id_bevanda, string $nome_bevanda, float $prezzo, string $descrizione, Alcol $alcol, InMenu $in_menu, array $allergeni_selezionati): bool
-     {
-        $stmt = $this->pdo->prepare('UPDATE bevanda SET nome_bevanda = :nome_bevanda, prezzo = :prezzo, descrizione = :descrizione, in_menu = :in_menu, alcol = :alcol WHERE id_bevanda = :id_bevanda');
-        $stmt->execute([
-            'id_bevanda' => $id_bevanda,
-            'nome_bevanda' => $nome_bevanda,
-            'prezzo' => $prezzo,
-            'descrizione' => $descrizione,
-            'alcol'=>$alcol->value,
-            'in_menu'=>$in_menu->value
-            
-        ]);
-        $this->eliminaRelazioneAllergeneBevanda($id_bevanda);
-        
-        foreach($allergeni_selezionati as $id_allergene) {
-        $stmt2 = $this->pdo->prepare('INSERT INTO allergene_bevanda (id_allergene, id_bevanda) VALUES (:id_allergene, :id_bevanda)');
-        $stmt2->execute([
-            ':id_allergene' => $id_allergene,
-            ':id_bevanda'   => $id_bevanda
-        ]);
+            // reinserisci
+            $this->inserisciRelazioneAllergene($id_piatto,$allergeni_selezionati);
+            $this->confermaTransazione();
+            return true;
+      }catch (\Throwable $e) {
+
+            $this->annullaTransazione();
+
+            throw $e;
         }
-        return true; 
+    }
 
-
-     }
-
-    */ 
-     
 }
