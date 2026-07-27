@@ -1,0 +1,302 @@
+*{
+    
+   
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: content-box;
+}
+a{
+    text-decoration: none;
+}
+body{
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    align-content: center; 
+}
+.bodylogin{
+  
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+
+}
+main {
+    margin-bottom: 70px;
+    
+}
+.title{
+    font-size:2rem;
+    font-weight:bold;
+    margin:15px;
+    color:#333;
+    text-decoration: none;
+}
+
+footer{
+    background: #333;
+    color:white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+nav{
+    background: #333;
+    color:white;
+    padding: 10px;
+}
+
+nav a{
+    color: white;
+    text-decoration: none;
+    margin-right:15px;
+    font-weight: bold;
+    font-size: 18px;
+}
+nav a:hover{
+    color: rgb(79, 45, 226);
+    
+}
+nav ul li{
+    display: inline-block;
+    list-style-type: none;
+}
+li {
+    
+    list-style-type: none;
+}
+
+table{
+    background:white;
+    width:80%;
+    margin:2px auto;
+    border-collapse: collapse;
+}
+td,th{
+    border: 1px solid #ccc;
+    padding:8px;
+    
+}
+.qta{
+    padding: 5px 10px;
+    border-radius: 6px;
+    color:white;
+    font-weight: bold;
+    font-size:14px;
+
+}
+.esaurito{
+    background-color: red;
+}
+.scarso{
+    background-color: orange;
+}
+.buono{
+     background-color: green;   
+}
+.stats{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    margin:30px;
+}
+.card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    width: 60%;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
+    color: #333;
+    margin-left: 15px;
+}
+#contenitore{
+    display: flex;
+    flex-direction: row;
+}
+
+.componi-comanda {
+    display: grid;
+    width: 70%;
+    margin: 20px auto; /* auto sui lati orizzontali per centrarlo, se vuoi che resti centrato */
+    box-sizing: border-box; /* include padding/border nel 70%, evita che il border faccia sforare la larghezza */
+}
+.riassunto1{
+    display:flex;
+    width: 30%
+}
+.cards{
+    
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 250px;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
+    color: #333;
+    justify-content: center;
+    
+}
+.ins-bev{
+    
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
+    color: #333;
+    justify-content: center;
+    
+}
+.dettaglioModal_bevande:hover{
+    background-color: #b345bd;
+}
+
+.cards .title{
+    padding:30px;
+}
+.alert{
+    display: flex;
+    flex-wrap:wrap;
+    width:80%;
+    margin: 20px auto;
+    background-color: white;
+    padding:20px;
+    border-radius: 10px;
+    text-align:center;
+    color: red;
+    font-weight: bold;
+    box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
+}
+.btn{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+.btn:hover{
+    background-color: rgb(79, 45, 226);
+}
+.lista-momento.drop-target,
+.zona-cestino.drop-target {
+    outline: 2px dashed #2980b9;
+    background: rgba(41, 128, 185, 0.1);
+}
+#dettaglioModal {
+  border: none;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 500px;
+  width: 90%;
+}
+.operazioni-aritmetiche{
+    display: flex;
+
+}
+.operazioni-aritmetiche p{
+    margin: 10px;
+}
+.operazioni-aritmetiche button{
+    margin: 10px;
+}
+#dettaglioModal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#chiudiModal {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+  /*riferito alla cartella --tavoli*/
+.tavoli{
+    display: flex;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    justify-content: center;
+    background-color: white;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    width: 100%;
+    text-align:center;
+    box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
+    color:#333;
+}
+.tavolo,.prenotazioni{
+    background-color: white;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    align-content: center; 
+    padding:20px;
+    border-radius: 10px;
+    width: 80%;
+    text-align:center;
+    box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
+    color:#333;
+}
+.supporto-titolo{
+    background-color: white;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    align-content: center; 
+    margin: 25px 0 25px 0 ;
+    border-radius: 10px;
+    width: 100%;
+    text-align:center;
+    box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
+    color:#333;
+    font-weight: bold;
+    font-size: 25px;
+}
+.warning{
+    width: 100%;
+    text-align:center;
+    box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
+    color:#963131;
+    font-weight: bold;
+}
+.controllopositivo{
+    display:none;
+}
+.elenco_allergeni,.elenco_tavoli,.elenco_prenotazioni{
+    list-style-type:none;
+
+}
+.hider{
+   display : none;
+}
+.momenti-servizio{
+    display: flex;
+    justify-content: space-between;
+}
+
+.attivo{
+    background-color: aqua;
+}
+#piatti_input, #bevande_input{
+    display: grid;
+    /* Crea colonne dinamiche: minimo 150px, massimo 5 colonne */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px; /* Spazio tra i bottoni */
+    margin: 30px 0;
+}
+.quantita-stepper { display: flex; align-items: center; gap: 4px; }
+.quantita-stepper .quantita,
+.quantita-stepper .quantita-bev { width: 3em; text-align: center; }
+.btn-quantita { width: 2em; height: 2em; }
