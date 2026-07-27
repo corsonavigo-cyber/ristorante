@@ -10,7 +10,7 @@ use App\Enums\Tipo;
 class MenuRepositories extends BaseRepositories {
      
      //ITEM
-     public function visualizzaItem():?array
+     public function visualizzaItem(): array
      {
           $stmt = $this->pdo->prepare(<<<'SQL'
         SELECT 
@@ -33,7 +33,7 @@ class MenuRepositories extends BaseRepositories {
     SQL);
 
         $stmt->execute();
-        return $stmt->fetchAll() ?:null;
+        return $stmt->fetchAll() ?:[];
      }
 
      public function visualizzaItemConRelazioni(int $id_item):?array
@@ -151,7 +151,7 @@ class MenuRepositories extends BaseRepositories {
                      //SELEZIONI ID
 
      #metodo per ottenere piatto dal database dato il suo id, restituisce un array associativo o null se non trovato
-     public function selezionaPiattoId(int $id_item): ?array 
+     public function selezionaItemIdIva(int $id_iva): ?array 
      {
         #preparo la connessione
         $stmt = $this->pdo->prepare(<<<'SQL'
@@ -172,9 +172,9 @@ class MenuRepositories extends BaseRepositories {
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
         LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
-        WHERE id_item = :id_item 
+        WHERE id_iva = :id_iva LIMIT 1
     SQL); 
-        $stmt->execute(['id_item' => $id_item]); #esegue la query sostituendo il parametro con il valore passato
+        $stmt->execute(['id_iva' => $id_iva]); #esegue la query sostituendo il parametro con il valore passato
         return $stmt->fetch() ?: null; #restituisce il risultato come array associativo o null se non trovato
 
      }
@@ -314,7 +314,7 @@ class MenuRepositories extends BaseRepositories {
 
      }
      //2.aggiorna il l'elemento del menu
-    public function aggiornaItem(int $id_item, Tipo $tipo, InMenu $in_menu, Categoria $categoria, string $nome, float $prezzo, string $descrizione,  int $id_iva): bool
+    public function aggiornaItem(int $id_item, Tipo $tipo, InMenu $in_menu, Categoria $categoria, string $nome, float $prezzo, string $descrizione,  int $id_iva, array $allergeni_selezionati): bool
       {
 
          $this->iniziaTransazione();
@@ -345,5 +345,16 @@ class MenuRepositories extends BaseRepositories {
             throw $e;
         }
     }
+
+    public function aggiornaStatoIva(int $id_item, Categoria $categoria): bool
+     {
+        $stmt = $this->pdo->prepare('UPDATE item_menu SET id_iva = :id_iva WHERE id_item = :id_item');
+        $stmt->execute([
+            'id_item' => $id_item,
+            'in_menu' => $in_menu->value
+        ]);
+        return $stmt->rowCount()>0; 
+
+     }
 
 }
