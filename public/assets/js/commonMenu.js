@@ -72,7 +72,7 @@ export async function apiPut(id,payload){
 
 export async function apiPatch(id, in_menu){
     validaId(id);
-    const risposta = await fetch(`${API_MENU}?id=${id}`,{
+    const risposta = await fetch(`${API_MENU}?type=item&id=${id}`,{
         method : 'PATCH',
         headers : {'Content-Type': 'application/json'},
         body : JSON.stringify({ id_item: parseInt(id), in_menu})
@@ -101,6 +101,30 @@ export async function nomeGiaEsistente(nome) {
 
 }
 
+export async function cambiaStato(e) {
+    const btn_stato = e.target.closest('.btn-stato-item');
+
+    if (!btn_stato) return;
+
+    e.preventDefault();
+
+    const id = btn_stato.dataset.id;
+    const statoOra = btn_stato.dataset.stato;
+    const in_menu = statoOra === 'si' ? 'no' : 'si';
+
+    console.log(in_menu);
+
+    if (!id) {
+        console.log('id non trovato');
+        return;
+    }
+
+    await apiPatch(id, in_menu);
+    
+    window.location.reload();
+
+}
+
 //render
 // rendering condiviso: adatta il contenuto in base a tipo/categoria
 export function renderCardItem(item, { conAzioni = 'menu_si', target = null } = {}) {
@@ -117,17 +141,15 @@ export function renderCardItem(item, { conAzioni = 'menu_si', target = null } = 
        </ul>`
     : '';
 
-  const azioni_si = conAzioni === 'menu_si'
+  const azioni = conAzioni === 'menu_si'
     ? `<a class="btn" href="modificaitem.php?id=${item.id_item}">Modifica ✏️</a>
-       <button class="btn-disattiva-item" data-id="${item.id_item}">Disattiva 🚫</button>
+       <button class="btn-stato-item" data-stato="${item.in_menu}" data-id="${item.id_item}">Disattiva 🚫</button>
        <button class="btn-elimina-item" data-id="${item.id_item}">Elimina 🗑️</button>`
-    : ``;
+    : `<a class="btn" href="modificaitem.php?id=${item.id_item}">Modifica ✏️</a> 
+       <button type="button" class="btn-stato-item"  data-stato="${item.in_menu}" data-id="${item.id_item}">Mostra 👁️</button>
+       <button type="button" class="btn-elimina-item" data-id="${item.id_item}">Elimina 🗑️</button>` ;
 
-  const azioni_no = conAzioni === 'menu_no'
-    ? `<a class="btn" href="modificaitem.php?id=${item.id_item}">Modifica ✏️</a> 
-       <button class="btn-attiva-item" data-id="${item.id_item}">Mostra 👁️</button>
-       <button class="btn-elimina-item" data-id="${item.id_item}">Elimina 🗑️</button>` 
-      :``;
+ 
 
   const html = `
     <div class="item item-${item.tipo}" id="${item.id_item}">
@@ -137,8 +159,7 @@ export function renderCardItem(item, { conAzioni = 'menu_si', target = null } = 
       ${allergeniHtml}
       <p class="comment">${item.categoria.toUpperCase()}</p>
       ${alcolLabel}
-      ${azioni_si}
-      ${azioni_no} 
+      ${azioni}
     </div>
   `;
 

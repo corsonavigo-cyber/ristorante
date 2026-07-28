@@ -15,8 +15,9 @@ const par = din ? {
 }
 ;
 console.log(par);
-document.addEventListener('DOMContentLoaded', visualizzaLista);
 
+document.addEventListener('DOMContentLoaded', visualizzaLista);
+document.addEventListener('click', API_function.cambiaStato);
 async function visualizzaLista(){
 
     try {
@@ -30,6 +31,7 @@ async function visualizzaLista(){
         scelta.appendChild(h1);
         items.forEach(item => {
             API_function.renderCardItem(item, {
+                conAzioni : 'menu_no',
                 target: scelta
             });
         });

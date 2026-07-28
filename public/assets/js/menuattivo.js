@@ -1,12 +1,18 @@
 import * as API_function from './commonMenu.js';
+const cont_bev = document.querySelector('#lavagna_bevande_attive');
+const cont_piat = document.querySelector('#lavagna_piatti_attivo');
 
 document.addEventListener('DOMContentLoaded', ()=> {
-    const cont_bev = document.querySelector('#lavagna_bevande_attive');
-    const cont_piat = document.querySelector('#lavagna_piatti_attivo');
+
 
     visualizzaLista(cont_bev);
     visualizzaLista(cont_piat);
+
+    
 });
+document.addEventListener('click', API_function.cambiaStato);
+
+
 
 
 async function visualizzaLista(contenitore){

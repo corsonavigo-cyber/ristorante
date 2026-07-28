@@ -188,7 +188,7 @@ class MenuService {
         #salto l'autorizzazione in base al ruolo
        try {
              $this->menuRepo->aggiornaStatoItem($id_item, $in_menu);
-             $this->logger->info("item '{$id_item}' : rimosso dal menu con successo");
+             $this->logger->info("item '{$id_item}' : rimosso dal menu clienti con successo");
              return true;
         
         }catch (\Throwable $e) {

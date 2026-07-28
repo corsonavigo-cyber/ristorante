@@ -56,7 +56,7 @@ class MenuRepositories extends BaseRepositories {
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
         LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
-        WHERE id_item = :id_item LIMIT 1
+        WHERE item_menu.id_item = :id_item LIMIT 1
     SQL);
         $stmt->execute(['id_item' => $id_item]);
         return $stmt->fetch() ?:null;
@@ -90,7 +90,7 @@ class MenuRepositories extends BaseRepositories {
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
         LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
-        WHERE categoria = :categoria 
+        WHERE item_menu.categoria = :categoria 
     SQL);
         $stmt->execute(['categoria' => $categoria->value]);
         return $stmt->fetchAll() ?:null;
@@ -116,7 +116,7 @@ class MenuRepositories extends BaseRepositories {
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
         LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
-        WHERE tipo = :tipo 
+        WHERE  item_menu.tipo = :tipo 
     SQL);
         $stmt->execute(['tipo' => $tipo->value]);
         return $stmt->fetchAll() ?:null;
@@ -142,7 +142,7 @@ class MenuRepositories extends BaseRepositories {
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
         LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
-        WHERE in_menu = :in_menu 
+        WHERE item_menu.in_menu = :in_menu 
     SQL);
         $stmt->execute(['in_menu' => $in_menu->value]);
         return $stmt->fetchAll() ?:null;
