@@ -5,7 +5,7 @@ use PDO; #importa la classe PDO per lavorare con il database
 
 abstract class  BaseRepositories {
 
-     public function __construct(private PDO $pdo){}
+     public function __construct(protected PDO $pdo){}
 
     //POROPRIETA' SQL PER LE TRANZAZIONI MULTIPLE
     public function inTransaction(): bool {
