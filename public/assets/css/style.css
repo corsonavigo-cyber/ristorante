@@ -7,6 +7,17 @@
 a{
     text-decoration: none;
 }
+.schermata-divisa{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+#lavagna_piatti_attivo,
+#lavagna_bevande_attivo {
+    border: 1px solid #ccc;
+    padding: 15px;
+}
 body{
     align-items: center;
     text-align: center;

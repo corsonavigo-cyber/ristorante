@@ -148,6 +148,49 @@ class MenuRepositories extends BaseRepositories {
         return $stmt->fetchAll() ?:null;
      }
 
+     //in menu e tipo
+
+     public function selezionaItemInMenuTipo(InMenu $in_menu,Tipo $tipo): ?array{
+        $stmt =$this->pdo->prepare(<<<'SQL'
+        SELECT 
+            item_menu.id_item,
+            item_menu.tipo,
+            item_menu.categoria,
+            item_menu.in_menu,
+            item_menu.nome,
+            item_menu.prezzo,
+            item_menu.descrizione,
+            iva.id_iva,
+            iva.aliquota,
+            iva.descrizione as descrizione_iva,
+            GROUP_CONCAT(allergene.id_allergene SEPARATOR ',') AS id_allergeni,
+            GROUP_CONCAT(allergene.nome_allergene SEPARATOR ',') AS nomi_allergeni  
+        FROM item_menu
+        LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
+        LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
+        LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
+        WHERE item_menu.in_menu = :in_menu AND item_menu.tipo = :tipo 
+        GROUP BY 
+            item_menu.id_item,
+            item_menu.tipo,
+            item_menu.categoria,
+            item_menu.in_menu,
+            item_menu.nome,
+            item_menu.prezzo,
+            item_menu.descrizione,
+            iva.id_iva,
+            iva.aliquota,
+            iva.descrizione
+
+        ORDER BY item_menu.categoria;
+    SQL);
+        $stmt->execute([
+            'in_menu' => $in_menu->value,
+            'tipo' => $tipo->value
+            ]);
+        return $stmt->fetchAll() ?:null;
+     }
+
                      //SELEZIONI ID
 
      #metodo per ottenere piatto dal database dato il suo id, restituisce un array associativo o null se non trovato
@@ -163,19 +206,15 @@ class MenuRepositories extends BaseRepositories {
             item_menu.nome,
             item_menu.prezzo,
             item_menu.descrizione,
-            iva.id_iva,
-            iva.aliquota,
-            iva.descrizione as descrizione_iva,
             allergene.id_allergene,
             allergene.nome_allergene    
         FROM item_menu
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
-        LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
-        WHERE id_iva = :id_iva LIMIT 1
+        WHERE item_menu.id_iva = :id_iva 
     SQL); 
-        $stmt->execute(['id_iva' => $id_iva]); #esegue la query sostituendo il parametro con il valore passato
-        return $stmt->fetch() ?: null; #restituisce il risultato come array associativo o null se non trovato
+        $stmt->execute(['id_iva' => $id_iva]); 
+        return $stmt->fetchAll() ?: null;
 
      }
 

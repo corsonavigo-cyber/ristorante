@@ -76,6 +76,14 @@ case 'GET':
                     )
                 ),
 
+            'dettaglio' =>
+                risposta(
+                    $menuService->selezionaItemInMenuTipo(
+                        InMenu::from($_GET['in_menu']),
+                        Tipo:: from($_GET['tipo'])
+                        )
+                ),
+                
             'iva' =>
                 risposta(
                     $menuService->selezionaItemIdIva(

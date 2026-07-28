@@ -24,33 +24,39 @@ function validaId(id) {
 }
 // READ funzione generalizzata ottiene il type e l'id dall'url
 
-export async function caricaItems(id = null,filtro = {}){
-    if(id !== null){
-        validaId(id);
+export async function apiGet(params = {}) {
+
+    const query = new URLSearchParams(params);
+
+    console.log(query);
+
+    const risposta = await fetch(`${API_MENU}?${query}`);
+
+    if (!risposta.ok) {
+        throw await ErroreInFetch(risposta);
     }
-    const params = id ? new URLSearchParams({id}):new URLSearchParams(filtro);
-    const risposta =await fetch(`${API_MENU}?${params}`);
-    if(!risposta.ok) throw await new erroreInFetch(risposta);
+
     const json = await risposta.json();
+
     return json.data;
 }
 
 //WRITE generalizzata di supporto per il POST
 
-export async function bodyInserisci(payload){
+export async function apiPost(payload){
     const risposta = await fetch(API_MENU, {
         method: 'POST',
         headers : {'Content-Type':'application/json'},
         body: JSON.stringify(payload)
     });
-    if(!risposta.ok) throw await new erroreInFetch(risposta);
+    if(!risposta.ok) throw await erroreInFetch(risposta);
   
     const json = await risposta.json();
     return json.data;
 }
 
 //Put generalizzato payload
-export async function modificaItem(id,payload){
+export async function apiPut(id,payload){
     validaId(id);
     const risposta = await fetch(`${API_MENU}?=id=${id}`,{
         method: 'PUT',
@@ -64,7 +70,7 @@ export async function modificaItem(id,payload){
 
 //modifica attivo non attivo
 
-export async function cambiaStato(id, in_menu){
+export async function apiPatch(id, in_menu){
     validaId(id);
     const risposta = await fetch(`${API_MENU}?id=${id}`,{
         method : 'PATCH',
@@ -77,7 +83,7 @@ export async function cambiaStato(id, in_menu){
 }
 
 //elimina
-export async  function eliminaItem(id){
+export async  function apiDelete(id){
     validaId(id);
     const risposta = await fetch(`${API_MENU}?id=${id}`,{method : 'DELETE'});
     if(!risposta.ok) throw await erroreInFetch(risposta);
@@ -97,7 +103,7 @@ export async function nomeGiaEsistente(nome) {
 
 //render
 // rendering condiviso: adatta il contenuto in base a tipo/categoria
-export function renderCardItem(item, { conAzioni = 'menu' } = {}) {
+export function renderCardItem(item, { conAzioni = 'menu_si', target = null } = {}) {
 
   const alcolLabel = item.tipo === 'bevanda' && item.categoria === 'bevanda_alcolica'
     ? '<p class="comment">Contiene alcol</p>'
@@ -105,24 +111,40 @@ export function renderCardItem(item, { conAzioni = 'menu' } = {}) {
 
   const allergeniHtml = ['piatto', 'bevanda'].includes(item.tipo)
     ? `<ul class="elenco_allergeni">
-        ${item.allergeni ? item.allergeni.split(', ').map(a => `<li class="comment">${a}</li>`).join('') : '<li>Nessun allergene</li>'}
+        ${item.id_allergeni
+          ? item.nomi_allergeni.split(', ').map(a => `<li class="comment">${a}</li>`).join('')
+          : '<li>Nessun allergene</li>'}
        </ul>`
-    : ''; // servizio/altro non hanno allergeni, non ha senso mostrare la lista vuota
+    : '';
 
-  const azioni = conAzioni === 'menu'
+  const azioni_si = conAzioni === 'menu_si'
     ? `<a class="btn" href="modificaitem.php?id=${item.id_item}">Modifica ✏️</a>
-       <button class="btn-disattiva-item" data-id="${item.id_item}">Disattiva 🚫</button>`
-    : `<button class="btn-attiva-item" data-id="${item.id_item}">Mostra 👁️</button>
-       <a class="btn" href="modificaitem.php?id=${item.id_item}">Modifica ✏️</a>
-       <button class="btn-elimina-item" data-id="${item.id_item}">Elimina 🗑️</button>`;
+       <button class="btn-disattiva-item" data-id="${item.id_item}">Disattiva 🚫</button>
+       <button class="btn-elimina-item" data-id="${item.id_item}">Elimina 🗑️</button>`
+    : ``;
 
-  return `<div class="item item-${item.tipo}" id="${item.id_item}">
-    <h3 class="comment"><b>${item.nome}</b></h3>
-    <p class="comment">${item.descrizione ?? ''}</p>
-    <p class="comment">Prezzo: ${item.prezzo} €</p>
-    ${allergeniHtml}
-    <p class="comment">${item.categoria.toUpperCase()}</p>
-    ${alcolLabel}
-    ${azioni}
-  </div>`;
+  const azioni_no = conAzioni === 'menu_no'
+    ? `<a class="btn" href="modificaitem.php?id=${item.id_item}">Modifica ✏️</a> 
+       <button class="btn-attiva-item" data-id="${item.id_item}">Mostra 👁️</button>
+       <button class="btn-elimina-item" data-id="${item.id_item}">Elimina 🗑️</button>` 
+      :``;
+
+  const html = `
+    <div class="item item-${item.tipo}" id="${item.id_item}">
+      <h3 class="comment"><b>${item.nome.toUpperCase()}</b></h3>
+      <p class="comment">${item.descrizione ?? ''}</p>
+      <p class="comment">Prezzo: ${item.prezzo} €</p>
+      ${allergeniHtml}
+      <p class="comment">${item.categoria.toUpperCase()}</p>
+      ${alcolLabel}
+      ${azioni_si}
+      ${azioni_no} 
+    </div>
+  `;
+
+  if (target) {
+    target.insertAdjacentHTML('beforeend', html);
+  }
+
+  return html;
 }

@@ -15,11 +15,11 @@ $title = 'Menu del Giorno';
     <div class="supporto-titolo">
         <h2  class="title"><?= $title ?></h2>
     
-    <div class="schermata-divisa">
+    <div >
     
-    <div>
+    <div class="schermata-divisa">
    
-    <div class="menu" id="lavagna_menu_attivo">
+    <div class="menu" id="lavagna_piatti_attivo">
        
     </div>
 
@@ -28,10 +28,8 @@ $title = 'Menu del Giorno';
     </div>
     </div>
     </div>
-<script>
-    const API = '/ristorante_classic/api/menu.php';
-</script>
-<script src="/ristorante_classic/public/assets/js/menu.js" defer></script>    
+
+<script type="module" src="/ristorante/public/assets/js/menuattivo.js" defer></script>    
 
 </main>
 

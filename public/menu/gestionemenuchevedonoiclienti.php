@@ -15,13 +15,13 @@ $title = 'Gestione Menu Attivo';
     <div class="supporto-titolo">
         <h2  class="title"><?= $title ?></h2>
     
-    <div class="schermata-divisa">
+    <div >
     
-    <div>
-    <a class="btn" href="piattinonattivi.php">Gestisci La Visualizzazione Dei Piatti </a>
+    <div class="schermata-divisa">
+    <a class="btn" href="gestionepiattinonattivi.php">Gestisci La Visualizzazione Dei Piatti </a>
     <a class="btn" href="gestionebevandenonattive.php">Gestisci La Visualizzazione Delle Bevanda </a>
    
-    <div class="menu" id="lavagna_menu_attivo">
+    <div class="menu" id="lavagna_piatti_attivo">
        
     </div>
 
@@ -30,10 +30,8 @@ $title = 'Gestione Menu Attivo';
     </div>
     </div>
     </div>
-<script>
-    const API = '/ristorante_classic/api/menu.php';
-</script>
-<script src="/ristorante_classic/public/assets/js/menu.js" defer></script>    
+
+<script type="module" src="/ristorante/public/assets/js/menuattivo.js" defer></script>    
 
 </main>
 

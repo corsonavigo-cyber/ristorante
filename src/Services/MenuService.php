@@ -82,6 +82,14 @@ class MenuService {
         }
     }
 
+     public function selezionaItemInMenuTipo(InMenu $in_menu,Tipo $tipo): ?array {
+        try {
+            return $this->menuRepo->selezionaItemInMenuTipo($in_menu, $tipo);
+        } catch (\Throwable $e) {
+            $this->logger->error("Errore recupero item in menu : {$e->getMessage()}");
+            return [];
+        }
+    }
 
     public function nuovoAllergene(string $nome_allergene):int{
 
