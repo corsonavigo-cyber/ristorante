@@ -24,7 +24,7 @@ function validaId(id) {
 }
 // READ funzione generalizzata ottiene il type e l'id dall'url
 
-export async function apiGet(params = {}) {
+export async function apiGet(params = { type: 'item' }) {
 
     const query = new URLSearchParams(params);
 
@@ -44,7 +44,7 @@ export async function apiGet(params = {}) {
 //WRITE generalizzata di supporto per il POST
 
 export async function apiPost(payload){
-    const risposta = await fetch(API_MENU, {
+    const risposta = await fetch(`${API_MENU}?type=item`, {
         method: 'POST',
         headers : {'Content-Type':'application/json'},
         body: JSON.stringify(payload)
@@ -58,7 +58,7 @@ export async function apiPost(payload){
 //Put generalizzato payload
 export async function apiPut(id,payload){
     validaId(id);
-    const risposta = await fetch(`${API_MENU}?=id=${id}`,{
+    const risposta = await fetch(`${API_MENU}?type=item&id=${id}`,{
         method: 'PUT',
         headers: { 'Content-Type':'application/json'},
         body: JSON.stringify(payload)
@@ -83,22 +83,26 @@ export async function apiPatch(id, in_menu){
 }
 
 //elimina
-export async  function apiDelete(id){
+export async function apiDelete(id) {
     validaId(id);
-    const risposta = await fetch(`${API_MENU}?id=${id}`,{method : 'DELETE'});
-    if(!risposta.ok) throw await erroreInFetch(risposta);
+
+    const risposta = await fetch(`${API_MENU}?type=item&id=${id}`, {
+        method: 'DELETE'
+    });
+
+    if (!risposta.ok) {
+        throw await erroreInFetch(risposta);
+    }
+
     const json = await risposta.json();
+
     return json.data;
 }
 
 //utilità
 export async function nomeGiaEsistente(nome) {
-  const items = await caricaItems(null, {item}); 
+  const items = await apiGet(); 
   return items.some(i => i.nome != nome);
-  if(!risposta.ok) throw await erroreInFetch(risposta);
-  const json = await risposta.json();
-  return json.data;  
-
 }
 
 export async function cambiaStato(e) {
@@ -124,8 +128,37 @@ export async function cambiaStato(e) {
     window.location.reload();
 
 }
+//funzione click per cancellare
+export async function eliminaItem(e) {
+    try {
+        const btnElimina = e.target.closest('.btn-elimina-item');
+        if (!btnElimina) return;
 
-//render
+        e.preventDefault();
+
+        const id = Number(btnElimina.dataset.id);
+
+        if (Number.isNaN(id) || id <= 0) {
+            throw new Error("ID non valido");
+        }
+
+        if (!confirm("Vuoi eliminare questo item?")) {
+            return;
+        }
+
+        await apiDelete(id);
+
+        alert("Item eliminato con successo.");
+
+        window.location.reload();
+
+    } catch (errore) {
+        console.error(errore);
+        alert(errore.message);
+    }
+}
+
+
 // rendering condiviso: adatta il contenuto in base a tipo/categoria
 export function renderCardItem(item, { conAzioni = 'menu_si', target = null } = {}) {
 

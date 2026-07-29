@@ -1,37 +1,69 @@
 <?php
-ini_set('display_errors', '1');
-error_reporting(E_ALL);
-$title = 'Modifica Piatto';
-$id=$_GET['id'];
+$title = 'Inserisci Prodotto Nel Menu';
 ?>
 <?php 
-require_once __DIR__ . '/../bootstrap.php'; // prima le dipendenze
+require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../head.php';
-require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
-//pagina di esempio AJAX fetch API
+require_once __DIR__ . '/../navbar.php';
 ?>
 <main>
-  <div class="piatti">
+  <div class="bevande">
    <div class="supporto-titolo">
      <h2><?= $title ?></h2>
-     <p>compila i campi richiesti per modificare il Piatto</p>
+     <p>compila i campi richiesti per  Modificare il Prodotto</p>
    </div>
-   <div class="piatto">
-     <form action="" id="form_modifica" method="POST">
-        <label for="nome-piatto" >Nome del Piatto : </label>
-        <input type="text"  id="nome-piatto" name="nome-piatto" required>
+   <div class="bevanda">
+     <form action="" id="form_inserisci_item" method="POST">
+        <label for="nome-item">Nome Prodotto : </label>
+        <input type="text" id="nome-item" name="nome-item" required>
 
-        <div class="controllopositivo" id="controllo"><p id="avviso"></p> </div>
+        <fieldset>
+            <legend>Quale è Il Tipo Del Prodotto ?</legend>
+            <label><input type="radio" id="piatto" name="tipo" value="piatto">Piatto</label>
+            <label><input type="radio" id="bevanda" name="tipo" value="bevanda">Bevanda</label>
+            <label><input type="radio" id="servizio" name="tipo" value="servizio">Servizio</label>
+            <label><input type="radio" id="altro" name="tipo" value="altro">Altro</label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Quale è L'Iva Del Prodotto ?</legend>
+            <label><input type="radio" id="Aliquota Ristorazione e Somministrazione" name="id_iva" value="1">10%-Aliquota Ristorazione e Somministrazione</label>
+            <label><input type="radio" id="Aliquota Standard (Alcolici e Servizi)" name="id_iva" value="1">22%-Aliquota Standard (Alcolici e Servizi)</label>
+            <label><input type="radio" id="Aliquota Minima (Prodotti di prima necessità)" name="id_iva" value="3">4%-Aliquota Minima (Prodotti di prima necessità)</label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Il Prodotto va Immediatamente inserito nel Menu Clienti?</legend>
+            <label><input type="radio" id="in-menu-si" name="in_menu" value="si"> Sì</label>
+            <label><input type="radio" id="in-menu-no" name="in_menu" value="no"> No</label>
+        </fieldset>
+        <!--piatto', 'bevanda', 'servizio', 'altro'       'antipasto','primo','secondo','dolce','bevanda_analcolica','bevanda_alcolica','fuori_menu','costo_aggiuntivo','altro-->
+        <fieldset>
+            <legend>Scegli Una Categoria Per Il Prodotto</legend>
+            <label><input type="radio" id="bevanda_alcolica" name="categoria" value="bevanda_alcolica">Bevanda Alcolica</label>
+            <label><input type="radio" id="bevanda_analcolica" name="categoria" value="bevanda_analcolica">Bevanda Analcolica</label>
+            <label><input type="radio" id="antipasto" name="categoria" value="antipasto">Antipasto</label>
+            <label><input type="radio" id="primo" name="categoria" value="primo">Primo</label>
+            <label><input type="radio" id="secondo" name="categoria" value="secondo">Secondo</label>
+            <label><input type="radio" id="dolce" name="categoria" value="dolce">Dolce</label>
+            <label><input type="radio" id="altro" name="categoria" value="altro">Altro</label>
+            <label><input type="radio" id="fuori_menu" name="categoria" value="fuori_menu">Fuori Menu</label>
+            <label><input type="radio" id="costo_aggiuntivo" name="categoria" value="costo_aggiuntivo">Costo Aggiuntivo</label>
+        </fieldset>
+
+
+        <div class="controllopositivo" id="controllo"><p id="avviso"></p></div>
+
         <label for="descrizione">Descrizione : </label>
-        <textarea placeholder="inserisci qui la descrizione del piatto" id="descrizione" name="descrizione"></textarea>
+        <textarea placeholder="inserisci qui la descrizione del prodotto" id="descrizione" name="descrizione"></textarea>
 
         <label for="prezzo">Prezzo : </label>
-        <input type="number"  id="prezzo" name="prezzo" required> €
+        <input type="number" id="prezzo" name="prezzo" required> €
+
 
 
         <fieldset>
-            <legend>Allergeni</legend>
-            <!--allergeniSelezionati[] serve  ariempire un array di allergeni-->
+            <legend>Allergeni (Eventuali) </legend>
             <label><input type="checkbox" name="allergeniSelezionati[]" value="1">🌾 Glutine</label>
             <label><input type="checkbox" name="allergeniSelezionati[]" value="2">🦞 Crostacei</label>
             <label><input type="checkbox" name="allergeniSelezionati[]" value="3">🥚 Uova</label>
@@ -46,40 +78,16 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
             <label><input type="checkbox" name="allergeniSelezionati[]" value="12">🍷 Solfiti</label>
             <label><input type="checkbox" name="allergeniSelezionati[]" value="13">🟡 Lupini</label>
             <label><input type="checkbox" name="allergeniSelezionati[]" value="14">🦑 Molluschi</label>
-        </fieldset> 
-
-        <fieldset>
-            <legend>Il Piatto va Immediatamente inserito nel Menu Clienti? </legend>
-
-            <label><input type="radio" id="in-menu-si" name="in_menu" value="si"> Sì</label>
-            <label><input type="radio" id="in-menu-no" name="in_menu" value="no"> No</label>
         </fieldset>
 
-        <fieldset>
-            <legend>A Quale Categoria Appartiene il Piatto </legend>
-
-            <label><input type="radio" id="antipasto" name="categoria" value="antipasto">Antipasto</label>
-            <label><input type="radio" id="primo" name="categoria" value="primo">Primo</label>
-            <label><input type="radio" id="secondo" name="categoria" value="secondo">Secondo</label>
-            <label><input type="radio" id="dolce" name="categoria" value="dolce">Dolce</label>
-            <label><input type="radio" id="altro" name="categoria" value="altro">altro</label>
-        </fieldset>
-
-        <button type="button" class="btn-modifica" data-id="<?= $id ?>">Salva Modifiche</button>
+    
+        <button type="button" class="btn-modifica-item">Modifica</button>
      </form>
    </div>
   </div>
-<script>
-    const API = '/ristorante/api/menu.php';
-</script>
-<script src="/ristorante/public/assets/js/menu.js" defer></script>    
-<script>
 
-
-</script>
-</main>
-
+<script type="module" src="/ristorante/public/assets/js/menu/modificamenu.js" defer></script>
 </main>
 <?php 
 require_once __DIR__ . '/../footer.php';
- ?>
+?>

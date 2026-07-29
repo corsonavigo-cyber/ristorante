@@ -237,20 +237,29 @@ class MenuRepositories extends BaseRepositories {
         return (int)$this->pdo->lastInsertId();
      }
 
-     public function inserisciRelazioneAllergene(string $id_item, array $allergeni_selezionati):int{
+    public function inserisciRelazioneAllergene(int $id_item, array $allergeni_selezionati): bool
+    {
+        try {
+            foreach ($allergeni_selezionati as $id_allergene) {
+                $stmt = $this->pdo->prepare(
+                    'INSERT INTO relazione_allergeni_item (id_item, id_allergene)
+                    VALUES (:id_item, :id_allergene)'
+                );
 
-        //inserimento nella tabella delle relazioni nell' inserimento ho intezione di aggiungere una selezione multipla per ottenere un array di id allergene
-        foreach($allergeni_selezionati as $id_allergene) {
-            $stmt2 = $this->pdo->prepare('INSERT INTO relazione_allergeni_item (id_item, id_allergene) VALUES (:id_item, :id_allergene)');
-            $stmt2->execute([
-            ':id_item'   => $id_item,
-            ':id_allergene' => $id_allergene
-        ]);
+                $stmt->execute([
+                    'id_item' => $id_item,
+                    'id_allergene' => $id_allergene
+                ]);
+            }
+
+            return true;
+
+        } catch (\Throwable $e) {
+            throw $e;
         }
-        return (int)$this->pdo->lastInsertId();
-     }
+    }
  
-     public function inserisciItem(Tipo $tipo, Categoria $categoria, InMenu $in_menu, string $nome,float $prezzo, string $descrizione, int $id_iva, array $allergeni_selezionati):bool{
+     public function inserisciItem(Tipo $tipo, Categoria $categoria, InMenu $in_menu, string $nome,float $prezzo, string $descrizione, int $id_iva, array $allergeni_selezionati):int{
        
         $this->iniziaTransazione();
         try{
@@ -270,7 +279,7 @@ class MenuRepositories extends BaseRepositories {
             $this->inserisciRelazioneAllergene($id_item,$allergeni_selezionati);
             
             $this->confermaTransazione();
-            return $id_item > 0;
+            return $id_item ;
 
         }catch (\Throwable $e) {
 
@@ -316,7 +325,7 @@ class MenuRepositories extends BaseRepositories {
      }
 
     public function eliminaItemComposto(int $id_item): bool
-{
+    {
         $this->iniziaTransazione();
 
         try {

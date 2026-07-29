@@ -31,7 +31,7 @@ $title = 'Gestione Menu Attivo';
     </div>
     </div>
 
-<script type="module" src="/ristorante/public/assets/js/menuattivo.js" defer></script>    
+<script type="module" src="/ristorante/public/assets/js/menu/menuattivo.js" defer></script>    
 
 </main>
 

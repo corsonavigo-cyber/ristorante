@@ -86,7 +86,7 @@ require_once __DIR__ . '/../navbar.php';
    </div>
   </div>
 
-<script type="module" src="/ristorante/public/assets/js/inserisciitemmenu.js" defer></script>
+<script type="module" src="/ristorante/public/assets/js/menu/inserisciitemmenu.js" defer></script>
 </main>
 <?php 
 require_once __DIR__ . '/../footer.php';

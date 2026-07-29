@@ -199,6 +199,18 @@ class MenuService {
         
     }
 
+     public function inserisciItem(Tipo $tipo, Categoria $categoria, InMenu $in_menu, string $nome,float $prezzo, string $descrizione, int $id_iva, array $allergeni_selezionati):int{
+        try {
+             $id_item = $this->menuRepo->inserisciItem($tipo, $categoria, $in_menu, $nome,$prezzo, $descrizione, $id_iva, $allergeni_selezionati);
+             $this->logger->info("item crato con id '{$id_item}' con successo");
+             return  $id_item;
+        
+        }catch (\Throwable $e) {
+            $this->logger->error("item '{$id_item}' non crato  {$e->getMessage()}");
+            throw new \RuntimeException("Errore inserimento item");
+        }
+     
+     }
   
    
 }

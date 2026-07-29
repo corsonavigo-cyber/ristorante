@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     
 });
 document.addEventListener('click', API_function.cambiaStato);
-
+document.addEventListener('click', API_function.eliminaItem);
 
 
 
