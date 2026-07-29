@@ -102,7 +102,12 @@ export async function apiDelete(id) {
 //utilità
 export async function nomeGiaEsistente(nome) {
   const items = await apiGet(); 
-  return items.some(i => i.nome != nome);
+  console.log('items' , items);
+
+  const prova = items.some( i => i.nome.trim() === nome.trim());
+  console.table(prova);
+  return prova;
+  
 }
 
 export async function cambiaStato(e) {
@@ -202,3 +207,34 @@ export function renderCardItem(item, { conAzioni = 'menu_si', target = null } = 
 
   return html;
 }
+
+export async function controllaNomeDisponibile(){
+    
+    const avviso = document.getElementById("avviso");
+    const sezione = document.querySelector('#controllo');
+    const da_inserire = document.getElementById('nome-item').value.trim();
+   
+    console.log(da_inserire);
+
+    const disponibile = await nomeGiaEsistente(da_inserire);
+    console.log(`disponibile? ${disponibile}`);
+    if (!da_inserire) {
+       sezione.classList.add('warning');
+       avviso.innerHTML=`il piatto deve avere un nome!`;
+       return;
+    }
+
+      
+    if(disponibile){
+        sezione.classList.remove('controllopositivo');
+        sezione.classList.add('warning');
+        avviso.innerHTML=`il piatto ${da_inserire} è già esistente!`;
+    }else{
+       sezione.classList.remove('warning');
+       avviso.innerHTML="";
+       console.log('positivo')
+       sezione.classList.add('controllopositivo');
+       
+    }
+
+ }

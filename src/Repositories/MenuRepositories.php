@@ -50,13 +50,25 @@ class MenuRepositories extends BaseRepositories {
             iva.id_iva,
             iva.aliquota,
             iva.descrizione as descrizione_iva,
-            allergene.id_allergene,
-            allergene.nome_allergene    
+            GROUP_CONCAT(allergene.id_allergene SEPARATOR ',') AS id_allergeni,
+            GROUP_CONCAT(allergene.nome_allergene SEPARATOR ',') AS nomi_allergeni 
         FROM item_menu
         LEFT JOIN relazione_allergeni_item ON relazione_allergeni_item.id_item = item_menu.id_item
         LEFT JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
         LEFT JOIN iva ON iva.id_iva = item_menu.id_iva
-        WHERE item_menu.id_item = :id_item LIMIT 1
+        WHERE item_menu.id_item = :id_item 
+        GROUP BY 
+            item_menu.id_item,
+            item_menu.tipo,
+            item_menu.categoria,
+            item_menu.in_menu,
+            item_menu.nome,
+            item_menu.prezzo,
+            item_menu.descrizione,
+            iva.id_iva,
+            iva.aliquota,
+            iva.descrizione
+            LIMIT 1 
     SQL);
         $stmt->execute(['id_item' => $id_item]);
         return $stmt->fetch() ?:null;

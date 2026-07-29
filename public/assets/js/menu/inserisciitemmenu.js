@@ -3,7 +3,7 @@ import * as  API_function from './commonMenu.js';
 const form = document.getElementById('form_inserisci_pietanza');
 
 document.addEventListener('click', inserisciPiattoClick);
-document.addEventListener('input', controllaNomeDisponibile);
+document.addEventListener('input', API_function.controllaNomeDisponibile);
 
 async function inserisciPiattoClick(e) {
 
@@ -72,35 +72,5 @@ async function inserisciPiattoClick(e) {
     }
 }
 
-   async function controllaNomeDisponibile(e){
-    
-    const avviso = document.getElementById("avviso");
-    const sezione = document.querySelector('#controllo');
-    if (e.target.id !== 'nome-item') {
-        return;
-    }
-
-    const da_inserire = e.target;
-
-    const disponibile = await API_function.nomeGiaEsistente(da_inserire.value.trim());
-
-    if (!disponibile) {
-       sezione.classList.add('warning');
-       avviso.innerHTML=`il piatto deve avere un nome!`;
-       return;
-    }
-
-      
-    if(!API_function.nomeGiaEsistente(da_inserire.value.trim())){
-        sezione.classList.remove('controllopositivo');
-        sezione.classList.add('warning');
-        avviso.innerHTML=`il piatto ${da_inserire.value.trim()} è già esistente!`;
-    }else{
-       sezione.classList.remove('warning');
-       avviso.innerHTML="";
-       sezione.classList.add('controllopositivo');
-       
-    }
-
- }
+   
 

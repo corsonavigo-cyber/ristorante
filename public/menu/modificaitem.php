@@ -1,5 +1,5 @@
 <?php
-$title = 'Inserisci Prodotto Nel Menu';
+$title = 'Modifica Prodotto Nel Menu';
 ?>
 <?php 
 require_once __DIR__ . '/../bootstrap.php';
@@ -13,7 +13,7 @@ require_once __DIR__ . '/../navbar.php';
      <p>compila i campi richiesti per  Modificare il Prodotto</p>
    </div>
    <div class="bevanda">
-     <form action="" id="form_inserisci_item" method="POST">
+     <form action="" id="form_modifica_item" method="POST">
         <label for="nome-item">Nome Prodotto : </label>
         <input type="text" id="nome-item" name="nome-item" required>
 
@@ -37,7 +37,6 @@ require_once __DIR__ . '/../navbar.php';
             <label><input type="radio" id="in-menu-si" name="in_menu" value="si"> Sì</label>
             <label><input type="radio" id="in-menu-no" name="in_menu" value="no"> No</label>
         </fieldset>
-        <!--piatto', 'bevanda', 'servizio', 'altro'       'antipasto','primo','secondo','dolce','bevanda_analcolica','bevanda_alcolica','fuori_menu','costo_aggiuntivo','altro-->
         <fieldset>
             <legend>Scegli Una Categoria Per Il Prodotto</legend>
             <label><input type="radio" id="bevanda_alcolica" name="categoria" value="bevanda_alcolica">Bevanda Alcolica</label>
@@ -55,7 +54,7 @@ require_once __DIR__ . '/../navbar.php';
         <div class="controllopositivo" id="controllo"><p id="avviso"></p></div>
 
         <label for="descrizione">Descrizione : </label>
-        <textarea placeholder="inserisci qui la descrizione del prodotto" id="descrizione" name="descrizione"></textarea>
+        <textarea id="descrizione" name="descrizione"></textarea>
 
         <label for="prezzo">Prezzo : </label>
         <input type="number" id="prezzo" name="prezzo" required> €
