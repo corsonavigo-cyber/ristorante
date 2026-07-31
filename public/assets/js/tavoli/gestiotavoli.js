@@ -1,11 +1,12 @@
 import * as API_tav_function from '../apigeneric.js';
 import * as Utilis from './utils.js';
-import  {eliminaPrenotazioneClick} from '../prenotazioni/gestioneprenotazioni.js';
+import  {eliminaPrenotazioneClick, disattivaPrenotazione} from '../prenotazioni/gestioneprenotazioni.js';
 
 
 document.addEventListener('DOMContentLoaded', caricaTavoli);
 document.addEventListener('click', eliminaTavoloClick);
 document.addEventListener('click', eliminaPrenotazioneClick);
+document.addEventListener('click', disattivaPrenotazione);
 
 
 async function caricaTavoli (){
@@ -53,6 +54,8 @@ async function caricaPrenotazioniTavolo(id_tavolo){
             <p class="comment">${p.data_in_prenotazione}</p>
             <a class="btn" href="modificaprenotazione.php?id=${p.id_prenotazione}">Modifica ✏️</a>
             <button class="btn-elimina-prenotazione" data-id="${p.id_prenotazione}">Elimina 🗑️</button>
+            <button class="btn-disattiva-prenotazione" data-id="${p.id_prenotazione}">Apri Ordine</button>
+
         `).join('');
     } else {
         contenitore.innerHTML = `<h4>LIBERO</h4>`;

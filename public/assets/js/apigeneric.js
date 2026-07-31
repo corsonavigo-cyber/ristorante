@@ -36,8 +36,9 @@ export function apiPut(urlApi, elemento, payload) {
 
 export function apiPatch(urlApi, elemento, payload) {
     const id = leggiId(elemento,payload);
+    const separatore = urlApi.includes('?') ? '&' : '?';
 
-    return richiesta(`${urlApi}?id=${id}`, {
+    return richiesta(`${urlApi}${separatore}id=${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
