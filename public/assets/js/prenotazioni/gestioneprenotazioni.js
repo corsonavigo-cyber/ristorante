@@ -1,5 +1,10 @@
 import * as API_tav_function from '../apigeneric.js';
 
+document.addEventListener('DOMContentLoaded', elencoPrenotazioniNonAttive);
+document.addEventListener('click', attivaPrenotazione);
+document.addEventListener('click', eliminaPrenotazioneClick);
+
+
 export async function eliminaPrenotazioneClick(e){
 
     //come utilizzare fetch(URL,METHOD)
@@ -57,7 +62,7 @@ export async function eliminaPrenotazioneClick(e){
         //escludo click per errore
         if(!btn_disattiva) return;
         //questa funzione di js genera un alet bool
-        if(!confirm('disattivare questa prenotazione?')){
+        if(!confirm('Procedere alla compillare la comanda?')){
           return;
         }
 
@@ -67,8 +72,8 @@ export async function eliminaPrenotazioneClick(e){
         if(!id_disattiva){
           throw new Error('Non è stato possibile disattivare la Prenotazione , manca ID!');
         }
-        if(await togliPrenotazioneDalTavolo(id_disattiva)){
-              await API_tav_function.apiPatch(
+       
+        await API_tav_function.apiPatch(
                 `${API_PRENOTAZIONI}?type=prenotazioni`,
                 btn_disattiva,
                 { id: id_disattiva, attiva: 0 }
@@ -76,7 +81,7 @@ export async function eliminaPrenotazioneClick(e){
 
               //se il flusso del programma non viene interrotto ricarico i piatti
               window.location.reload();
-            }
+            
     }catch (errore){
         console.error(errore);
         //mostro la risposta json
@@ -106,4 +111,83 @@ export async function eliminaPrenotazioneClick(e){
         return false;
     }
 
+  }
+
+  async function elencoPrenotazioniNonAttive() {
+    const contentitore = document.getElementById('lista_prenotazioni_non_attive');
+    const prenotazioni = await API_tav_function.apiGet(API_PRENOTAZIONI, {type : 'prenotazioni'});
+    const prenotazioni_non_attive = prenotazioni.filter(prenotazione => prenotazione.attiva === 0);
+    contentitore.innerHTML = prenotazioni_non_attive.map(prenotazione =>`
+       <p class="prenotazione">${prenotazione.nome_prenotazione}, numero persone :  ${prenotazione.numero_persone}, 
+       numero tavolo ${prenotazione.numero_tavoli}, ora ${prenotazione.ora_prenotazione} data ${prenotazione.data_in_prenotazione} <button type="button" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli}" class="btn-attiva-prenotazione">Attiva Prenotazione</button>
+      <button class="btn-elimina-prenotazione" data-id="${prenotazione.id_prenotazione}">Elimina 🗑️</button>
+`).join('<br>');
+    
+  }
+
+async function tavoloGiaOccupato(id_tavolo) {
+    const prenotazioni = await API_tav_function.apiGet(API_PRENOTAZIONI, {
+      type: 'tavolo',
+      id: id_tavolo
+    });
+
+    // TODO: aggiungere qui il controllo degli ordini quando esisterà l'API ordini.
+    return prenotazioni.length > 0;
+}
+
+  async function attivaPrenotazione(e){
+    
+    //come utilizzare fetch(URL,METHOD)
+    try{
+
+        //seleziono l'elemento bottone per il disattiva
+        const btn_attiva = e.target.closest('.btn-attiva-prenotazione');
+        //escludo click per errore
+        if(!btn_attiva) return;
+        //questa funzione di js genera un alet bool
+        if(!confirm('Attivare questa prenotazione?')){
+          return;
+        }
+       
+        //recupero il data set da data-id
+        const id_attiva =btn_attiva.dataset.id;
+        //blocco l'esecuzione se non arriva l'id
+        if(!id_attiva){
+          throw new Error('Non è stato possibile attivare la Prenotazione , manca ID!');
+        }
+        const id_tavolo = btn_attiva.dataset.idTavolo;
+        if (!id_tavolo) {
+          throw new Error('Non è stato possibile attivare la prenotazione: manca ID tavolo!');
+        }
+
+        if (await tavoloGiaOccupato(id_tavolo)) {
+          if (confirm('Il tavolo è già occupato. Vuoi modificare questa prenotazione?')) {
+            window.location.href = `modificaprenotazione.php?id=${id_attiva}`;
+            return;
+          }
+
+          await API_tav_function.apiDelete(API_PRENOTAZIONI, {
+            type: 'tavolo_prenotazioni',
+            id: id_attiva
+          });
+          window.location.reload();
+          return;
+        }
+        const body ={ 
+              id_prenotazione: parseInt(id_attiva), 
+              attiva : 1 
+            }
+    
+        //salvo il response dentro risposta, chiamo la fetch su un id specifico e scelgo il metodo delete definito 
+        const risposta = await API_tav_function.apiPatch(`${API_PRENOTAZIONI}?type=prenotazioni`,btn_attiva, body);
+        
+        //se il flusso del programma non viene interrotto ricarico i piatti
+        window.location.reload();
+    
+    }catch (errore){
+        console.error(errore);
+        //mostro la risposta json
+        alert(errore.message);
+    }
+    
   }

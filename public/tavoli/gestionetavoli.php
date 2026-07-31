@@ -29,7 +29,7 @@ require_once __DIR__ . '/../bootstrap.php';
     const API = '/ristorante/api/tavoli.php';
     const API_PRENOTAZIONI = '/ristorante/api/prenotazioni.php';
 </script>
-<script type="module" src="/ristorante/public/assets/js/tavoli/gestiotavoli.js" defer></script><script>
+<script type="module" src="/ristorante/public/assets/js/tavoli/gestiotavoli.js" defer></script>
 
 </main>
 

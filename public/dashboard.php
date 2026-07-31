@@ -13,7 +13,13 @@ require_once __DIR__ . '/bootstrap.php';
 <body>
     <h1>Dashboard sei loggatto!!</h1>
     <a href="menu/gestionemenuchevedonoiclienti.php">Gestione Menu Per I Clienti</a>
+    <h3>Lista Prenotazioni non Attive</h3>
+    <div id="lista_prenotazioni_non_attive"></div>
 </body>
+<script>
+   const API_PRENOTAZIONI = '/ristorante/api/prenotazioni.php';
+</script>
+<script type="module" src="/ristorante/public/assets/js/prenotazioni/gestioneprenotazioni.js" defer></script>
 <?php 
 require_once __DIR__ . '/footer.php';
  ?>

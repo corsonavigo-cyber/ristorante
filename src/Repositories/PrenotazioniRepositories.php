@@ -29,7 +29,7 @@ class PrenotazioniRepositories extends BaseRepositories {
         $stmt =$this->pdo->prepare(
             self::SELECT_PRENOTAZIONE_TAVOLI . <<<'SQL'
 
-            WHERE prenotazione.data_in_prenotazione >= CURDATE()
+            WHERE prenotazione.data_in_prenotazione >= CURDATE() 
             GROUP BY prenotazione.id_prenotazione
             ORDER BY prenotazione.data_in_prenotazione, prenotazione.ora_prenotazione
             SQL
@@ -43,7 +43,7 @@ class PrenotazioniRepositories extends BaseRepositories {
         $stmt =$this->pdo->prepare(
             self::SELECT_PRENOTAZIONE_TAVOLI .<<<'SQL'
             
-            WHERE prenotazione.data_in_prenotazione >= CURDATE() AND tavoli_prenotazione.id_tavolo = :id_tavolo
+            WHERE prenotazione.data_in_prenotazione >= CURDATE() AND tavoli_prenotazione.id_tavolo = :id_tavolo AND prenotazione.attiva = 1
             GROUP BY prenotazione.id_prenotazione
             ORDER BY prenotazione.data_in_prenotazione, prenotazione.ora_prenotazione
         SQL);
