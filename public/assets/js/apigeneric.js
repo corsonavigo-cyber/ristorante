@@ -1,4 +1,4 @@
-import { today, erroreRisposta, leggiId } from './utils.js';
+import { today, erroreRisposta, leggiId } from './tavoli/utils.js';
 
 async function richiesta(url, options = {}) {
     const risposta = await fetch(url, options);
