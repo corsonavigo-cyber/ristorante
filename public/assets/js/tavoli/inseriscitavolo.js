@@ -1,8 +1,8 @@
-import * as API_tav_function from './apitavoli.js';
-import * as Utilis from './utilis.js';
+import * as API_tav_function from '../apigeneric.js';
+import * as Utilis from './utils.js';
 
 document.addEventListener('click', inserisciTavoloClick);
-document.addEventListener('input',  controllaNumeroDisponibile);
+document.addEventListener('input',  Utilis.controllaNumeroDisponibile);
 
 async function inserisciTavoloClick(e){
     
@@ -28,15 +28,14 @@ async function inserisciTavoloClick(e){
             throw new Error('Tutti i campi sono obbligatori, inserisci dei valori congrui');
         }
         const payload={
-            numero_tavolo: parseInt(numero_tavolo),
+                    numero_tavolo: parseInt(numero_tavolo),
                     posti_max: parseInt(posti_max_tavolo),
                     posti_min: parseInt(posti_min_tavolo)
         }
         const id_tavolo =  await API_tav_function.apiPost(API, payload);
         
-        
         alert('tavolo inserito con successo!');
-       
+        window.location.href = "gestiotavoli.php";
     }catch (errore){
         console.error(errore);
         //mostro la risposta json

@@ -1,3 +1,5 @@
+import * as API_tav_function from '../apigeneric.js';
+
 export function today() {
     const d = new Date();
     return d.toISOString().split('T')[0]; // "2026-06-30"
@@ -11,12 +13,19 @@ export async function erroreRisposta(risposta){
         }
 }
 
-export function leggiId(elemento){
-    const id = elemento.dataset.id;
-    if(!id){
-        throw new Error('id non trovato per l elemento passato');
+export function leggiId(elemento, params = {}){
+    const idDalDataset = elemento.dataset.id;
+    const idDalParams = params.id;
+
+    if (!idDalDataset) {
+        throw new Error('id non trovato nel dataset dell\'elemento passato');
     }
-    return id;
+
+    if (idDalParams !== undefined && String(idDalParams) !== String(idDalDataset)) {
+        throw new Error('L\'id nel dataset e quello nei params non coincidono');
+    }
+
+    return idDalDataset;
 }
 
 export function validaCampiTavolo(numero, postiMax, postiMin) {
@@ -33,6 +42,7 @@ export async function controllaNumeroDisponibile(){
     const tavoli = await API_tav_function.apiGet(API);
     const numeri = tavoli.map(item => item.numero_tavolo);
     const avviso = document.getElementById("avviso");
+    const da_inserire = document.getElementById("numero-tavolo");
     //selettore di classe con il puinto
     const sezione = document.querySelector('#controllo');
     

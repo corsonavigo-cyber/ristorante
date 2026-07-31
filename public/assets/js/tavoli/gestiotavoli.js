@@ -33,7 +33,7 @@ async function caricaTavoli (){
     </div>`).join('');
     tavoli.forEach(tavolo =>  caricaPrenotazioniTavolo(tavolo.id_tavolo));
 }
-
+//da inserire carica ordini su tavololo, se c'è un ordine la prenotazione viene disattivata automaticamente
 async function caricaPrenotazioniTavolo(id_tavolo){
    
     const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {

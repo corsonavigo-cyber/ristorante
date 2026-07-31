@@ -1,24 +1,20 @@
-import * as API_tav_function from './apitavoli.js';
+import * as API_tav_function from '../apigeneric.js';
 import * as Utils from './utils.js';
 
 document.addEventListener('DOMContentLoaded', precaricaTavolo);
 document.addEventListener('click', modificaTavoloClick);
-document.addEventListener('input', Utils.controllaNumeroDisponibile);
 
 async function precaricaTavolo() {
     //funzione dell'URL in js per la ricerca al suo interno
     const id = new URLSearchParams(window.location.search).get('id');
     if (!id) return;
 
-    const tavolo = await API_tav_function.apiGet(API, { id_tavolo : id});
+    const tavolo = await API_tav_function.apiGet(API, { id: id});
+    console.log(tavolo);
     
-    const json = await risposta.json();
-    //è un array per accedere bisogna usare [0]
-    const data = json.data; // ← prendi il primo elemento
-    console.log(data);
-    document.getElementById('numero-tavolo').value = parseInt(data.numero_tavolo);
-    document.getElementById('posti-max-tavolo').value  = parseInt(  data.posti_max);
-    document.getElementById('posti-min-tavolo').value = parseInt(data.posti_min);
+    document.getElementById('numero-tavolo').value = parseInt(tavolo.numero_tavolo);
+    document.getElementById('posti-max-tavolo').value  = parseInt( tavolo.posti_max);
+    document.getElementById('posti-min-tavolo').value = parseInt(tavolo.posti_min);
     
 }
 async function modificaTavoloClick(e){
@@ -49,11 +45,12 @@ async function modificaTavoloClick(e){
     
         //salvo il response dentro risposta, chiamo la fetch su un id specifico e scelgo il metodo delete definito in tavoli.php
         const  body = {
+                    id: id,
                     numero_tavolo: parseInt(numero_tavolo.value),
                     posti_max: parseInt(posti_max_tavolo.value),
                     posti_min: parseInt(posti_min_tavolo.value)
             }
-        await API_tav_function.apiPut(API, id, body);
+        await API_tav_function.apiPut(API, btn, body);
         
         alert('tavolo modificato con successo!');
         window.location.href = "gestionetavoli.php";

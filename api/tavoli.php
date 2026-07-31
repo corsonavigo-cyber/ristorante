@@ -48,7 +48,6 @@ try{
         
       case 'POST':
         $body= json_decode(file_get_contents('php://input'),true);
-        file_put_contents(__DIR__.'/debug.txt', print_r($body, true)."\n", FILE_APPEND);
         if (!$body) {
         risposta('JSON non valido', 400);
         }

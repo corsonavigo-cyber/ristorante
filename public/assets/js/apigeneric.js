@@ -1,10 +1,10 @@
-import { today, erroreRisposta, leggiId } from './tavoli/utils.js';
+import { erroreRisposta,leggiId } from './tavoli/utils.js';
 
 async function richiesta(url, options = {}) {
     const risposta = await fetch(url, options);
 
     if (!risposta.ok) {
-        throw await gestisciErroreRisposta(risposta);
+        throw await erroreRisposta(risposta);
     }
 
     const json = await risposta.json();
@@ -24,8 +24,8 @@ export function apiPost(urlApi, payload) {
     });
 }
 
-export function apiPut(urlApi, id, payload) {
-    validaId(id);
+export function apiPut(urlApi, elemento, payload) {
+    const id = leggiId(elemento,payload);
 
     return richiesta(`${urlApi}?id=${id}`, {
         method: 'PUT',
@@ -34,8 +34,8 @@ export function apiPut(urlApi, id, payload) {
     });
 }
 
-export function apiPatch(urlApi, id, payload) {
-    validaId(id);
+export function apiPatch(urlApi, elemento, payload) {
+    const id = leggiId(elemento,payload);
 
     return richiesta(`${urlApi}?id=${id}`, {
         method: 'PATCH',
@@ -46,7 +46,6 @@ export function apiPatch(urlApi, id, payload) {
 
 export function apiDelete(urlApi, params = {}) {
     const query = new URLSearchParams(params);
-    console.log(query);
     return richiesta(`${urlApi}?${query}`, {
         method: 'DELETE'
     });

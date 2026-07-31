@@ -33,7 +33,7 @@ require_once __DIR__ . '/../bootstrap.php';
   </div>
 </main>
 <script>
-    const API = '/ristorante_classic/api/tavoli.php';
+    const API = '/ristorante/api/tavoli.php';
 </script>
 <script type="module" src="/ristorante/public/assets/js/tavoli/modificatavolo.js" defer></script><script>
 
