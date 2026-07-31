@@ -50,12 +50,7 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
    <a class="btn" href="gestioneprenotazioni.php">Torna alla Gestione delle Prenotazioni</a>
 
   </div>
-<script>
-    const API = '/ristorante/api/prenotazioni.php';
-    const API_tavoli = '/ristorante/api/tavoli.php';
-</script>
-<script src="/ristorante/public/assets/js/prenotazioni.js" defer></script>    
-
+<script type="module" src="/ristorante/public/assets/js/prenotazioni/inserisciPrenotazione.js" defer></script>    
 
 </main>
 <?php 

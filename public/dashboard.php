@@ -17,7 +17,8 @@ require_once __DIR__ . '/bootstrap.php';
     <div id="lista_prenotazioni_non_attive"></div>
 </body>
 <script>
-   const API_PRENOTAZIONI = '/ristorante/api/prenotazioni.php';
+   var API_PRENOTAZIONI = '/ristorante/api/prenotazioni.php';
+   window.API_PRENOTAZIONI = API_PRENOTAZIONI;
 </script>
 <script type="module" src="/ristorante/public/assets/js/prenotazioni/gestioneprenotazioni.js" defer></script>
 <?php 
