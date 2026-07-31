@@ -46,7 +46,7 @@ export function apiPatch(urlApi, id, payload) {
 
 export function apiDelete(urlApi, params = {}) {
     const query = new URLSearchParams(params);
-
+    console.log(query);
     return richiesta(`${urlApi}?${query}`, {
         method: 'DELETE'
     });

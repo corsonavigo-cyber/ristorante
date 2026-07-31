@@ -10,25 +10,26 @@ use Dotenv\Dotenv;
 use Config\Database;
 
 
-use App\Repositories\MenuRepositories;/*
+use App\Repositories\MenuRepositories;
 use App\Repositories\TavoloRepositories;
 use App\Repositories\UserRepositories;
 use App\Repositories\PrenotazioniRepositories;
-use App\Repositories\LeggiStoricoRepositories;
+use App\Repositories\LeggiStoricoRepositories; /*
 use App\Repositories\ScontrinoRepositories;
 use App\Repositories\OrdiniRepositories;
 
+
+use App\Services\OrdiniService;
+use App\Services\ScontrinoService;
+use App\Services\StoricoOrdiniService;
+
+*/
 use App\Services\AuthService;
   
 use App\Services\TavoloService;
 use App\Services\PrenotazioniService;
 use App\Services\StoricoPrenotazioniService;
 use App\Services\LeggiStoricoService;
-use App\Services\OrdiniService;
-use App\Services\ScontrinoService;
-use App\Services\StoricoOrdiniService;
-
-*/
 use App\Services\MenuService;
 
 use App\Services\LoggerService;
@@ -46,7 +47,7 @@ $menuRepository= new MenuRepositories($pdo);
 $menuService= new MenuService($menuRepository, $logger);
 
 
-/*userRepository = new UserRepositories($pdo);
+$userRepository = new UserRepositories($pdo);
 $tavoloRepository= new TavoloRepositories($pdo);
 $prenotazioniRepository= new PrenotazioniRepositories($pdo);
 $leggistoricoRepository = new LeggiStoricoRepositories(
@@ -55,18 +56,20 @@ $leggistoricoRepository = new LeggiStoricoRepositories(
 $leggistoricoordiniRepository = new LeggiStoricoRepositories(
     dirname(__DIR__) . '/storage/logs/storicoordini.txt'
 );
+/*
 $ordiniRepository= new OrdiniRepositories($pdo);
 $scontrinoRepository= new ScontrinoRepositories($pdo);
-
+$storicoOrdini = new StoricoOrdiniService();
+*/
 //chiamo i service
 //scrittura
 $storicoPrenotazioni = new StoricoPrenotazioniService(); 
-$storicoOrdini = new StoricoOrdiniService();
+
 //estrapolazione dati
 $authService = new AuthService($userRepository, $logger);
 $tavoloService= new TavoloService($tavoloRepository, $logger);
 $prenotazioniService= new PrenotazioniService($prenotazioniRepository, $logger,$storicoPrenotazioni,$pdo);
-$leggiStoricoService = new LeggiStoricoService($leggistoricoRepository); 
+$leggiStoricoService = new LeggiStoricoService($leggistoricoRepository); /*
 $leggiStoricoOrdiniService = new LeggiStoricoService($leggistoricoordiniRepository);
 $ordiniService = new OrdiniService($ordiniRepository,$logger,$storicoOrdini);
 $scontrinoService = new ScontrinoService($scontrinoRepository,$logger,$storicoOrdini);
@@ -79,4 +82,5 @@ if (!in_array(basename($_SERVER['PHP_SELF']), array_map('basename', $paginePubbl
         header("Location: /login.php");
         exit;
     }
-}*/
+}
+    */

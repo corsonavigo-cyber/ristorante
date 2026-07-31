@@ -1,14 +1,24 @@
 import * as API_tav_function from '../apigeneric.js';
 import * as Utilis from './utils.js';
+import  {eliminaPrenotazioneClick} from '../prenotazioni/gestioneprenotazioni.js';
+
 
 document.addEventListener('DOMContentLoaded', caricaTavoli);
-/*document.addEventListener('click', eliminaTavoloClick);*/
+document.addEventListener('click', eliminaTavoloClick);
+document.addEventListener('click', eliminaPrenotazioneClick);
 
-async function caricaTavoli(){
+
+async function caricaTavoli (){
     const tavoli = await API_tav_function.apiGet(API);
     const lavagna = document.getElementById('lavagna_tavoli');
-    //da aggiungere la visualizzazione delle prenotazioni e dei conti e delle comande  
-    lavagna.innerHTML = tavoli.map(tavolo=>`
+   
+    if (!lavagna) {
+        throw new Error('Elemento lavagna_tavoli non trovato');
+    }
+    
+
+    //da aggiungere la visualizzazione delle prenotazioni e dei conti e delle comande
+    lavagna.innerHTML = tavoli.map(tavolo => `
     <div class="tavolo" id="${tavolo.id_tavolo}">
        
        <h3 class="comment"><b>Numero Tavolo ${tavolo.numero_tavolo}</b></h3>
@@ -19,64 +29,73 @@ async function caricaTavoli(){
        <div class=tavolo id=prenotato data-id-tavolo="${tavolo.id_tavolo}">  </div> 
        <!--link AJAX per inviare la modifica tavolo-->
        <a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">Modifica ✏️</a>
-
-       <!--button AJAX per richiedere l'eliminazione del tavolo-->
-
-       <button class="btn-elimina" data-id="${tavolo.id_tavolo}">Elimina 🗑️</button>
+       <button type="button" class="btn-elimina" data-id="${tavolo.id_tavolo}">Elimina 🗑️</button>
     </div>`).join('');
-    /*json.data.forEach(tavolo => caricaPrenotazioniTavolo(tavolo.id_tavolo));*/
-  }
+    tavoli.forEach(tavolo =>  caricaPrenotazioniTavolo(tavolo.id_tavolo));
+}
 
-  async function eliminaTavoloClick(e){
-    
-    
-    try{
+async function caricaPrenotazioniTavolo(id_tavolo){
+   
+    const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {
+            type: 'tavolo',
+            id: id_tavolo
+        });
+    const contenitore = document.querySelector(`#prenotato[data-id-tavolo="${id_tavolo}"]`);
+    if (!contenitore) return;
 
-        //seleziono l'elemento bottone per l'elimina
-        const btn = e.target.closest('.btn-elimina');
-        //escludo click per errore
-        if(!btn) return;
-        //questa funzione di js genera un alet bool
-        if(!confirm('vuoi eliminare quest tavolo?')){
-          return;
+    const prenotazioniOggi = prenotazioniCollegate.filter(prenotazione=> prenotazione.data_in_prenotazione === Utilis.today());  
+
+    if (prenotazioniOggi.length > 0){
+        contenitore.innerHTML = prenotazioniOggi.map(p => `
+            <h4 class="comment"><b>${p.nome_prenotazione}</b></h4>
+            <p class="comment">${p.numero_persone} persone</p>
+            <p class="comment">Ora arrivo ${p.ora_prenotazione}</p>
+            <p class="comment">${p.data_in_prenotazione}</p>
+            <a class="btn" href="modificaprenotazione.php?id=${p.id_prenotazione}">Modifica ✏️</a>
+            <button class="btn-elimina-prenotazione" data-id="${p.id_prenotazione}">Elimina 🗑️</button>
+        `).join('');
+    } else {
+        contenitore.innerHTML = `<h4>LIBERO</h4>`;
+    }
+}
+
+async function eliminaTavoloClick(e) {
+    try {
+        const btn = e.target instanceof Element ? e.target.closest('.btn-elimina') : null;
+
+        if (!btn) return;
+
+        const idElimina = btn.dataset.id;
+
+        if (!idElimina) {
+            throw new Error('Id mancante nel bottone!');
         }
-        //recupero il data set da data-id
-        const id_elimina = btn.dataset.id;
-        //blocco l'esecuzione se non arriva l'id
-        if(!id_elimina){
-          throw new Error('Id Mancante nel bottone!');
+
+        if (!confirm('Vuoi eliminare questo tavolo?')) {
+            return;
         }
-         //  controllo se il tavolo ha prenotazioni attive collegate
-        const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI,{type:tavolo, id : id_elimina});
-        console.log('prenotazioniCollegate ' + prenotazioniCollegate);
-        // se ci sono prenotazioni, avviso l'utente che verranno scollegate
-        if (prenotazioniCollegate.length > 0) {
+
+        const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {
+            type: 'tavolo',
+            id: idElimina
+        });
+
+        if (Array.isArray(prenotazioniCollegate) && prenotazioniCollegate.length > 0) {
             if (!confirm('Questo tavolo ha prenotazioni collegate. Eliminandolo verranno rimosse anche le relazioni con le prenotazioni. Continuare?')) {
                 return;
             }
-            // elimino prima le relazioni tavolo-prenotazione
-            const eliminaRelazione = await  API_tav_function.apiDelete(API_PRENOTAZIONI,{type:tavolo, id : id_elimina});
-        } else {
-            // nessuna prenotazione collegata, conferma standard
-            if(!confirm('vuoi eliminare quest tavolo?')){
-              return;
-            }
+
+               await API_tav_function.apiDelete(API_PRENOTAZIONI, {
+                type: 'tavolo',
+                id: idElimina
+            });
         }
-    
-        //salvo il response dentro risposta, chiamo la fetch su un id specifico e scelgo il metodo delete definito in tavoli.php
-        const risposta = await fetch(`/ristorante_classic/api/tavoli.php?id=${id_elimina}`, {
-            method: 'DELETE'
-        });
-        //se la risposta non è ok dat che il 400 e il 500 non interrompono il codice, lo interrompo con l'if e trow new error
-        if (!risposta.ok) {
-          //prendo la risposta json 
-          const json = await risposta.json().catch(()=>null);
-          throw new Error(json?.data ?? `Errore HTTP ${risposta.status}`);
-        }
-        //se il flusso del programma non viene interrotto ricarico i tavoli
-        await caricaTavoli();
+
+        await API_tav_function.apiDelete(API, { id: idElimina });
+        window.location.reload();
     }catch (errore){
         console.error(errore);
         //mostro la risposta json
         alert(errore.message);
     }
+}

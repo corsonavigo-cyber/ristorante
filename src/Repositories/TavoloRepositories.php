@@ -3,9 +3,9 @@ declare(strict_types=1); #serve a attivare il controllo dei tipi
 namespace App\Repositories; #namespace è come un "cartella virtuale" per organizzare il codice e evitare conflitti di nomi
 use PDO; #importa la classe PDO per lavorare con il database
 #creo una nuova classe UserRepositories che rappresenta un repository per gestire gli utenti nel database
-class TavoloRepositories {
+class TavoloRepositories extends BaseRepositories {
 
-     public function __construct(private PDO $pdo){}
+     
 
      public function visualizzaTavoli():?array
      {
