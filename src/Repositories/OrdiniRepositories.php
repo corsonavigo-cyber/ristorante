@@ -3,51 +3,111 @@ declare(strict_types=1); #serve a attivare il controllo dei tipi
 namespace App\Repositories; #namespace è come un "cartella virtuale" per organizzare il codice e evitare conflitti di nomi
 use PDO; #importa la classe PDO per lavorare con il database
 use App\Enums\Stato;
+use App\Enums\Tipo;
 use App\Enums\Momento;
 #creo una nuova classe OrdiniRepositories che gestisce gli ordini nel database
 class OrdiniRepositories extends BaseRepositories {
 
-     private const API_TOT_QUERY = 'SELECT * FROM api_tot';
+     private const API_TOT_BASE_QUERY = "SELECT 
+    ordine.id_ordine,
+    ordine.data_e_ora,
+    ordine.numero_persone,
+    GROUP_CONCAT(DISTINCT ordine_tavolo.id_tavolo ORDER BY ordine_tavolo.id_tavolo SEPARATOR ', ') AS id_tavoli,
+    GROUP_CONCAT(DISTINCT tavolo.numero_tavolo ORDER BY tavolo.numero_tavolo SEPARATOR ', ') AS numeri_tavoli,
+    relazione_ordine_item.id_comanda_dettaglio,
+    relazione_ordine_item.id_item,
+    relazione_ordine_item.id_momento,
+    relazione_ordine_item.quantita,
+    relazione_ordine_item.note,
+    item_menu.tipo,
+    item_menu.categoria,
+    item_menu.in_menu,
+    item_menu.nome,
+    item_menu.prezzo,
+    item_menu.descrizione,
+    item_menu.id_iva,
+    allergeni_item.lista_allergeni,
+    stato_conto.nome_stato
+FROM ordine
+JOIN ordine_tavolo 
+    ON ordine_tavolo.id_ordine = ordine.id_ordine
+JOIN tavolo 
+    ON tavolo.id_tavolo = ordine_tavolo.id_tavolo
+JOIN relazione_ordine_item 
+    ON relazione_ordine_item.id_ordine = ordine.id_ordine
+JOIN item_menu 
+    ON item_menu.id_item = relazione_ordine_item.id_item
+LEFT JOIN (
+    -- pre-aggregazione: un allergene concat per id_item, evita di moltiplicare le righe dell'ordine
+    SELECT 
+        relazione_allergeni_item.id_item,
+        GROUP_CONCAT(DISTINCT allergene.nome_allergene ORDER BY allergene.nome_allergene SEPARATOR ', ') AS lista_allergeni
+    FROM relazione_allergeni_item
+    JOIN allergene ON allergene.id_allergene = relazione_allergeni_item.id_allergene
+    GROUP BY relazione_allergeni_item.id_item
+) AS allergeni_item 
+    ON allergeni_item.id_item = item_menu.id_item
+JOIN relazione_stato_ordine 
+    ON relazione_stato_ordine.id_ordine = ordine.id_ordine
+JOIN stato_conto 
+    ON stato_conto.id_stato = relazione_stato_ordine.id_stato";
 
-     public function __construct(private PDO $pdo){}
+     private const API_TOT_GROUP_ORDER = "
+GROUP BY 
+    ordine.id_ordine,
+    relazione_ordine_item.id_comanda_dettaglio,
+    item_menu.id_item,
+    relazione_ordine_item.id_momento,
+    stato_conto.nome_stato
+ORDER BY 
+    ordine.id_ordine,
+    relazione_ordine_item.id_momento,
+    item_menu.tipo";
+
+    private function buildOrdiniQuery(string $filter = ''): string
+    {
+        return self::API_TOT_BASE_QUERY . ($filter ? " WHERE " . $filter : '') . self::API_TOT_GROUP_ORDER;
+    }
+
+   
      //ordin COLLEGATE E NON AI TAVOLI
      public function visualizzaTuttiGliOrdini():?array
      {
-        $stmt =$this->pdo->prepare(self::API_TOT_QUERY);
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery());
         $stmt->execute();
         return $stmt->fetchAll() ?:null;
      }
     
      public function visualizzaUnOrdine(int $id_ordine):?array
      {
-        $stmt =$this->pdo->prepare(self::API_TOT_QUERY . ' WHERE data_e_ora >= CURDATE() AND id_ordine = :id_ordine');
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_ordine = :id_ordine'));
         $stmt->execute(['id_ordine' => $id_ordine]);
         return $stmt->fetchAll() ?:null;
      }
     
      public function visualizzaTuttiGliOrdiniOggi():?array
      {
-        $stmt =$this->pdo->prepare(self::API_TOT_QUERY . ' WHERE data_e_ora >= CURDATE()');
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE()'));
         $stmt->execute();
         return $stmt->fetchAll() ?:null;
      }
 
      public function visualizzaTuttiGliOrdiniDiIeri():?array
      {
-        $stmt =$this->pdo->prepare(self::API_TOT_QUERY . ' WHERE data_e_ora < CURDATE()');
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora < CURDATE()'));
         $stmt->execute();
         return $stmt->fetchAll() ?:null;
      }
 
      public function visualizzaTuttiGliOrdiniStato(int $id_stato):?array
      {
-        $stmt =$this->pdo->prepare(self::API_TOT_QUERY . ' WHERE data_e_ora >= CURDATE() AND id_stato = :id_stato');
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_stato = :id_stato'));
         $stmt->execute(['id_stato' => $id_stato]);
         return $stmt->fetchAll() ?:null;
      }
      public function visualizzaTuttiGliOrdiniMomento(int $id_momento):?array
      {
-        $stmt =$this->pdo->prepare(self::API_TOT_QUERY . ' WHERE data_e_ora >= CURDATE() AND id_momento = :id_momento');
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_stato = 1 AND id_momento = :id_momento'));
         $stmt->execute(['id_momento' => $id_momento]);
         return $stmt->fetchAll() ?:null;
      }
@@ -60,7 +120,7 @@ class OrdiniRepositories extends BaseRepositories {
 
      public function visualizzaIlMomentoDiUnOrdine(int $id_ordine,int $id_momento):?array
      {
-        $stmt =$this->pdo->prepare(self::API_TOT_QUERY . ' WHERE data_e_ora >= CURDATE() AND id_ordine = :id_ordine AND id_momento = :id_momento');
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_ordine = :id_ordine AND id_momento = :id_momento'));
         $stmt->execute([
             'id_momento' => $id_momento,
             'id_ordine' => $id_ordine
@@ -68,37 +128,23 @@ class OrdiniRepositories extends BaseRepositories {
         return $stmt->fetchAll() ?:null;
      }
 
-     public function visualizzaItemDiUnOrdine(int $id_ordine):?array
+     public function visualizzaTipoItemDiUnOrdine(int $id_ordine, Tipo $tipo):?array
      {
-        $stmt =$this->pdo->prepare('SELECT item FROM api_tot WHERE data_e_ora >= CURDATE() AND id_ordine = :id_ordine');
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_ordine = :id_ordine AND tipo = :tipo'));
         $stmt->execute([
-            'id_ordine' => $id_ordine
+            'id_ordine' => $id_ordine,
+            'tipo' => $tipo->value
         ]);
         return $stmt->fetchAll() ?:null;
      }
 
-     public function visualizzaBevandeDiUnOrdine(int $id_ordine):?array
-     {
-        $stmt =$this->pdo->prepare('SELECT bevande FROM api_tot WHERE data_e_ora >= CURDATE()  AND id_ordine = :id_ordine ');
-        $stmt->execute([
-            'id_ordine' => $id_ordine
-        ]);
-        return $stmt->fetchAll() ?:null;
-     }
 
-     public function visualizzaOrdiniTavoloAperto(int $id_tavolo, int $id_stato):?array
-     {
-        $stmt =$this->pdo->prepare(self::API_TOT_QUERY . ' WHERE data_e_ora >= CURDATE() AND id_stato = :id_stato AND id_tavolo = :id_tavolo');
-        $stmt->execute([
-            'id_tavolo' => $id_tavolo,
-            'id_stato' => $id_stato
-        ]);
-        return $stmt->fetchAll() ?:null;
-     }
+
+    
 
      public function visualizzaOrdiniTavoloPerModifica(int $id_ordine):?array
      {
-        $stmt =$this->pdo->prepare('SELECT * FROM dettaglio_ordini_tavoli WHERE id_ordine = :id_ordine');
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_ordine = :id_ordine'));
         $stmt->execute([
             'id_ordine' => $id_ordine
         ]);
@@ -106,58 +152,54 @@ class OrdiniRepositories extends BaseRepositories {
      }
  
 
-     // transazioni per evitare il rollback
-      public function inTransaction(): bool {
-         return $this->pdo->inTransaction();
-      }
-
-      public function iniziaTransazione(): void {
-         if (!$this->pdo->inTransaction()) { // evita "There is already an active transaction"
-            $this->pdo->beginTransaction();
-         }
-      }
-
-      public function confermaTransazione(): void {
-         if ($this->pdo->inTransaction()) { // evita errori se non c'è nulla da confermare
-            $this->pdo->commit();
-         }
-      }
-
-      public function annullaTransazione(): void {
-         if ($this->pdo->inTransaction()) { // evita "There is no active transaction"
-            $this->pdo->rollBack();
-         }
-      }
-        
      
                  //INSERIMENTI
 
-    public function relazioneOrdineTavolo(int $id_ordine, array $tavoli):bool{
-
-        
-        //la js dovra controllare se in quel giorno il tavolo è disponibile per la ordine
-        //prevedo che i tavoli siano un array in modo che posso selezionarlo 1 o più
-        //dovrà controllare che l'ora di accesso si superiore alle ordine
-        //nel conto dovro solo inviare il valore da ordin, si/no
-          // FIX: prepare fuori dal loop (PDO permette riuso dello stesso prepared statement)
-        $stmt = $this->pdo->prepare('INSERT INTO ordine_tavolo (id_ordine, id_tavolo) VALUES (:id_ordine, :id_tavolo)');
- 
-        $righeInserite = 0;
-        foreach ($tavoli as $id_tavolo) {
-            $stmt->execute([
-                'id_ordine' => $id_ordine,
-                'id_tavolo' => $id_tavolo
-            ]);
-            $righeInserite += $stmt->rowCount();
+public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
+    {
+        if (count($tavoli) === 0) {
+            return false;
         }
-        // FIX: true solo se TUTTI i tavoli sono stati inseriti correttamente
-        return $righeInserite === count($tavoli);
+
+        $commitHere = false;
+        if (!$this->inTransaction()) {
+            $this->iniziaTransazione();
+            $commitHere = true;
+        }
+
+        $stmt = $this->pdo->prepare('INSERT INTO ordine_tavolo (id_ordine, id_tavolo) VALUES (:id_ordine, :id_tavolo)');
+        $righeInserite = 0;
+
+        try {
+            foreach ($tavoli as $id_tavolo) {
+                $stmt->execute([
+                    'id_ordine' => $id_ordine,
+                    'id_tavolo' => $id_tavolo
+                ]);
+                $righeInserite += $stmt->rowCount();
+            }
+
+            if ($righeInserite !== count($tavoli)) {
+                throw new \RuntimeException('Inserimento tavoli ordine incompleto');
+            }
+
+            if ($commitHere) {
+                $this->confermaTransazione();
+            }
+
+            return true;
+        } catch (\Throwable $e) {
+            if ($commitHere && $this->inTransaction()) {
+                $this->annullaTransazione();
+            }
+            throw $e;
+        }
     }
 
  
     public function relazioneOrdineStato(int $id_ordine, int $id_stato):bool{
 
-        $stmt = $this->pdo->prepare('INSERT INTO  stato_ordine (id_ordine, id_stato) VALUES (:id_ordine, :id_stato)');
+        $stmt = $this->pdo->prepare('INSERT INTO  relazione_stato_ordine (id_ordine, id_stato) VALUES (:id_ordine, :id_stato)');
         $stmt->execute([
             'id_ordine'=>$id_ordine,
             'id_stato'=>$id_stato
@@ -177,14 +219,15 @@ class OrdiniRepositories extends BaseRepositories {
 
      
 
-     public function inserisciRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita): bool
+     public function inserisciRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita, ?string $note = null): bool
      {
-        $stmt = $this->pdo->prepare('INSERT INTO relazione_ordine_item (id_ordine, id_item, id_momento, quantita) VALUES (:id_ordine, :id_item, :id_momento, :quantita)');
+        $stmt = $this->pdo->prepare('INSERT INTO relazione_ordine_item (id_ordine, id_item, id_momento, quantita, note) VALUES (:id_ordine, :id_item, :id_momento, :quantita, :note)');
         $stmt->execute([
             'id_ordine' => $id_ordine,
             'id_item' => $id_item,
             'id_momento' => $id_momento,
             'quantita' => $quantita,
+            'note' => $note,
         ]);
         return $stmt->rowCount() > 0;
      }
@@ -230,7 +273,7 @@ class OrdiniRepositories extends BaseRepositories {
      //elimana la relazione quando voglio cancellare l'ordine (per esempio se è sbagliato)
      public function eliminaRelazioneOrdineStato(int $id_ordine):bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM stato_ordine WHERE id_ordine = :id_ordine');
+        $stmt = $this->pdo->prepare('DELETE FROM relazione_stato_ordine WHERE id_ordine = :id_ordine');
         return $stmt->execute([
             'id_ordine' => $id_ordine
         ]);
@@ -259,7 +302,7 @@ class OrdiniRepositories extends BaseRepositories {
      //nel service deve inviare anche il conto allo scontrino e chiudersi, poi automaticamnete gli ordini di "ieri" saranno cancellati e inseriti nello storico
      public function aggiornaRelazioneOrdineStato(int $id_ordine, int $id_stato):bool
      {
-        $stmt = $this->pdo->prepare('UPDATE stato_ordine SET id_stato = :id_stato WHERE id_ordine = :id_ordine');
+        $stmt = $this->pdo->prepare('UPDATE relazione_stato_ordine SET id_stato = :id_stato WHERE id_ordine = :id_ordine');
         $stmt->execute([
             'id_ordine' => $id_ordine,
             'id_stato' => $id_stato
@@ -285,7 +328,7 @@ class OrdiniRepositories extends BaseRepositories {
       // viene gestita un livello più in alto, nel Service, perché lì
       // viene chiamata insieme ad aggiornaOrdine() e devono essere atomiche insieme
       $this->eliminaRelazioneOrdineTavolo($id_ordine);
-      $esito = $this->relazioneOrdioneTavolo($id_ordine, $tavoli);
+      $esito = $this->relazioneOrdineTavolo($id_ordine, $tavoli);
 
       if (!$esito) {
          // lancia eccezione invece di tornare false ->
