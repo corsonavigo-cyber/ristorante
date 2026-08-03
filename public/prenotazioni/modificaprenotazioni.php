@@ -34,7 +34,7 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
 
 
         <fieldset>
-            <legend>Vuoi assegnare subito la prenotazione a un tavolo? </legend>
+            <legend>Attivare la Prenotazione? </legend>
 
             <label><input type="radio" id="attiva-si" name="attiva" value=1> Sì</label>
             <label><input type="radio" id="attiva-no" name="attiva" value=0> No</label>

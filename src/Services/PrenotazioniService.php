@@ -331,7 +331,6 @@ class PrenotazioniService {
             $this->prenotazioniRepo->aggiornaPrenotazione( $id_prenotazione, $nome_prenotazione, $ora_prenotazione,$data_in_prenotazione, $attiva, $numero_persone);
             
             
-            // se questa lancia RuntimeException, va dritta nel catch sotto
             $this->prenotazioniRepo->aggiornaTavoloPrenotazione($id_prenotazione, $tavoli);
 
             $this->prenotazioniRepo->confermaTransazione(); // entrambe le query confermate insieme

@@ -34,9 +34,27 @@ async function caricaTavoli (){
     </div>`).join('');
     tavoli.forEach(tavolo =>  caricaPrenotazioniTavolo(tavolo.id_tavolo));
 }
+
+const oraInMinuti = (ora) => {
+    const [ore, minuti] = ora.split(":").map(Number);
+    return ore * 60 + minuti;
+};
+
+const adesso = new Date();
+const minutiAttuali = adesso.getHours() * 60 + adesso.getMinutes();
+
+const fasceOrarie = [
+    { inizio: "12:00", fine: "15:00" },
+    { inizio: "19:00", fine: "23:30" }
+];
+
+const fasciaLavoro = fasceOrarie.find(fascia =>
+    minutiAttuali >= oraInMinuti(fascia.inizio) &&
+    minutiAttuali <= oraInMinuti(fascia.fine)
+);
 //da inserire carica ordini su tavololo, se c'è un ordine la prenotazione viene disattivata automaticamente
 async function caricaPrenotazioniTavolo(id_tavolo){
-   
+    console.log("ciaoooooooo");
     const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {
             type: 'tavolo',
             id: id_tavolo
@@ -44,8 +62,12 @@ async function caricaPrenotazioniTavolo(id_tavolo){
     const contenitore = document.querySelector(`#prenotato[data-id-tavolo="${id_tavolo}"]`);
     if (!contenitore) return;
 
-    const prenotazioniOggi = prenotazioniCollegate.filter(prenotazione=> prenotazione.data_in_prenotazione === Utilis.today());  
-
+const prenotazioniOggi = prenotazioniCollegate.filter(prenotazione =>
+    prenotazione.data_in_prenotazione === Utilis.today() &&
+    fasciaLavoro &&
+    oraInMinuti(prenotazione.ora_prenotazione) >= oraInMinuti(fasciaLavoro.inizio) &&
+    oraInMinuti(prenotazione.ora_prenotazione) <= oraInMinuti(fasciaLavoro.fine)
+);
     if (prenotazioniOggi.length > 0){
         contenitore.innerHTML = prenotazioniOggi.map(p => `
             <h4 class="comment"><b>${p.nome_prenotazione}</b></h4>
@@ -58,7 +80,11 @@ async function caricaPrenotazioniTavolo(id_tavolo){
 
         `).join('');
     } else {
-        contenitore.innerHTML = `<h4>LIBERO</h4>`;
+        contenitore.innerHTML = 
+        `<h4>LIBERO</h4>
+        <a href="../prenotazioni/inserisciprenotazioni.php? class="btn-inserisci-prenotazione">+ Prenotazione</a>
+
+        `;
     }
 }
 

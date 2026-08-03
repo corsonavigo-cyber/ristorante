@@ -47,7 +47,7 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
         <button type="button" class="btn-inserisci-prenotazione" >Inserisci</button>
      </form>
    </div>
-   <a class="btn" href="gestioneprenotazioni.php">Torna alla Gestione delle Prenotazioni</a>
+   <a class="btn" href="../tavoli/gestionetavoli.php">Alla Visualizzazione dei Tavoli</a>
 
   </div>
 <script type="module" src="/ristorante/public/assets/js/prenotazioni/inserisciPrenotazione.js" defer></script>    

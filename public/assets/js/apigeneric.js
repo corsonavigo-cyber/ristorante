@@ -24,12 +24,15 @@ export function apiPost(urlApi, payload) {
     });
 }
 
-export function apiPut(urlApi, elemento, payload) {
-    const id = leggiId(elemento,payload);
+export function apiPut(urlApi, type = "", elemento, payload) {
+    const id = leggiId(elemento, payload);
+    const params = new URLSearchParams({ id });
 
-    return richiesta(`${urlApi}?id=${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+    if (type) params.set("type", type);
+
+    return richiesta(`${urlApi}?${params}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     });
 }

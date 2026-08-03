@@ -10,30 +10,37 @@ import {
 
 const API = '/ristorante/api/prenotazioni.php';
 const API_tavoli = '/ristorante/api/tavoli.php';
+const id_arrivato = new URLSearchParams(window.location.search).get('id');
+
+document.addEventListener('DOMContentLoaded', precaricaFormModificaPrenotazione);
+
+document.addEventListener('DOMContentLoaded', preloadTavoliForm(API_tavoli));
+document.addEventListener('click', modificaPrenotazioneClick);
+document.addEventListener('input', initModificaPrenotazione);
 
 export async function initModificaPrenotazione() {
   if (!API || !API_tavoli) {
     throw new Error('API o API_tavoli non definite');
   }
-
-  await preloadTavoliForm(API_tavoli);
-  await precaricaFormModificaPrenotazione(API);
-
-  const runCheck = async () => {
+    const runCheck = async () => {
     const tavoliSelezionati = getSelectedTavoli();
-    await controllaTavoloDataDisponibile(API, tavoliSelezionati);
+    await controllaTavoloDataDisponibile(API, tavoliSelezionati,id_arrivato);
     await controllaPostiTavoloDisponibili(tavoliSelezionati);
   };
 
   attachTavoliChange(runCheck);
   attachPrenotazioneFieldListeners(runCheck);
-  document.addEventListener('click', modificaPrenotazioneClick);
 }
 
-async function precaricaFormModificaPrenotazione(API) {
+let inizialized = false;
+
+async function precaricaFormModificaPrenotazione() {
+  console.log('ciao')
+  if(inizialized) return console.log('pagina già inizializzata');
   const id = new URLSearchParams(window.location.search).get('id');
   if (!id) return;
-
+  inizialized = true;
+  console.log(id)
   const prenotazione = await API_tav_function.apiGet(API, { type: 'prenotazioni', id });
   if (!prenotazione) return;
 
@@ -91,10 +98,10 @@ async function modificaPrenotazioneClick(e) {
     };
 
     const type = 'prenotazioni_tavolo';
-    await API_tav_function.apiPut(`${API}?type=${type}`, btn, body);
+    await API_tav_function.apiPut(API,type, btn, body);
 
     alert('Prenotazione modificata con successo!');
-    window.location.href = 'gestioneprenotazioni.php';
+    window.location.href = '../dashboard.php';
   } catch (errore) {
     console.error(errore);
     alert(errore.message);

@@ -1,3 +1,7 @@
 [2026-07-31 12:02:04] [CANCELLATA] Prenotazione id 5 (Alessandro Neri) rimossa
 [2026-07-31 14:13:32] [CANCELLATA] Prenotazione 1 : eliminata con successo dal tavolo
 [2026-07-31 14:13:32] [NON PRESENTATI] Prenotazione 1 : annullata con successo 
+[2026-08-03 11:03:29] [SPOSTATA] Prenotazione 9: modificata con successo sia il tavolo che la prenotazione
+[2026-08-03 11:04:59] [SPOSTATA] Prenotazione 9: modificata con successo sia il tavolo che la prenotazione
+[2026-08-03 11:33:03] [EFFETTUATA] Prenotazione inserita correttamente id_prenotazione 21 sul tavolo 6
+[2026-08-03 11:34:44] [EFFETTUATA] Prenotazione inserita correttamente id_prenotazione 22 sul tavolo 6

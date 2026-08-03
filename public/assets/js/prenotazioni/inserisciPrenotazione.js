@@ -11,11 +11,12 @@ import {
 const API = '/ristorante/api/prenotazioni.php';
 const API_tavoli = '/ristorante/api/tavoli.php';
 
+
+document.addEventListener('DOMContentLoaded', preloadTavoliForm(API_tavoli));
+document.addEventListener('click', inserisciPrenotazioneClick);
+document.addEventListener('input', initInserisciPrenotazione);
+
 export async function initInserisciPrenotazione() {
-
-
-  await preloadTavoliForm(API_tavoli);
-
   const runCheck = async () => {
     const tavoliSelezionati = getSelectedTavoli();
     await controllaTavoloDataDisponibile(API, tavoliSelezionati);
@@ -24,7 +25,6 @@ export async function initInserisciPrenotazione() {
 
   attachTavoliChange(runCheck);
   attachPrenotazioneFieldListeners(runCheck);
-  document.addEventListener('click', inserisciPrenotazioneClick);
 }
 
 async function inserisciPrenotazioneClick(e) {
@@ -79,7 +79,7 @@ async function inserisciPrenotazioneClick(e) {
       ? 'Prenotazione inserita con successo nel tavolo!'
       : 'Prenotazione inserita con successo, ancora non è stato assegnato nessun tavolo!');
 
-    window.location.href = 'gestioneprenotazioni.php';
+    window.location.href = '../tavoli/gestionetavoli.php';
   } catch (errore) {
     console.error(errore);
     alert(errore.message);

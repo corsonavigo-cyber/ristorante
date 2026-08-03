@@ -14,6 +14,7 @@ export async function erroreRisposta(risposta){
 }
 
 export function leggiId(elemento, params = {}){
+    console.log(elemento);
     const idDalDataset = elemento.dataset.id;
     const idDalParams = params.id;
 
@@ -21,7 +22,8 @@ export function leggiId(elemento, params = {}){
         throw new Error('id non trovato nel dataset dell\'elemento passato');
     }
 
-    if (idDalParams !== undefined && String(idDalParams) !== String(idDalDataset)) {
+    if (idDalParams && String(idDalParams) !== String(idDalDataset)) {
+        console.log(idDalParams, typeof(idDalParams) , idDalDataset, typeof(idDalDataset));
         throw new Error('L\'id nel dataset e quello nei params non coincidono');
     }
 

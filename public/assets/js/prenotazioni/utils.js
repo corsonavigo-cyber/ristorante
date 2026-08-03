@@ -43,10 +43,7 @@ export function attachPrenotazioneFieldListeners(runCheck) {
 }
 
 export async function preloadTavoliForm(apiTavoli) {
-  if (!apiTavoli) {
-    throw new Error('API_tavoli non definita');
-  }
-
+  
   const data = await API_tav_function.apiGet(apiTavoli);
   const lavagna = document.getElementById('tavoli_checkbox');
   if (!lavagna) return data;
@@ -68,7 +65,7 @@ export async function preloadTavoliForm(apiTavoli) {
   return data;
 }
 
-export async function controllaTavoloDataDisponibile(apiPrenotazioni, tavoliSelezionati) {
+export async function controllaTavoloDataDisponibile(apiPrenotazioni, tavoliSelezionati, id_arrivato) {
   const avviso = document.getElementById('avviso');
   const sezione = document.querySelector('#controllo');
   const da_inserire_data = document.getElementById('data-in-prenotazione');
@@ -97,6 +94,7 @@ export async function controllaTavoloDataDisponibile(apiPrenotazioni, tavoliSele
 
   const conflitto = prenotazioni.some(p => {
     if (!p.id_tavoli) return false;
+    if (id_arrivato) return false;
 
     const tavoliPrenotati = String(p.id_tavoli)
       .split(',')
