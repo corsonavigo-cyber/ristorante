@@ -98,7 +98,7 @@ async function modificaPrenotazioneClick(e) {
     };
 
     const type = 'prenotazioni_tavolo';
-    await API_tav_function.apiPut(API,type, btn, body);
+    await API_tav_function.apiPut(API,btn, body,type);
 
     alert('Prenotazione modificata con successo!');
     window.location.href = '../dashboard.php';

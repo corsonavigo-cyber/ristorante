@@ -1,20 +1,17 @@
-import * as API_tav_function from '../apigeneric.js';
+import { apiGet } from '../apigeneric.js';
 
 export function today() {
     const d = new Date();
     return d.toISOString().split('T')[0]; // "2026-06-30"
 }
 
-export async function erroreRisposta(risposta){
-     if (!risposta.ok) {
-          //prendo la risposta json 
-          const json = await risposta.json().catch(()=>null);
-          throw new Error(json?.data ?? `Errore HTTP ${risposta.status}`);
-        }
+export async function erroreRisposta(risposta) {
+    const json = await risposta.json().catch(() => null);
+    return new Error(json?.data ?? `Errore HTTP ${risposta.status}`);
 }
 
 export function leggiId(elemento, params = {}){
-    console.log(elemento);
+    if (!elemento) throw new Error('Elemento non trovato per leggere l\'id');
     const idDalDataset = elemento.dataset.id;
     const idDalParams = params.id;
 

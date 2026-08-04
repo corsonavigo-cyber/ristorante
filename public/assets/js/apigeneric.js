@@ -6,9 +6,9 @@ async function richiesta(url, options = {}) {
     if (!risposta.ok) {
         throw await erroreRisposta(risposta);
     }
-
-    const json = await risposta.json();
-    return json.data;
+    //fixato da json a text
+    const testo = await risposta.text();
+    return testo ? JSON.parse(testo).data : null;
 }
 
 export function apiGet(urlApi, params = {}) {
@@ -24,7 +24,7 @@ export function apiPost(urlApi, payload) {
     });
 }
 
-export function apiPut(urlApi, type = "", elemento, payload) {
+export function apiPut(urlApi,elemento, payload, type = "") {
     const id = leggiId(elemento, payload);
     const params = new URLSearchParams({ id });
 

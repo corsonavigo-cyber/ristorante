@@ -1,7 +1,7 @@
 <?php
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
-$title = 'Gestione Tavoli';
+$title = 'Gestione Comande';
 ?>
 
 <?php 
@@ -18,20 +18,19 @@ require_once __DIR__ . '/../bootstrap.php';
         <h2><?= $title ?></h2>
     </div>
     
-    
-    <a class="btn" href="inseriscitavolo.php">+ Nuovo Tavolo</a>
+    <a class="btn" href="inserisciordine.php">+ Nuova Comanda</a>
    
-    <div class="tavoli" id="lavagna_tavoli">
+    <div class="tavoli" id="lavagna_tavoli_ordini">
        
     </div>
     
 <script>
     const API = '/ristorante/api/tavoli.php';
-    const API_PRENOTAZIONI = '/ristorante/api/prenotazioni.php';
     const API_ORDINI = '/ristorante/api/ordini.php';
+    
 </script>
-<script type="module" src="/ristorante/public/assets/js/tavoli/gestiotavoli.js" defer></script>
-
+<script src="/ristorante/public/assets/js/tavoli.js" defer></script>    
+<script src="/ristorante/public/assets/js/ordiniprima.js" defer></script> 
 </main>
 
 <?php 

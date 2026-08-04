@@ -1,0 +1,76 @@
+import { apiGet } from '../apigeneric.js';
+import { config } from '../config.js';
+import { state } from './variabilistato.js';
+
+export async function caricaMomenti(){
+
+    if(state.momenti.length){
+
+        return state.momenti;
+
+    }
+
+    state.momenti = await apiGet(
+        config.API_ORDINI,
+        { type:"momenti" }
+    );
+
+    return state.momenti;
+
+}
+
+export async function disegnaMomenti() {
+
+    const contenitore = document.getElementById("momenti-servizio");
+    if (!contenitore) return;
+
+    const momenti = await caricaMomenti();
+
+    const attivo = momenti.find(
+        m => Number(m.id_momento) === Number(state.momentoAttivo)
+    );
+
+    contenitore.innerHTML = `
+        <div class="momenti-servizio">
+
+            ${
+                momenti.map(m=>`
+                    <div class="mmomenti">
+                        <button
+                            class="btn-momento ${Number(m.id_momento)===Number(state.momentoAttivo) ? 'attivo':''}"
+                            data-id="${m.id_momento}">
+                            ${m.nome_servizio}
+                        </button>
+                    </div>
+                `).join("")
+            }
+
+        </div>
+
+        ${
+            attivo
+                ? `<h3>${attivo.nome_servizio.toUpperCase()}</h3>`
+                : ""
+        }
+    `;
+}
+
+export function cambiaMomento(idMomento){
+
+    state.momentoAttivo = Number(idMomento);
+
+}
+
+export function controllaMomentoSelezionato(){
+
+    if(state.momentoAttivo == null){
+
+        alert("Seleziona un momento del servizio");
+
+        return false;
+
+    }
+
+    return true;
+
+}
