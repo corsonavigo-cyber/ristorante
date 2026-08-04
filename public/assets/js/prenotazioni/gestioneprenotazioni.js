@@ -2,10 +2,64 @@ import * as API_tav_function from '../apigeneric.js';
 import { today } from '../tavoli/utils.js';
 const APItavoli = '/ristorante/api/tavoli.php';
 
-document.addEventListener('DOMContentLoaded', elencoPrenotazioniNonAttive);
-document.addEventListener('DOMContentLoaded', elencoPrenotazioniFuture);
+document.addEventListener('DOMContentLoaded', elencoPrenotazioni);
 document.addEventListener('click', attivaPrenotazione);
 document.addEventListener('click', eliminaPrenotazioneClick);
+
+function getServizioDaOra(ora) {
+  if (!ora) return 'pranzo';
+  const [h] = ora.slice(0, 5).split(':').map(Number);
+  return h < 15 ? 'pranzo' : 'cena';
+}
+
+function renderPrenotazioneCard(prenotazione) {
+  return `
+    <div class="prenotazione">
+      ${prenotazione.nome_prenotazione},
+      numero persone: ${prenotazione.numero_persone},
+      ${prenotazione.numero_tavoli ? 'numero tavolo ' + prenotazione.numero_tavoli : 'Non Ancora Assegnata A Un Tavolo'},
+      ora ${prenotazione.ora_prenotazione} data ${prenotazione.data_in_prenotazione}
+      <button type="button" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli}" class="btn-attiva-prenotazione">Attiva Prenotazione</button>
+      <a href="./prenotazioni/modificaprenotazioni.php?id=${prenotazione.id_prenotazione}" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli ? prenotazione.id_tavoli : 0}" class="btn-modifica-prenotazione">Modifica Prenotazione</a>
+      <button class="btn-elimina-prenotazione" data-id="${prenotazione.id_prenotazione}">Elimina 🗑️</button>
+    </div>`;
+}
+
+function sortByOra(prenotazioni) {
+  return [...prenotazioni].sort((a, b) => a.ora_prenotazione.localeCompare(b.ora_prenotazione));
+}
+
+function renderSection(containerId, titolo, prenotazioni) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const pranzo = sortByOra(prenotazioni.filter(p => getServizioDaOra(p.ora_prenotazione) === 'pranzo'));
+  const cena = sortByOra(prenotazioni.filter(p => getServizioDaOra(p.ora_prenotazione) === 'cena'));
+
+  const renderGroup = (label, items) => `
+    <h3>${label}</h3>
+    ${items.length > 0 ? items.map(renderPrenotazioneCard).join('<br>') : '<p>Nessuna prenotazione in questa sezione.</p>'}
+  `;
+
+  container.innerHTML = `
+    <h2>${titolo}</h2>
+    ${renderGroup('Pranzo', pranzo)}
+    ${renderGroup('Cena', cena)}
+  `;
+}
+
+async function elencoPrenotazioni() {
+  const prenotazioni = await API_tav_function.apiGet(API_PRENOTAZIONI, { type: 'prenotazioni' });
+  const oggi = today();
+
+  const prenotazioniNonAttive = prenotazioni.filter(prenotazione => prenotazione.attiva === 0);
+  const prenotazioniDiOggi = prenotazioni.filter(prenotazione => prenotazione.attiva === 1 && prenotazione.data_in_prenotazione === oggi);
+  const prenotazioniFuture = prenotazioni.filter(prenotazione => prenotazione.attiva === 1 && prenotazione.data_in_prenotazione > oggi);
+
+  renderSection('lista_prenotazioni_non_attive', 'Prenotazioni non attive', prenotazioniNonAttive);
+  renderSection('lista_prenotazioni_oggi', 'Prenotazioni oggi', prenotazioniDiOggi);
+  renderSection('lista_prenotazioni_future_attive', 'Prenotazioni future', prenotazioniFuture);
+}
 
 
 export async function eliminaPrenotazioneClick(e){
@@ -114,44 +168,6 @@ export async function eliminaPrenotazioneClick(e){
         return false;
     }
 
-  }
-
-  async function elencoPrenotazioniNonAttive() {
-    const contentitore = document.getElementById('lista_prenotazioni_non_attive');
-    if (!contentitore) return;
-
-    const prenotazioni = await API_tav_function.apiGet(API_PRENOTAZIONI, {type : 'prenotazioni'});
-    const prenotazioni_non_attive = prenotazioni.filter(prenotazione => prenotazione.attiva === 0);
-    contentitore.innerHTML = prenotazioni_non_attive.map(prenotazione =>`
-       <p class="prenotazione">${prenotazione.nome_prenotazione}, numero persone :  ${prenotazione.numero_persone}, 
-       numero tavolo ${prenotazione.numero_tavoli}, ora ${prenotazione.ora_prenotazione} data ${prenotazione.data_in_prenotazione} <button type="button" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli}" class="btn-attiva-prenotazione">Attiva Prenotazione</button>
-      <a href="./prenotazioni/modificaprenotazioni.php?id=${prenotazione.id_prenotazione}" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli ? prenotazione.id_tavoli : 0} " class="btn-modifica-prenotazione">Modifica Prenotazione</a>
-
-       <button class="btn-elimina-prenotazione" data-id="${prenotazione.id_prenotazione}">Elimina 🗑️</button>
-`).join('<br>');
-    
-  }
-
-  
-  async function elencoPrenotazioniFuture() {
-    const contentitore = document.getElementById('lista_prenotazioni_future_attive');
-    if (!contentitore) return;
-
-    const prenotazioni = await API_tav_function.apiGet(API_PRENOTAZIONI, {type : 'prenotazioni'});
-    const tavoli = await API_tav_function.apiGet(APItavoli);
-
-    const prenotazioni_future = prenotazioni.filter(prenotazione => prenotazione.data_in_prenotazione > today());
-    contentitore.innerHTML = prenotazioni_future.map(prenotazione =>`
-       <p class="prenotazione">${prenotazione.nome_prenotazione}, numero persone :  ${prenotazione.numero_persone}, 
-         ${
-    prenotazione.numero_tavoli
-        ? 'numero tavolo' + prenotazione.numero_tavoli
-        : 'Non Ancora Assegnata A Un Tavolo ' }, ora ${prenotazione.ora_prenotazione} data ${prenotazione.data_in_prenotazione} 
-       <a href="./prenotazioni/modificaprenotazioni.php?id=${prenotazione.id_prenotazione}" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli ? prenotazione.id_tavoli : 0} " class="btn-modifica-prenotazione">Modifica Prenotazione</a>
-       
-      <button class="btn-elimina-prenotazione" data-id="${prenotazione.id_prenotazione}">Elimina 🗑️</button>
-`).join('<br>');
-    
   }
 
 async function tavoloGiaOccupato(id_tavolo) {

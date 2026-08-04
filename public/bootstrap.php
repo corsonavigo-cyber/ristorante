@@ -14,7 +14,7 @@ use App\Repositories\MenuRepositories;
 use App\Repositories\TavoloRepositories;
 use App\Repositories\UserRepositories;
 use App\Repositories\PrenotazioniRepositories;
-use App\Repositories\LeggiStoricoRepositories; /*
+use App\Repositories\LeggiStoricoRepositories;
 use App\Repositories\ScontrinoRepositories;
 use App\Repositories\OrdiniRepositories;
 
@@ -23,7 +23,7 @@ use App\Services\OrdiniService;
 use App\Services\ScontrinoService;
 use App\Services\StoricoOrdiniService;
 
-*/
+
 use App\Services\AuthService;
   
 use App\Services\TavoloService;
@@ -56,11 +56,11 @@ $leggistoricoRepository = new LeggiStoricoRepositories(
 $leggistoricoordiniRepository = new LeggiStoricoRepositories(
     dirname(__DIR__) . '/storage/logs/storicoordini.txt'
 );
-/*
+
 $ordiniRepository= new OrdiniRepositories($pdo);
 $scontrinoRepository= new ScontrinoRepositories($pdo);
 $storicoOrdini = new StoricoOrdiniService();
-*/
+
 //chiamo i service
 //scrittura
 $storicoPrenotazioni = new StoricoPrenotazioniService(); 
@@ -69,12 +69,11 @@ $storicoPrenotazioni = new StoricoPrenotazioniService();
 $authService = new AuthService($userRepository, $logger);
 $tavoloService= new TavoloService($tavoloRepository, $logger);
 $prenotazioniService= new PrenotazioniService($prenotazioniRepository, $logger,$storicoPrenotazioni,$pdo);
-$leggiStoricoService = new LeggiStoricoService($leggistoricoRepository); /*
+$leggiStoricoService = new LeggiStoricoService($leggistoricoRepository); 
 $leggiStoricoOrdiniService = new LeggiStoricoService($leggistoricoordiniRepository);
 $ordiniService = new OrdiniService($ordiniRepository,$logger,$storicoOrdini);
 $scontrinoService = new ScontrinoService($scontrinoRepository,$logger,$storicoOrdini);
-inserisco l'aurorizzazione nelle pagine
-
+/*
 $paginePubbliche = ['/login.php'];
 //serve a non includere login.php nelle pagine da autorizzare ed ad evitare il loop
 if (!in_array(basename($_SERVER['PHP_SELF']), array_map('basename', $paginePubbliche))) {

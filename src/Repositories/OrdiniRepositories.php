@@ -80,34 +80,43 @@ ORDER BY
     
      public function visualizzaUnOrdine(int $id_ordine):?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_ordine = :id_ordine'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('ordine.id_ordine = :id_ordine'));
         $stmt->execute(['id_ordine' => $id_ordine]);
+        return $stmt->fetchAll() ?:null;
+     }
+
+     public function visualizzaOrdiniTavoloStato(int $id_tavolo, int $id_stato):?array
+     {
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE() AND ordine_tavolo.id_tavolo = :id_tavolo AND relazione_stato_ordine.id_stato = :id_stato'));
+        $stmt->execute([
+            'id_tavolo' => $id_tavolo,
+            'id_stato' => $id_stato]);
         return $stmt->fetchAll() ?:null;
      }
     
      public function visualizzaTuttiGliOrdiniOggi():?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE()'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE()'));
         $stmt->execute();
         return $stmt->fetchAll() ?:null;
      }
 
      public function visualizzaTuttiGliOrdiniDiIeri():?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora < CURDATE()'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE()'));
         $stmt->execute();
         return $stmt->fetchAll() ?:null;
      }
 
      public function visualizzaTuttiGliOrdiniStato(int $id_stato):?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_stato = :id_stato'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE() AND relazione_stato_ordine.id_stato = :id_stato'));
         $stmt->execute(['id_stato' => $id_stato]);
         return $stmt->fetchAll() ?:null;
      }
      public function visualizzaTuttiGliOrdiniMomento(int $id_momento):?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_stato = 1 AND id_momento = :id_momento'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE() AND relazione_stato_ordine.id_stato = 1 AND relazione_ordine_item.id_momento = :id_momento'));
         $stmt->execute(['id_momento' => $id_momento]);
         return $stmt->fetchAll() ?:null;
      }
@@ -120,7 +129,7 @@ ORDER BY
 
      public function visualizzaIlMomentoDiUnOrdine(int $id_ordine,int $id_momento):?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_ordine = :id_ordine AND id_momento = :id_momento'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE() AND ordine.id_ordine = :id_ordine AND relazione_ordine_item.id_momento = :id_momento'));
         $stmt->execute([
             'id_momento' => $id_momento,
             'id_ordine' => $id_ordine
@@ -130,12 +139,12 @@ ORDER BY
 
      public function visualizzaTipoItemDiUnOrdine(int $id_ordine, Tipo $tipo):?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_ordine = :id_ordine AND tipo = :tipo'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE() AND ordine.id_ordine = :id_ordine AND item_menu.tipo = :tipo'));
         $stmt->execute([
             'id_ordine' => $id_ordine,
             'tipo' => $tipo->value
         ]);
-        return $stmt->fetchAll() ?:null;
+        return $stmt->fetchAll() ?: [];
      }
 
 
@@ -144,7 +153,7 @@ ORDER BY
 
      public function visualizzaOrdiniTavoloPerModifica(int $id_ordine):?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('data_e_ora >= CURDATE() AND id_ordine = :id_ordine'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('ordine.id_ordine = :id_ordine'));
         $stmt->execute([
             'id_ordine' => $id_ordine
         ]);
@@ -219,17 +228,17 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
 
      
 
-     public function inserisciRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita, ?string $note = null): bool
+     public function inserisciRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita, ?string $note = null): int
      {
         $stmt = $this->pdo->prepare('INSERT INTO relazione_ordine_item (id_ordine, id_item, id_momento, quantita, note) VALUES (:id_ordine, :id_item, :id_momento, :quantita, :note)');
-        $stmt->execute([
+        $relazione_item =  $stmt->execute([
             'id_ordine' => $id_ordine,
             'id_item' => $id_item,
             'id_momento' => $id_momento,
             'quantita' => $quantita,
             'note' => $note,
         ]);
-        return $stmt->rowCount() > 0;
+        return $relazione_item;
      }
 
 
@@ -280,18 +289,21 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
         
      }
 
-     public function eliminaRelazioneOrdineItemPerMomento(int $id_momento): bool
+     public function eliminaRelazioneOrdinePerMomento(int $id_ordine, int $id_momento): bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE id_momento = :id_momento');
+        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE id_momento = :id_momento AND id_ordine = :id_ordine');
         return $stmt->execute([
+            'id_ordine' => $id_ordine,
             'id_momento' => $id_momento
         ]);
      }
 
-     public function eliminaRelazioneOrdineItemPerItem(int $id_item): bool
+     public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_ordine,int $id_item, int $id_momento): bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE id_item = :id_item');
+        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE id_ordine = :id_ordine AND id_momento = :id_momento AND id_item = :id_item');
         return $stmt->execute([
+            'id_momento' => $id_momento,
+            'id_ordine' => $id_ordine,
             'id_item' => $id_item
         ]);
      }
@@ -353,7 +365,7 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
     }
 
 
-    public function aggiornaMomentoRelazioneOrdineItemByMomento(int $id_ordine, int $id_momento_vecchio, int $id_momento_nuovo): bool
+    public function aggiornaMomentoRelazioneOrdineMomento(int $id_ordine, int $id_momento_vecchio, int $id_momento_nuovo): bool
     {
         $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET id_momento = :id_momento_nuovo WHERE id_ordine = :id_ordine AND id_momento = :id_momento_vecchio');
         $stmt->execute([
@@ -366,11 +378,13 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
         
     
 
-    public function aggiornaQuantitaRelazioneOrdineItem(int $id_item, int $quantita): bool
+    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita): bool
     {
-        $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET quantita = :quantita WHERE id_item = :id_item');
+        $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET quantita = :quantita WHERE id_ordine = :id_ordine AND id_item = :id_item AND id_momento = :id_momento');
         $stmt->execute([
+            'id_ordine' => $id_ordine,
             'id_item' => $id_item,
+            'id_momento' => $id_momento,
             'quantita' => $quantita
         ]);
         return $stmt->rowCount() > 0;

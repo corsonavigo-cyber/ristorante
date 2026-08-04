@@ -13,9 +13,10 @@ require_once __DIR__ . '/bootstrap.php';
 <body>
     <h1>Dashboard sei loggatto!!</h1>
     <a href="menu/gestionemenuchevedonoiclienti.php">Gestione Menu Per I Clienti</a>
-    <h3>Lista Prenotazioni non Attive</h3>
+    
     <div id="lista_prenotazioni_non_attive"></div>
-    <h3>Lista Prenotazioni Future</h3>
+    <div id="lista_prenotazioni_oggi"></div>
+   
     <div id="lista_prenotazioni_future_attive"></div>
 </body>
 <script>
