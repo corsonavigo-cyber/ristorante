@@ -21,18 +21,16 @@ async function caricaTavoli (){
     //da aggiungere la visualizzazione delle prenotazioni e dei conti e delle comande
     lavagna.innerHTML = tavoli.map(tavolo => `
     <div class="tavolo" id="${tavolo.id_tavolo}">
-       <a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">✏️</a>
+       
+       <h3 class="comment"><b>Numero Tavolo ${tavolo.numero_tavolo}</b></h3><a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">✏️</a>
        <button type="button" class="btn-elimina" data-id="${tavolo.id_tavolo}">🗑️</button>
-       <h3 class="comment"><b>Numero Tavolo ${tavolo.numero_tavolo}</b></h3>
-
-       <p class="comment">Posti max ${tavolo.posti_max} prenotabili</p>
-       <p class="comment">Posti min ${tavolo.posti_min} prenotabili</p> 
+       <p class="comment">Posti max ${tavolo.posti_max} </p>
        <!--per visualizzazione in caso di tavolo prenotato-->
        <div class="tavolo" id="prenotato" data-id-tavolo="${tavolo.id_tavolo}">  </div> 
        <!--link AJAX per inviare la modifica tavolo-->
        
     </div>`).join('');
-    tavoli.forEach(tavolo =>  caricaPrenotazioniTavolo(tavolo.id_tavolo));
+    tavoli.forEach(tavolo =>  caricaElementiTavolo(tavolo.id_tavolo));
 }
 
 const oraInMinuti = (ora) => {
@@ -53,7 +51,7 @@ const fasciaLavoro = fasceOrarie.find(fascia =>
     minutiAttuali <= oraInMinuti(fascia.fine)
 );
 //da inserire carica ordini su tavololo, se c'è un ordine la prenotazione viene disattivata automaticamente
-async function caricaPrenotazioniTavolo(id_tavolo){
+async function caricaElementiTavolo(id_tavolo){
     
     const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {
             type: 'tavolo',
@@ -73,23 +71,37 @@ const prenotazioniOggi = prenotazioniCollegate.filter(prenotazione =>
     oraInMinuti(prenotazione.ora_prenotazione) >= oraInMinuti(fasciaLavoro.inizio) &&
     oraInMinuti(prenotazione.ora_prenotazione) <= oraInMinuti(fasciaLavoro.fine)
 );
-    if (prenotazioniOggi.length > 0){
+
+    const precedenza = ordiniCollegati.length > 0 ? 'ordine' : 'prenotazione';
+    if (precedenza === 'prenotazione') {
+        if(prenotazioniOggi.length <= 0){
+            return contenitore.innerHTML =`
+        <a href="../prenotazioni/inserisciprenotazioni.php?id=${id_tavolo} class="btn btn-inserisci-prenotazione">Prenota</a>
+        <h4>LIBERO</h4>
+        <a href="../ordini/inserisciordine.php?id=${id_tavolo} class="btn btn-inserisci-comanda">+Comanda</a>
+            `;
+        }
         contenitore.innerHTML = prenotazioniOggi.map(p => `
             <h4 class="comment"><b>${p.nome_prenotazione}</b></h4>
             <p class="comment">${p.numero_persone} persone</p>
             <p class="comment">Ora arrivo ${p.ora_prenotazione}</p>
             <p class="comment">${p.data_in_prenotazione}</p>
             <a class="btn" href="modificaprenotazione.php?id=${p.id_prenotazione}">Modifica ✏️</a>
-            <button class="btn-elimina-prenotazione" data-id="${p.id_prenotazione}">Elimina 🗑️</button>
-            <button class="btn-disattiva-prenotazione" data-id="${p.id_prenotazione}">Apri Ordine</button>
+            <button type="button" class="btn-elimina-prenotazione" data-id="${p.id_prenotazione}">Elimina 🗑️</button>
+            <button type="button" class="btn-disattiva-prenotazione" data-id="${p.id_prenotazione}">Apri Ordine</button>
 
         `).join('');
+        }
+    if (precedenza === 'ordine') {
+        contenitore.innerHTML = ordiniCollegati.map(o => `
+            <h4 class="comment"><b>Ordine Aperto</b></h4>
+            <p class="comment">Tavolo ${id_tavolo}</p>
+            <p class="comment">Stato: ${o.id_stato === 1 ? 'In corso' : 'Chiuso'}</p>
+            <a class="btn" href="../ordini/visualizzaordine.php?id=${o.id_ordine}">Visualizza Ordine</a>
+            <button type="button" class="btn-elimina-ordine" data-id="${o.id_ordine}">Elimina Ordine</button >
+        `).join('');
     } else {
-        contenitore.innerHTML = 
-        `
-        <a href="../prenotazioni/inserisciprenotazioni.php? class="btn-inserisci-prenotazione">Prenota</a>
-        <h4>LIBERO</h4>
-        `;
+       
     }
 }
 

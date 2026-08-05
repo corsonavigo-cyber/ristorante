@@ -17,8 +17,8 @@ require_once __DIR__ . '/../bootstrap.php';
     <div class="supporto-titolo">
         <h2><?= $title ?></h2>
     </div>
-    
-    
+    <a class="btn" href="../prenotazioni/inserisciprenotazioni.php">+ Prenotazione</a>
+    <a class="btn" href="../ordini/inserisciordine.php">+ Comanda</a>
     <a class="btn" href="inseriscitavolo.php">+ Nuovo Tavolo</a>
    
     <div class="tavoli" id="lavagna_tavoli">

@@ -27,6 +27,7 @@ class OrdiniRepositories extends BaseRepositories {
     item_menu.descrizione,
     item_menu.id_iva,
     allergeni_item.lista_allergeni,
+    relazione_stato_ordine.id_stato,
     stato_conto.nome_stato
 FROM ordine
 JOIN ordine_tavolo 
@@ -64,9 +65,15 @@ ORDER BY
     relazione_ordine_item.id_momento,
     item_menu.tipo";
 
-    private function buildOrdiniQuery(string $filter = ''): string
+    private function buildOrdiniQuery(string $filter = '', ?int $limit = null): string
     {
-        return self::API_TOT_BASE_QUERY . ($filter ? " WHERE " . $filter : '') . self::API_TOT_GROUP_ORDER;
+        $query = self::API_TOT_BASE_QUERY . ($filter ? " WHERE " . $filter : '') . self::API_TOT_GROUP_ORDER;
+
+        if ($limit !== null) {
+            $query .= " LIMIT {$limit}";
+        }
+
+        return $query;
     }
 
    
@@ -87,11 +94,14 @@ ORDER BY
 
      public function visualizzaOrdiniTavoloStato(int $id_tavolo, int $id_stato):?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE() AND ordine_tavolo.id_tavolo = :id_tavolo AND relazione_stato_ordine.id_stato = :id_stato'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery(
+            'DATE(ordine.data_e_ora) = CURDATE() AND ordine_tavolo.id_tavolo = :id_tavolo AND relazione_stato_ordine.id_stato = :id_stato',
+            1
+        ));
         $stmt->execute([
             'id_tavolo' => $id_tavolo,
             'id_stato' => $id_stato]);
-        return $stmt->fetchAll() ?:null;
+        return $stmt->fetch() ?:null;
      }
     
      public function visualizzaTuttiGliOrdiniOggi():?array
