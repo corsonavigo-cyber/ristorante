@@ -1,6 +1,7 @@
 export function attachDragAndDrop({
     cardSelector = '.item-card',
     dropzoneSelector = '.momento-dropzone',
+    getDragPayload,
     onDrop
 } = {}) {
     const cards = document.querySelectorAll(cardSelector);
@@ -9,11 +10,10 @@ export function attachDragAndDrop({
     cards.forEach(card => {
         card.addEventListener('dragstart', e => {
             card.classList.add('dragging');
-            e.dataTransfer.setData('text/plain', JSON.stringify({
-                itemId: card.dataset.itemId,
-                orderId: card.dataset.orderId,
-                momentoId: card.dataset.momentoId
-            }));
+            const payload = typeof getDragPayload === 'function'
+                ? getDragPayload(card)
+                : { ...card.dataset };
+            e.dataTransfer.setData('text/plain', JSON.stringify(payload));
             e.dataTransfer.effectAllowed = 'move';
         });
 

@@ -95,7 +95,7 @@ ORDER BY
      public function visualizzaOrdiniTavoloStato(int $id_tavolo, int $id_stato):?array
      {
         $stmt =$this->pdo->prepare($this->buildOrdiniQuery(
-            'DATE(ordine.data_e_ora) = CURDATE() AND ordine_tavolo.id_tavolo = :id_tavolo AND relazione_stato_ordine.id_stato = :id_stato',
+            'ordine.data_e_ora >= CURDATE() AND ordine.data_e_ora < CURDATE() + INTERVAL 1 DAY AND ordine_tavolo.id_tavolo = :id_tavolo AND relazione_stato_ordine.id_stato = :id_stato',
             1
         ));
         $stmt->execute([
@@ -241,14 +241,14 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
      public function inserisciRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita, ?string $note = null): int
      {
         $stmt = $this->pdo->prepare('INSERT INTO relazione_ordine_item (id_ordine, id_item, id_momento, quantita, note) VALUES (:id_ordine, :id_item, :id_momento, :quantita, :note)');
-        $relazione_item =  $stmt->execute([
+        $stmt->execute([
             'id_ordine' => $id_ordine,
             'id_item' => $id_item,
             'id_momento' => $id_momento,
             'quantita' => $quantita,
             'note' => $note,
         ]);
-        return $relazione_item;
+        return (int) $this->pdo->lastInsertId();
      }
 
 

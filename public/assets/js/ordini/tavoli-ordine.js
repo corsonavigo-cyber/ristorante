@@ -1,38 +1,57 @@
 import { apiGet, apiPost, apiPatch } from '../apigeneric.js';
-import { state } from './variabilistato.js';
-import { mostraAvviso } from '../utils.js';
+import { state,  CHIAVE_ORDINE } from './variabilistato.js';
 
 export function caricaOrdiniOggi() {
     return apiGet( API_ORDINI, { type: 'oggi' });
 }
 
-export async function controllaTavoloDisponibile(tavoliSelezionati, ordine) {
+export async function controllaTavoloDisponibile(tavoliSelezionati = []) {
     const avviso = document.getElementById("avviso");
     const sezione = document.querySelector('#controllo');
 
-    if (tavoliSelezionati.length === 0) {
-        mostraAvviso(sezione, avviso, "l'ordine ha bisogno di essere associato ad almeno un tavolo!");
+    if (!Array.isArray(tavoliSelezionati) || tavoliSelezionati.length === 0) {
+        controllaPostiOrdineTavolo(tavoliSelezionati);
         return false;
     }
 
     const ordiniOggi = await caricaOrdiniOggi();
     const tavoliGiaOccupati = ordiniOggi.filter(o =>
-    Number(o.id_ordine) !== Number(state.idOrdineInserito) &&
-    o.id_tavoli &&
-    tavoliSelezionati.some(id => o.id_tavoli.includes(id))
+        Number(o.id_ordine) !== Number(state.idOrdineInserito) &&
+        Array.isArray(o.id_tavoli) &&
+        tavoliSelezionati.some(id => o.id_tavoli.includes(id))
     );
 
-    if (!ordine) return tavoliGiaOccupati.length === 0;
-
-    const stessiTavoli =tavoliSelezionati.length === ordine.tavoli.length && tavoliSelezionati.every(t => ordine.tavoli.includes(t));
-    if (tavoliGiaOccupati.length > 0 || stessiTavoli) {
-        // FIX: "stessiTavoli > 0" nell'originale confrontava un booleano con un numero (sempre falso) — ora è il booleano diretto
+    console.log("Tavoli già occupati:", tavoliGiaOccupati);
+    const stessiTavoli = tavoliGiaOccupati.some(o =>
+        Array.isArray(o.id_tavoli) && tavoliSelezionati.every(t => o.id_tavoli.includes(t))
+    );
+    if (stessiTavoli) {
         mostraAvviso(sezione, avviso, "Questo tavolo ha già un ordine attivo!");
         return false;
     }
 
     return true;
 }
+export async function precaricaTavoliForm(id_tavolo_arrivato_url) {
+    // legge l'id dall'URL: modificaprenotazione.php?id=5
+    const risposta = await fetch(`${API}`);
+    const json = await risposta.json();
+    const data = json.data; // ← prendi il primo elemento
+       
+    const lavagna = document.getElementById('tavoli_checkbox');
+   
+    id_tavolo_arrivato_url= new URLSearchParams(window.location.search).get('id');
+    if(id_tavolo_arrivato_url && state.confirmGiaChiesto){
+        await controllaPostiTavoloDisponibili();
+        return;
+    }
+    lavagna.innerHTML = data.map(tavolo => `
+       <li><label><input type="checkbox" name="tavoliSelezionati[]" id="id_${tavolo.id_tavolo}" value="${tavolo.id_tavolo}" data-posti="${tavolo.posti_max}">Numero Tavolo ${tavolo.numero_tavolo} posti ${tavolo.posti_max}</label></li>`).join('');
+    console.log("ID Tavolo arrivato dall'URL:", parseInt(id_tavolo_arrivato_url));
+    await selezionatavolo(id_tavolo_arrivato_url);
+    
+}
+
 
 export function controllaPostiOrdineTavolo(tavoliSelezione) {
     // FIX: sezione/avviso non erano definite nell'originale — mancava questo blocco

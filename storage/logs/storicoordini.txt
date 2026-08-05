@@ -1,0 +1,1 @@
+[2026-08-05 15:23:33] [APERTO] Ordine inserito correttamente id_ordine 5 sul tavolo: inserito con successo

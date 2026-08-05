@@ -26,73 +26,59 @@ function recuperaItem(idItem) {
 
 export function aggiornaVoceComanda(
     idItem,
-    quantita,
-    note = ""
+    { quantita, note, variazione } = {}
 ) {
-
     const indice = trovaVoce(idItem);
     const item = recuperaItem(idItem);
 
     if (!item) {
-        console.warn("Item non trovato", idItem);
+        console.warn('Item non trovato', idItem);
         return;
     }
 
-    if (quantita <= 0) {
+    const quantitaAttuale = indice === -1
+        ? 0
+        : Number(state.comanda[indice].quantita);
 
+    const nuovaQuantita = Number.isFinite(Number(variazione))
+        ? quantitaAttuale + Number(variazione)
+        : Number(quantita);
+
+    if (!Number.isFinite(nuovaQuantita)) {
+        console.warn('Quantità non valida', quantita);
+        return;
+    }
+
+    if (nuovaQuantita <= 0) {
         if (indice !== -1) {
             state.comanda.splice(indice, 1);
         }
+    } else if (indice !== -1) {
+        state.comanda[indice].quantita = nuovaQuantita;
 
-    } else {
-
-        const elemento = recuperaAnagrafica(tipo, id);
-
-        if (elemento) {
-            nome = elemento.nome;
-            prezzo = elemento.prezzo;
-        }
-
-        if (indice !== -1) {
-
-            state.comanda[indice].quantita = quantita;
+        if (note !== undefined) {
             state.comanda[indice].note = note;
-
-        } else {
-
-            state.comanda.push({
-
-                id_item: item.id_item,
-                tipo: item.tipo,
-                categoria: item.categoria,
-
-                nome: item.nome,
-
-                prezzo: Number(item.prezzo),
-
-                id_momento: state.momentoAttivo,
-
-                quantita,
-
-                note,
-
-                id_ordine: state.idOrdineInserito
-
-            });
-
         }
-
+    } else {
+        state.comanda.push({
+            id_item: item.id_item,
+            tipo: item.tipo,
+            categoria: item.categoria,
+            nome: item.nome,
+            prezzo: Number(item.prezzo),
+            id_momento: state.momentoAttivo,
+            quantita: nuovaQuantita,
+            note: note ?? '',
+            id_ordine: state.idOrdineInserito
+        });
     }
 
     salvaOrdine(state.idOrdineInserito, false);
-
     disegnaPreComanda();
-
     aggiornaInputPerNuovoMomento();
-
-    console.log(state.comanda);
-
 }
+
+ 
 
 export function aggiornaInputPerNuovoMomento() {
 

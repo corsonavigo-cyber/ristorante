@@ -117,7 +117,7 @@ export async function controllaTavoloDataDisponibile(apiPrenotazioni, tavoliSele
   return true;
 }
 
-export async function controllaPostiTavoloDisponibili(tavoliSelezionati) {
+export async function controllaPostiTavoloDisponibili(tavoliSelezionati = []) {
   const avviso = document.getElementById('avviso1');
   const sezione = document.querySelector('#controllo1');
   const numeroPersoneInput = document.getElementById('numero-persone');

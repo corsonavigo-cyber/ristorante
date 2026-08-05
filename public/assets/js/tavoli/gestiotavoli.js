@@ -76,9 +76,9 @@ const prenotazioniOggi = prenotazioniCollegate.filter(prenotazione =>
     if (precedenza === 'prenotazione') {
         if(prenotazioniOggi.length <= 0){
             return contenitore.innerHTML =`
-        <a href="../prenotazioni/inserisciprenotazioni.php?id=${id_tavolo} class="btn btn-inserisci-prenotazione">Prenota</a>
+        <a href="../prenotazioni/inserisciprenotazioni.php?id=${id_tavolo}" class="btn btn-inserisci-prenotazione">Prenota</a>
         <h4>LIBERO</h4>
-        <a href="../ordini/inserisciordine.php?id=${id_tavolo} class="btn btn-inserisci-comanda">+Comanda</a>
+        <a href="../ordini/inserisciordine.php?id=${id_tavolo}" class="btn btn-inserisci-comanda">+Comanda</a>
             `;
         }
         contenitore.innerHTML = prenotazioniOggi.map(p => `

@@ -54,7 +54,7 @@ function renderOrderHeader(order) {
             </div>
             <div class="order-actions">
                 <a class="btn" href="modificaordine.php?id=${order.id_ordine}">✏️ Modifica</a>
-                <a class="btn" href="gestisciordini.php">Torna agli ordini</a>
+                <a class="btn" href="../tavoli/gestionetavoli.php">Torna agli ordini</a>
             </div>
         </div>
     `;

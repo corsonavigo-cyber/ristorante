@@ -70,7 +70,7 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
     const API = '/ristorante/api/menu.php';
     const API_ORDINI = '/ristorante/api/ordini.php';
 </script>
-<script src="/ristorante/public/assets/js/ordini.js" defer></script>    
+<script src="/ristorante/public/assets/js/init-fuorimenu.js" defer></script>    
 
 
 </main>

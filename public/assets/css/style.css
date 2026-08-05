@@ -397,6 +397,36 @@ td,th{
     box-shadow: 0 0 5px rgba(0, 0, 75, 0.8);
     color:#333;
 }
+.tavolo-items {
+    min-height: 120px;
+    background: #f7f9fc;
+    border: 1px dashed #bbb;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.tavolo-items.drop-target {
+    outline: 2px dashed #2980b9;
+    background: rgba(41, 128, 185, 0.1);
+}
+.tavolo-card {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: left;
+}
+.tavolo-card:active,
+.tavolo-card.dragging {
+    opacity: 0.6;
+}
 .prenotazioni{
     background-color: white;
     display: flex;

@@ -1,7 +1,7 @@
 // riprendere una bozza dopo un refresh o una navigazione tra pagine.
 
-import { state, CHIAVE_ORDINE, svuotaStato } from './variabilistato.js';
-import { caricaOrdiniOggi } from '../tavoli/tavoli-ordine.js'; // wrapper apiGet su ?type=oggi
+import { state, CHIAVE_ORDINE, resetState } from './variabilistato.js';
+import { caricaOrdiniOggi } from '../ordini/tavoli-ordine.js'; // wrapper apiGet su ?type=oggi
 
 export function salvaOrdine(id_ordine, salvaTavoli = true) {
     const tavoliSelezionati = [...document.querySelectorAll('input[name="tavoliSelezionati[]"]:checked')]
