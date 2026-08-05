@@ -8,158 +8,98 @@ function aggiornaLinkFuoriMenu() {
     link.href = `nuovopiattofuorimenu.php?id=${state.idOrdineInserito ?? ""}`;
 }
 
-export async function precaricaPiattiForm() {
-
+export async function precaricaItemsForm(){
     aggiornaLinkFuoriMenu();
 
-    state.piatti = await apiGet(
+    state.items = await apiGet(
         API_MENU,
-        { type: "dettaglio", in_menu: "si", tipo: "piatto" }
+        {
+            type: "dettaglio",
+            in_menu: "si"
+        }
     );
 
-    const contenitore = document.getElementById("piatti_input");
-    if (!contenitore) return;
+    state.piatti = state.items.filter(item => item.tipo === "piatto");
+    state.bevande = state.items.filter(item => item.tipo === "bevanda");
 
-    contenitore.innerHTML = state.piatti
-        .filter(p => p.in_menu === "si")
-        .map(piatto => {
-            const allergeniText = piatto.nomi_allergeni ?? piatto.allergeni ?? piatto.lista_allergeni ?? "";
-            return `
+    renderItems(state.piatti, "piatti_input", "piatto");
+    renderItems(state.bevande, "bevande_input", "bevanda");
+}
 
-<div class="piatto">
+function renderItems(items, containerId, tipo) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = items
+        .filter(item => item.in_menu === "si")
+        .map(item => renderItemCard(item, tipo))
+        .join("");
+}
+
+function renderItemCard(item, tipo) {
+    const allergeniText = item.nomi_allergeni ?? item.allergeni ?? item.lista_allergeni ?? "";
+
+    return `
+
+<div class="${tipo} ${tipo === 'bevanda' ? 'bevanda' : 'piatto'}">
 
 <button
     type="button"
-    class="btn-inserisci-piatto-ordine"
-    id="nome-piatto${piatto.id_item}"
-    data-id="${piatto.id_item}"
-    data-nome="${piatto.nome}">
+    class="btn-inserisci-${tipo}-ordine ${tipo === 'bevanda' ? 'ins-bev' : ''}"
+    id="nome-${tipo}${item.id_item}"
+    data-id="${item.id_item}"
+    data-nome="${item.nome}"
+    data-tipo="${tipo}">
 
 <h3 class="comment">
-<b>${piatto.nome}</b>
+<b>${item.nome}</b>
 </h3>
 
 <p class="comment">
-${piatto.descrizione}
+${item.descrizione}
 </p>
 
-<p
-class="comment"
-id="prezzo${piatto.id_item}"
-data-prezzo="${piatto.prezzo}">
-Prezzo: ${piatto.prezzo} €
+<p class="comment" id="prezzo${tipo}${item.id_item}" data-prezzo="${item.prezzo}">
+Prezzo: ${item.prezzo} €
 </p>
 
 <p class="elenco_allergeni">
-${allergeniText
-    ? allergeniText.split(", ").join(", ")
-    : "Nessun allergene"}
+${allergeniText ? allergeniText.split(", ").join(", ") : "Nessun allergene"}
 </p>
 
 <label>Quantità</label>
 
 <input
-type="number"
-class="quantita"
-data-id="${piatto.id_item}"
-data-tipo="piatto"
-id="quantita${piatto.id_item}"
-value="0"
-min="0">
+    type="number"
+    class="quantita${tipo === 'bevanda' ? '-bev' : ''}"
+    data-id="${item.id_item}"
+    data-tipo="${tipo}"
+    id="quantita${tipo === 'bevanda' ? '-bev-' : ''}${item.id_item}"
+    value="0"
+    min="0">
 
 <br>
 
 <label>Note</label>
 
 <input
-type="text"
-class="note"
-id="note-${piatto.id_item}"
-data-id="${piatto.id_item}"
-data-tipo="piatto"
-maxlength="100"
-placeholder="...">
+    type="text"
+    class="note${tipo === 'bevanda' ? '-bev' : ''}"
+    id="note-${tipo === 'bevanda' ? 'bev-' : ''}${item.id_item}"
+    data-id="${item.id_item}"
+    data-tipo="${tipo}"
+    maxlength="100"
+    placeholder="...">
 
 </button>
 
 </div>
 
-`; }).join("");
+`;
 }
+//da modificare con le correzioni
 
-export async function precaricaBevandeForm() {
-
-    aggiornaLinkFuoriMenu();
-
-    state.bevande = await apiGet(
-        API_MENU,
-        { type: "dettaglio", in_menu: "si", tipo: "bevanda" }
-    );
-
-    const contenitore = document.getElementById("bevande_input");
-    if (!contenitore) return;
-
-    contenitore.innerHTML = state.bevande
-        .filter(b => b.in_menu === "si")
-        .map(bevanda => `
-
-<div
-class="btn-inserisci-bevandamenu-ordine ins-bev"
-id="nome-bevanda${bevanda.id_item}"
-data-id="${bevanda.id_item}"
-data-nome="${bevanda.nome}">
-
-<h3 class="comment">
-<b>${bevanda.nome}</b>
-</h3>
-
-<p
-class="comment"
-id="prezzo-bev${bevanda.id_item}"
-data-prezzo="${bevanda.prezzo}">
-Prezzo: ${bevanda.prezzo} €
-</p>
-
-<div
-class="dettaglioModal_bevande"
-id="modal-${bevanda.id_item}"
-data-id="${bevanda.id_item}">
-i
-</div>
-
-<div class="operazioni-aritmetiche">
-
-<button
-type="button"
-class="sottrazione"
-data-id="${bevanda.id_item}"
-data-rif="bevanda">
--
-</button>
-
-<p
-id="quantita-bev-comment-${bevanda.id_item}"
-data-id="${bevanda.id_item}"
-data-rif="bevanda">
-0
-</p>
-
-<button
-type="button"
-class="addizione"
-data-id="${bevanda.id_item}"
-data-rif="bevanda">
-+
-</button>
-
-</div>
-
-</div>
-
-`).join("");
-}
-
-export function mostraDettaglioBevanda(idBevanda) {
+export function mostraDettaglioItem(idItem) {
 
     const modal = document.getElementById("dettaglioModal_bevande");
     const contenitore = document.getElementById("dettaglioContenuto_bevande");
@@ -167,7 +107,7 @@ export function mostraDettaglioBevanda(idBevanda) {
     if (!modal || !contenitore) return;
 
     const bevanda = state.bevande.find(
-        b => Number(b.id_item) === Number(idBevanda)
+        b => Number(b.id_item) === Number(idItem)
     );
 
     if (!bevanda) return;

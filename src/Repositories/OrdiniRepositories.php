@@ -298,13 +298,13 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
         ]);
      }
 
-     public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_ordine,int $id_item, int $id_momento): bool
+     public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_ordine,int $id_comanda_dettaglio, int $id_momento): bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE id_ordine = :id_ordine AND id_momento = :id_momento AND id_item = :id_item');
+        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE id_ordine = :id_ordine AND id_momento = :id_momento AND id_comanda_dettaglio = :id_comanda_dettaglio');
         return $stmt->execute([
             'id_momento' => $id_momento,
             'id_ordine' => $id_ordine,
-            'id_item' => $id_item
+            'id_comanda_dettaglio' => $id_comanda_dettaglio
         ]);
      }
 
@@ -353,9 +353,9 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
      
 // PATCH  Ordini
 
-    public function aggiornaMomentoRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento): bool
+    public function aggiornaMomentoRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento): bool
     {
-        $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET id_momento = :id_momento WHERE id_ordine = :id_ordine AND id_item = :id_item');
+        $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET id_momento = :id_momento WHERE id_ordine = :id_ordine AND id_comanda_dettaglio = :id_comanda_dettaglio');
         $stmt->execute([
             'id_item' => $id_item,
             'id_momento' => $id_momento,
@@ -378,12 +378,12 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
         
     
 
-    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita): bool
+    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento, int $quantita): bool
     {
-        $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET quantita = :quantita WHERE id_ordine = :id_ordine AND id_item = :id_item AND id_momento = :id_momento');
+        $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET quantita = :quantita WHERE id_ordine = :id_ordine AND id_comanda_dettaglio = :id_comanda_dettaglio AND id_momento = :id_momento');
         $stmt->execute([
             'id_ordine' => $id_ordine,
-            'id_item' => $id_item,
+            'id_comanda_dettaglio' => $id_comanda_dettaglio,
             'id_momento' => $id_momento,
             'quantita' => $quantita
         ]);

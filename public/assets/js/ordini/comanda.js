@@ -3,8 +3,7 @@
 import { state } from "./variabilistato.js";
 import { salvaOrdine } from "./localstorage.js";
 import {
-    precaricaPiattiForm,
-    precaricaBevandeForm
+    precaricaItemsForm
 } from "./items.js";
 
 const NOMI_MOMENTI = {
@@ -15,35 +14,29 @@ const NOMI_MOMENTI = {
     5: "DA EVADERE SUBITO"
 };
 
-function trovaVoce(tipo, id) {
-    return state.comanda.findIndex(voce =>
-        voce.tipo === tipo &&
-        Number(voce.id) === Number(id) &&
-        Number(voce.id_momento) === Number(state.momentoAttivo)
+
+
+function recuperaItem(idItem) {
+
+    return state.items.find(item =>
+        Number(item.id_item) === Number(idItem)
     );
-}
 
-function recuperaAnagrafica(tipo, id) {
-
-    const elenco = tipo === "piatto"
-        ? state.piatti
-        : state.bevande;
-
-    return elenco.find(item =>
-        Number(item.id_item) === Number(id)
-    );
 }
 
 export function aggiornaVoceComanda(
-    tipo,
-    nome,
-    id,
+    idItem,
     quantita,
-    prezzo,
-    note
+    note = ""
 ) {
 
-    const indice = trovaVoce(tipo, id);
+    const indice = trovaVoce(idItem);
+    const item = recuperaItem(idItem);
+
+    if (!item) {
+        console.warn("Item non trovato", idItem);
+        return;
+    }
 
     if (quantita <= 0) {
 
@@ -69,13 +62,20 @@ export function aggiornaVoceComanda(
 
             state.comanda.push({
 
-                tipo,
-                id,
-                nome_pietanza: nome,
-                prezzo,
+                id_item: item.id_item,
+                tipo: item.tipo,
+                categoria: item.categoria,
+
+                nome: item.nome,
+
+                prezzo: Number(item.prezzo),
+
                 id_momento: state.momentoAttivo,
+
                 quantita,
+
                 note,
+
                 id_ordine: state.idOrdineInserito
 
             });
@@ -106,15 +106,15 @@ export function aggiornaInputPerNuovoMomento() {
         }
 
         const input = document.querySelector(
-            `[data-id="${voce.id}"][data-tipo="${voce.tipo}"]`
+            ` [data-id="${voce.id_item}"][data-tipo="${voce.tipo}"]`
         );
 
         const note = document.querySelector(
-            `[data-note="${voce.id}"][data-tipo="${voce.tipo}"]`
+            ` [data-id="${voce.id_item}"][data-tipo="${voce.tipo}"].note,  [data-id="${voce.id_item}"][data-tipo="${voce.tipo}"].note-bev`
         );
 
         const display = document.querySelector(
-            `#quantita-bev-comment-${voce.id}`
+            `#quantita-comment-${voce.id_item}`
         );
 
         if (input) {
@@ -133,13 +133,32 @@ export function aggiornaInputPerNuovoMomento() {
     });
 
 }
+function trovaVoce(idItem, momento = state.momentoAttivo) {
+
+    return state.comanda.findIndex(voce =>
+
+        Number(voce.id_item) === Number(idItem) &&
+        Number(voce.id_momento) === Number(momento)
+
+    );
+
+}
+export function eliminaVoce(idItem) {
+
+    state.comanda = state.comanda.filter(voce =>
+
+        !(
+            Number(voce.id_item) === Number(idItem) &&
+            Number(voce.id_momento) === Number(state.momentoAttivo)
+        )
+
+    );
+
+}
 
 export async function ripristinaQuantitaComanda() {
 
-    await Promise.all([
-        precaricaPiattiForm(),
-        precaricaBevandeForm()
-    ]);
+    await precaricaItemsForm();
 
     aggiornaInputPerNuovoMomento();
 
@@ -154,7 +173,11 @@ function renderVoce(voce) {
             data-id="${voce.id}"
             class="voce-trascinabile">
 
-            ${voce.nome_pietanza}
+            <span class="badge-item badge-${voce.tipo}">
+    ${voce.tipo}
+</span>
+
+${voce.nome}
             ×
             ${voce.quantita}
 

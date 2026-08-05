@@ -289,10 +289,10 @@ class OrdiniService {
 
     
 
-    public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_ordine,int $id_item, int $id_momento):bool
+    public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_ordine,int $id_comanda_dettaglio, int $id_momento):bool
     {
      try {
-          $this->ordiniRepo->eliminaRelazioneOrdineDiUnoSpecificoItem($id_ordine, $id_momento,  $id_item);
+          $this->ordiniRepo->eliminaRelazioneOrdineDiUnoSpecificoItem($id_ordine, $id_comanda_dettaglio, $id_momento);
          
           $this->logger->info("Relazione  Momento Pietanze{$id_momento} SU ITEM: eliminata con successo dal tavolo ");
           $this->storicoordini->cancellato("Relazione Momento stato per Pietanze {$id_momento} IN ITEM: eliminato con successo dal tavolo");
@@ -488,15 +488,15 @@ class OrdiniService {
 
     }
 
-    public function aggiornaMomentoRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento):bool{
+    public function aggiornaMomentoRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento):bool{
        
        try {
-             $this->ordiniRepo->aggiornaMomentoRelazioneOrdineItem($id_ordine, $id_item, $id_momento);
+             $this->ordiniRepo->aggiornaMomentoRelazioneOrdineItem($id_ordine,$id_comanda_dettaglio, $id_momento);
              
-             $this->logger->info("bevanda id {$id_item} : aggiornata con successo sul/i momento {$id_momento} ");
+             $this->logger->info("bevanda id {$id_comanda_dettaglio} : aggiornata con successo sul/i momento {$id_momento} ");
              return true;
         }catch (\Throwable $e) {
-             $this->logger->error("bevanda id {$id_item} non aggiornata: {$e->getMessage()}");
+             $this->logger->error("bevanda id {$id_comanda_dettaglio} non aggiornata: {$e->getMessage()}");
              return false;
         }
 
@@ -519,10 +519,10 @@ class OrdiniService {
 
     
 
-    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita):bool{
+    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento, int $quantita):bool{
        
        try {
-             $this->ordiniRepo->aggiornaQuantitaRelazioneOrdineItem($id_ordine, $id_item, $id_momento, $quantita);
+             $this->ordiniRepo->aggiornaQuantitaRelazioneOrdineItem($id_ordine, $id_comanda_dettaglio, $id_momento, $quantita);
              
              $this->logger->info("bevanda id {$id_item} : aggiornata con successo sul/i quantita {$quantita} ");
              return true;

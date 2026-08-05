@@ -137,10 +137,10 @@ try {
                     $body['id_ordine'], $body['id_momento_vecchio'], $body['id_momento_nuovo']
                 ) ?? []),
                 'item_momento' => risposta($ordiniService->aggiornaMomentoRelazioneOrdineItem(
-                    $body['id_ordine'], $body['id_item'], $body['id_momento']
+                    $body['id_ordine'], $body['id_comanda_dettaglio'], $body['id_momento']
                 ) ?? []),
                 'item_quantita_momento' => risposta($ordiniService->aggiornaQuantitaRelazioneOrdineItem(
-                    $body['id_ordine'], $body['id_item'], $body['id_momento'], $body['quantita'],
+                    $body['id_ordine'], $body['id_comanda_dettaglio'], $body['id_momento'], $body['quantita'],
                 ) ?? []),
 
 
@@ -191,7 +191,7 @@ try {
                 'item_momento' => risposta($ordiniService->eliminaRelazioneOrdineDiUnoSpecificoItem(
                     $id,
                     $body['id_momento'] ?? throw new \InvalidArgumentException('ID momento mancante'),
-                    $body['id_item'] ?? throw new \InvalidArgumentException('ID item mancante')
+                    $body['id_comanda_dettaglio'] ?? throw new \InvalidArgumentException('ID item mancante')
                 )),
                 'ordine_momento' => risposta($ordiniService->eliminaRelazioneOrdinePerMomento(
                     $id,

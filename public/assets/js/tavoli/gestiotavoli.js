@@ -21,16 +21,16 @@ async function caricaTavoli (){
     //da aggiungere la visualizzazione delle prenotazioni e dei conti e delle comande
     lavagna.innerHTML = tavoli.map(tavolo => `
     <div class="tavolo" id="${tavolo.id_tavolo}">
-       
+       <a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">✏️</a>
+       <button type="button" class="btn-elimina" data-id="${tavolo.id_tavolo}">🗑️</button>
        <h3 class="comment"><b>Numero Tavolo ${tavolo.numero_tavolo}</b></h3>
 
        <p class="comment">Posti max ${tavolo.posti_max} prenotabili</p>
        <p class="comment">Posti min ${tavolo.posti_min} prenotabili</p> 
        <!--per visualizzazione in caso di tavolo prenotato-->
-       <div class=tavolo id=prenotato data-id-tavolo="${tavolo.id_tavolo}">  </div> 
+       <div class="tavolo" id="prenotato" data-id-tavolo="${tavolo.id_tavolo}">  </div> 
        <!--link AJAX per inviare la modifica tavolo-->
-       <a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">Modifica ✏️</a>
-       <button type="button" class="btn-elimina" data-id="${tavolo.id_tavolo}">Elimina 🗑️</button>
+       
     </div>`).join('');
     tavoli.forEach(tavolo =>  caricaPrenotazioniTavolo(tavolo.id_tavolo));
 }
@@ -54,11 +54,16 @@ const fasciaLavoro = fasceOrarie.find(fascia =>
 );
 //da inserire carica ordini su tavololo, se c'è un ordine la prenotazione viene disattivata automaticamente
 async function caricaPrenotazioniTavolo(id_tavolo){
-    console.log("ciaoooooooo");
+    
     const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {
             type: 'tavolo',
             id: id_tavolo
         });
+    const ordiniCollegati = await API_tav_function.apiGet(API_ORDINI,{
+        type : 'stato',
+        id : id_tavolo,
+        stato : 1
+    });
     const contenitore = document.querySelector(`#prenotato[data-id-tavolo="${id_tavolo}"]`);
     if (!contenitore) return;
 
@@ -81,9 +86,9 @@ const prenotazioniOggi = prenotazioniCollegate.filter(prenotazione =>
         `).join('');
     } else {
         contenitore.innerHTML = 
-        `<h4>LIBERO</h4>
-        <a href="../prenotazioni/inserisciprenotazioni.php? class="btn-inserisci-prenotazione">+ Prenotazione</a>
-
+        `
+        <a href="../prenotazioni/inserisciprenotazioni.php? class="btn-inserisci-prenotazione">Prenota</a>
+        <h4>LIBERO</h4>
         `;
     }
 }
