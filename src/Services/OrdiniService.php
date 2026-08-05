@@ -524,10 +524,10 @@ class OrdiniService {
        try {
              $this->ordiniRepo->aggiornaQuantitaRelazioneOrdineItem($id_ordine, $id_comanda_dettaglio, $id_momento, $quantita);
              
-             $this->logger->info("bevanda id {$id_item} : aggiornata con successo sul/i quantita {$quantita} ");
+             $this->logger->info("bevanda id {$id_comanda_dettaglio} : aggiornata con successo sul/i quantita {$quantita} ");
              return true;
         }catch (\Throwable $e) {
-             $this->logger->error("bevanda id {$id_item} non anata: {$e->getMessage()}");
+             $this->logger->error("bevanda id {$id_comanda_dettaglio} non anata: {$e->getMessage()}");
              return false;
         }
 

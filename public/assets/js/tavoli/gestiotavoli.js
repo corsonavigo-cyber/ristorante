@@ -52,7 +52,7 @@ const fasciaLavoro = fasceOrarie.find(fascia =>
 );
 //da inserire carica ordini su tavololo, se c'è un ordine la prenotazione viene disattivata automaticamente
 async function caricaElementiTavolo(id_tavolo){
-    
+    console.log(`Caricamento elementi per il tavolo ${id_tavolo}`);
     const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {
             type: 'tavolo',
             id: id_tavolo
@@ -60,7 +60,7 @@ async function caricaElementiTavolo(id_tavolo){
     const ordiniCollegati = await API_tav_function.apiGet(API_ORDINI,{
         type : 'stato',
         id : id_tavolo,
-        stato : 1
+        id_stato : parseInt(1)
     });
     const contenitore = document.querySelector(`#prenotato[data-id-tavolo="${id_tavolo}"]`);
     if (!contenitore) return;

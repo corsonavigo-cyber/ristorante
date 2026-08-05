@@ -1,5 +1,4 @@
 import { apiGet } from '../apigeneric.js';
-import { config } from '../config.js';
 import { state } from './variabilistato.js';
 
 export async function caricaMomenti(){
@@ -11,7 +10,7 @@ export async function caricaMomenti(){
     }
 
     state.momenti = await apiGet(
-        config.API_ORDINI,
+         API_ORDINI,
         { type:"momenti" }
     );
 

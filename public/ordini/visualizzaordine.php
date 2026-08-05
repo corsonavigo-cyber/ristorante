@@ -13,24 +13,15 @@ require_once __DIR__ . '/../bootstrap.php';
 
 
 <main>
-    <!--il bottone elimina viene gestito direttamente nel js per le prossime tabelle lo predisporro per sottrazione come avviene realente nei magazzini-->
     <div class="supporto-titolo">
         <h2><?= $title ?></h2>
     </div>
-    
-    <a class="btn" href="inserisciordine.php">+ Nuova Comanda</a>
-   
-    <div class="tavoli" id="lavagna_tavoli_ordini">
-       
-    </div>
-    
-<script>
-    const API = '/ristorante/api/tavoli.php';
-    const API_ORDINI = '/ristorante/api/ordini.php';
-    
-</script>
-<script src="/ristorante/public/assets/js/tavoli.js" defer></script>    
-<script src="/ristorante/public/assets/js/ordiniprima.js" defer></script> 
+
+    <div id="order-header"></div>
+    <div id="order-error" class="error-message"></div>
+    <div id="order-board" class="order-board-container"></div>
+
+    <script type="module" src="/ristorante/public/assets/js/ordini/visualizzaordine.js" defer></script>
 </main>
 
 <?php 

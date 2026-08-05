@@ -1,5 +1,4 @@
 import { apiGet, apiPost, apiPatch } from '../apigeneric.js';
-import { config } from '../config.js';
 import { state } from './variabilistato.js';
 import { mostraAvviso } from '../utils.js';
 

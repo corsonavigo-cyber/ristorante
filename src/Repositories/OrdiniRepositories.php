@@ -101,7 +101,7 @@ ORDER BY
         $stmt->execute([
             'id_tavolo' => $id_tavolo,
             'id_stato' => $id_stato]);
-        return $stmt->fetch() ?:null;
+        return $stmt->fetchAll() ?:null;
      }
     
      public function visualizzaTuttiGliOrdiniOggi():?array
@@ -367,7 +367,7 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
     {
         $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET id_momento = :id_momento WHERE id_ordine = :id_ordine AND id_comanda_dettaglio = :id_comanda_dettaglio');
         $stmt->execute([
-            'id_item' => $id_item,
+            'id_comanda_dettaglio' => $id_comanda_dettaglio,
             'id_momento' => $id_momento,
             'id_ordine' => $id_ordine
         ]);

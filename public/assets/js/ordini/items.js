@@ -106,36 +106,36 @@ export function mostraDettaglioItem(idItem) {
 
     if (!modal || !contenitore) return;
 
-    const bevanda = state.bevande.find(
+    const item = state.bevande.find(
         b => Number(b.id_item) === Number(idItem)
     );
 
-    if (!bevanda) return;
+    if (!item) return;
 
-    const contieneAlcol = bevanda.categoria === 'bevanda_alcolica' ? 'Sì' : 'No';
-    const allergeniText = bevanda.nomi_allergeni ?? bevanda.allergeni ?? bevanda.lista_allergeni ?? 'Nessun allergene';
+    const contieneAlcol = item.categoria === 'item_alcolica' ? 'Sì' : 'No';
+    const allergeniText = item.nomi_allergeni ?? item.allergeni ?? item.lista_allergeni ?? 'Nessun allergene';
 
     contenitore.innerHTML = `
 
 <div
-class="btn-inserisci-bevandamenu-ordine"
-id="nome-bevanda${bevanda.id_item}"
-data-id="${bevanda.id_item}"
-data-nome="${bevanda.nome}">
+class="btn-inserisci-itemmenu-ordine"
+id="nome-item${item.id_item}"
+data-id="${item.id_item}"
+data-nome="${item.nome}">
 
 <h3 class="comment">
-<b>${bevanda.nome}</b>
+<b>${item.nome}</b>
 </h3>
 
 <p class="comment">
-${bevanda.descrizione}
+${item.descrizione}
 </p>
 
 <p
 class="comment"
-id="prezzo-bev${bevanda.id_item}"
-data-prezzo="${bevanda.prezzo}">
-Prezzo: ${bevanda.prezzo} €
+id="prezzo-bev${item.id_item}"
+data-prezzo="${item.prezzo}">
+Prezzo: ${item.prezzo} €
 </p>
 
 <p class="comment">
@@ -151,8 +151,8 @@ ${allergeniText}
 <input
 type="number"
 class="quantita-bev"
-id="quantita-bev-${bevanda.id_item}"
-data-id="${bevanda.id_item}"
+id="quantita-bev-${item.id_item}"
+data-id="${item.id_item}"
 data-tipo="bevanda"
 value="0"
 min="0">
@@ -165,8 +165,8 @@ min="0">
 type="text"
 class="note-bev"
 id="note-bev-${bevanda.id_item}"
-data-id="${bevanda.id_item}"
-data-tipo="bevanda"
+data-id="${item.id_item}"
+data-tipo="item"
 maxlength="100"
 placeholder="...">
 
