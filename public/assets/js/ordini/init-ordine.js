@@ -6,6 +6,7 @@ import { ripristinaOrdine, salvaOrdine, svuotaOrdineSalvato, leggiOrdineSalvato 
 import { precaricaTavoliForm, controllaTavoloDisponibile } from './tavoli-ordine.js';
 import { inserisciOrdine, inserisciOrdineStato, inserisciOrdineTavolo,inserisciComanda, inserisciItemOrdine } from './ordine.js';
 import { apiPost, apiDelete } from '../apigeneric.js';
+import { annullaOrdineInCompilazione } from './elimina.js';
 
 document.addEventListener('input', gestisciInputGlobali);
 document.addEventListener('click', globalClick);
@@ -79,21 +80,9 @@ async function initPaginaOrdine() {
         }
 
         try {
-            // Se esiste già nel DB, elimina ordine e relazioni collegate.
-            if (idDaEliminare > 0) {
-                await apiDelete(API_ORDINI, {
-                    type: 'composto',
-                    id: idDaEliminare
-                });
-            }
+            await annullaOrdineInCompilazione(idDaEliminare);
 
-            // Solo dopo DELETE riuscita, elimina il salvataggio locale.
-            svuotaOrdineSalvato();
-
-            state.idOrdineInserito = null;
-            state.momentoAttivo = 1;
             hid.value = '';
-
             secondo_step.classList.add('hider');
             primo_step.classList.remove('hider');
 

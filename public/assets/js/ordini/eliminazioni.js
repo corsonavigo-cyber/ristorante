@@ -1,48 +1,61 @@
-import { apiDelete } from "../apigeneric.js";
+import { apiDelete } from '../apigeneric.js';
+import { state } from './variabilistato.js';
+import { svuotaOrdineSalvato } from './localstorage.js';
 
+const API_ORDINI = '/ristorante/api/ordini.php';
 
-export async function eliminaOrdineClick(id_ordine) {
-        const btn_elimina = e.target.closest('.btn-elimina-ordine');
-        if (!btn_elimina) return;
+export async function annullaOrdineInCompilazione(idOrdine) {
+    const id = Number(idOrdine);
 
-        if (!confirm('vuoi eliminare questa comanda?')) return;
-
-        const id_elimina = Number(btn_elimina.dataset.id);
-
-        if (!id_elimina ) {
-            throw new Error('Id Mancante nel bottone!');
-        }
-
-        if (!Number.isInteger(id_elimina)) {
-            throw new Error('Id Mancante o non valido nel bottone!');
-        }
-        const risposta = await apiDelete(API_ORDINI, {
-            type:'composto',
-            id: id_ordine
-        });    
-        return true;
-    }
-export async function eliminaItemNellOrdineClick(id_ordine) {
-        const btn_elimina = e.target.closest('.btn-elimina-item');
-        if (!btn_elimina) return;
-        
-        if (!confirm('vuoi eliminare questo item?')) return;
-        const id_elimina = Number(btn_elimina.dataset.id);
-
-        if (!id_elimina ) {
-            throw new Error('Id Mancante nel bottone!');
-        }
-
-        if (!Number.isInteger(id_elimina)) {
-            throw new Error('Id Mancante o non valido nel bottone!');
-        }
-        const risposta = await apiDelete(API_ORDINI, {
-            type:'item_momento',
-            id: id_elimina,
-            id_momento: id_momento,
-            id_comanda_dettaglio: id_comanda_dettaglio
-        });    
-        return true;
+    // Se l’ordine esiste nel DB, elimina ordine e relazioni.
+    if (Number.isInteger(id) && id > 0) {
+        await apiDelete(API_ORDINI, {
+            type: 'composto',
+            id
+        });
     }
 
+    // Avviene solo dopo DELETE riuscita.
+    svuotaOrdineSalvato();
+
+    state.idOrdineInserito = null;
+    state.momentoAttivo = 1;
+
+    return true;
+}
+
+export async function eliminaOrdineClick(e) {
+    const bottone = e.target.closest('.btn-elimina-ordine');
+    if (!bottone) return;
+
+    const idOrdine = Number(bottone.dataset.id);
+
+    if (!Number.isInteger(idOrdine) || idOrdine <= 0) {
+        throw new Error('ID ordine mancante o non valido nel bottone.');
+    }
+
+    if (!confirm('Vuoi eliminare questa comanda?')) return;
+
+    await apiDelete(API_ORDINI, {
+        type: 'composto',
+        id: idOrdine
+    });
+
+    return true;
+}
+
+
+export async function eliminaItemNellOrdine({ orderId, itemId, momento }) {
+    return apiDelete(
+        API_ORDINI,
+        {
+            type: 'item_momento',
+            id: Number(orderId)
+        },
+        {
+            id_comanda_dettaglio: Number(itemId),
+            id_momento: Number(momento)
+        }
+    );
+}
     

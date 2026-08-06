@@ -139,6 +139,9 @@ export function eliminaVoce(idItem) {
         )
 
     );
+    salvaOrdine(state.idOrdineInserito, false);
+    disegnaPreComanda();
+    aggiornaInputPerNuovoMomento();
 
 }
 
@@ -156,7 +159,7 @@ function renderVoce(voce) {
 
     return `
         <li
-            data-id="${voce.id}"
+            data-id="${voce.id_item}"
             class="voce-trascinabile">
 
             <span class="badge-item badge-${voce.tipo}">

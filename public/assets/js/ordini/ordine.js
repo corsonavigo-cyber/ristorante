@@ -55,8 +55,8 @@ export async function inserisciOrdineTavolo(idOrdine, tavoli = leggiTavoliSelezi
         throw new Error('ID ordine non valido.');
     }
 
-    if (!Array.isArray(tavoli) || tavoli.length === 0) {
-        throw new Error('Seleziona almeno un tavolo.');
+    if (!tavoli.every(id => Number.isInteger(Number(id)) && Number(id) > 0)) {
+     throw new Error('Tavoli selezionati non validi.');
     }
 
     return apiPost(`${API_ORDINI}?type=tavolo`, {
@@ -118,7 +118,7 @@ export async function cambiaOrdineDalTavolo(idOrdine, tavoli = leggiTavoliSelezi
 
     return apiPatch(
         `${API_ORDINI}?type=tavolo`,
-        { id_ordine: Number(idOrdine) },
+        { id: Number(idOrdine) },
         {
             id_ordine: Number(idOrdine),
             tavoli: tavoli.map(Number)

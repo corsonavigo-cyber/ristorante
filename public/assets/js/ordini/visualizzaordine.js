@@ -1,6 +1,7 @@
 import { attachDragAndDrop } from './dragdrop.js';
 import { apiGet,apiDelete,apiPatch,apiPost,apiPut } from '../apigeneric.js';
 import { state,showError } from './variabilistato.js';
+import { eliminaItemNellOrdineClick } from './eliminazioni.js';
 
 
 const API_ORDINI = '/ristorante/api/ordini.php';
@@ -131,7 +132,7 @@ function renderOrderItem(item) {
                 </div>
                 <div class="item-actions">
                     <button type="button" class="btn-mini btn-edit">✏️</button>
-                    <button type="button" class="btn-mini btn-delete">🗑️</button>
+                    <button type="button" class="btn-mini btn-delete-singolo-item">🗑️</button>
                 </div>
             </div>
         </article>
@@ -141,7 +142,7 @@ function renderOrderItem(item) {
 function attachItemActions() {
     document.addEventListener('click', async (event) => {
         const button = event.target.closest(
-            '.btn-delete, .btn-edit, .btn-qty-increment, .btn-qty-decrement'
+            '.btn-delete-singolo-item, .btn-edit, .btn-qty-increment, .btn-qty-decrement'
         );
         if (!button) return;
 
@@ -156,14 +157,11 @@ function attachItemActions() {
         if (button.matches('.btn-delete')) {
             if (!confirm('Eliminare questo elemento dalla comanda?')) return;
 
-            await apiDelete(
-                API_ORDINI,
-                { type: 'item_momento', id: orderId },
-                {
-                    id_comanda_dettaglio: Number(itemId),
-                    id_momento: Number(momento)
-                }
-            );
+            await eliminaItemNellOrdine({
+                orderId,
+                itemId,
+                momento
+            });
 
             card.remove();
             return;

@@ -195,17 +195,40 @@ async function eliminaTavoloClick(e) {
             return;
         }
 
-        const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {
+        const [prenotazioniCollegate, ordiniAperti] = await Promise.all([
+        API_tav_function.apiGet(API_PRENOTAZIONI, {
             type: 'tavolo',
             id: idElimina
-        });
+        }),
 
-        if (Array.isArray(prenotazioniCollegate) && prenotazioniCollegate.length > 0) {
-            if (!confirm('Questo tavolo ha prenotazioni collegate. Eliminandolo verranno rimosse anche le relazioni con le prenotazioni. Continuare?')) {
-                return;
-            }
+        API_tav_function.apiGet(API_ORDINI, {
+            type: 'stato',
+            id: idElimina,
+            id_stato: 1
+            })
+        ]);
 
-               await API_tav_function.apiDelete(API_PRENOTAZIONI, {
+        const haOrdiniAperti = Array.isArray(ordiniAperti) && ordiniAperti.length > 0;
+
+        if (haOrdiniAperti) {
+            alert(
+                'Impossibile eliminare il tavolo: sono presenti ordini aperti associati.'
+            );
+            return;
+        }
+
+        const haPrenotazioni = Array.isArray(prenotazioniCollegate) &&
+            prenotazioniCollegate.length > 0;
+
+        if (haPrenotazioni) {
+            const conferma = confirm(
+                'Questo tavolo ha prenotazioni collegate. ' +
+                'Eliminandolo verranno rimosse anche le relazioni con le prenotazioni. Continuare?'
+            );
+
+            if (!conferma) return;
+
+            await API_tav_function.apiDelete(API_PRENOTAZIONI, {
                 type: 'tavolo',
                 id: idElimina
             });

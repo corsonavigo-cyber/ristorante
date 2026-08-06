@@ -40,11 +40,16 @@ export function apiPut(urlApi, elementoOParametri, payload, type = "") {
     });
 }
 
-export function apiPatch(urlApi, elemento, payload) {
-    const id = leggiId(elemento,payload);
+export function apiPatch(urlApi, elementoOParametri, payload) {
+    const params = elementoOParametri instanceof Element
+        ? new URLSearchParams({
+            id: leggiId(elementoOParametri, payload)
+        })
+        : new URLSearchParams(elementoOParametri);
+
     const separatore = urlApi.includes('?') ? '&' : '?';
 
-    return richiesta(`${urlApi}${separatore}id=${id}`, {
+    return richiesta(`${urlApi}${separatore}${params}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
