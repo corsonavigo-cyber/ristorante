@@ -4,32 +4,46 @@ import { state,  CHIAVE_ORDINE } from './variabilistato.js';
 export function caricaOrdiniOggi() {
     return apiGet( API_ORDINI, { type: 'oggi' });
 }
-
 export async function controllaTavoloDisponibile(tavoliSelezionati = []) {
+
     const avviso = document.getElementById("avviso");
-    const sezione = document.querySelector('#controllo');
+    const sezione = document.querySelector("#controllo");
 
     if (!Array.isArray(tavoliSelezionati) || tavoliSelezionati.length === 0) {
-        controllaPostiOrdineTavolo(tavoliSelezionati);
+        mostraAvviso(sezione, avviso, "Seleziona almeno un tavolo.");
+        return false;
+    }
+
+    // Controllo capienza
+    if (!controllaPostiOrdineTavolo(tavoliSelezionati)) {
         return false;
     }
 
     const ordiniOggi = await caricaOrdiniOggi();
-    const tavoliGiaOccupati = ordiniOggi.filter(o =>
-        Number(o.id_ordine) !== Number(state.idOrdineInserito) &&
-        Array.isArray(o.id_tavoli) &&
-        tavoliSelezionati.some(id => o.id_tavoli.includes(id))
-    );
 
-    console.log("Tavoli già occupati:", tavoliGiaOccupati);
-    const stessiTavoli = tavoliGiaOccupati.some(o =>
-        Array.isArray(o.id_tavoli) && tavoliSelezionati.every(t => o.id_tavoli.includes(t))
-    );
-    if (stessiTavoli) {
+    const conflitto = ordiniOggi.some(o => {
+
+        if (Number(o.id_ordine) === Number(state.idOrdineInserito)) {
+            return false;
+        }
+        console.log(tavoliSelezionati, o.id_tavoli);
+        console.log("Controllo tavoli selezionati vs tavoli ordine:", {
+            tavoliSelezionati,
+            tavoliOrdine: o.id_tavoli
+        });
+        const tavoliOrdine = String(o.id_tavoli)
+            .split(",")
+            .map(id => parseInt(id.trim(), 10));
+
+        return tavoliSelezionati.some(id => o.id_tavoli.includes(id));
+    });
+
+    if (conflitto) {
         mostraAvviso(sezione, avviso, "Questo tavolo ha già un ordine attivo!");
         return false;
     }
 
+    mostraAvviso(sezione, avviso, "", true);
     return true;
 }
 export async function precaricaTavoliForm(id_tavolo_arrivato_url) {

@@ -1,35 +1,11 @@
 import { state } from './variabilistato.js';
-
-import {
-    precaricaItemsForm,
-    mostraDettaglioItem
-} from './items.js';
-
-import {
-    aggiornaVoceComanda,
-    disegnaPreComanda,
-    ripristinaQuantitaComanda
-} from './comanda.js';
-
-import {
-    controllaMomentoSelezionato,
-    disegnaMomenti
-} from './momenti.js';
-
-import {
-    ripristinaOrdine,
-    salvaOrdine,
-    svuotaOrdineSalvato
-} from './localstorage.js';
-
-import {
-    precaricaTavoliForm,
-    controllaTavoloDisponibile,
-    selezionatavolo
-} from './tavoli-ordine.js';
-
+import { mostraDettaglioItem } from './items.js';
+import { aggiornaVoceComanda, ripristinaQuantitaComanda } from './comanda.js';
+import { controllaMomentoSelezionato, disegnaMomenti } from './momenti.js';
+import { ripristinaOrdine, salvaOrdine, svuotaOrdineSalvato, leggiOrdineSalvato } from './localstorage.js';
+import { precaricaTavoliForm, controllaTavoloDisponibile } from './tavoli-ordine.js';
 import { inserisciOrdine, inserisciOrdineStato, inserisciOrdineTavolo,inserisciComanda, inserisciItemOrdine } from './ordine.js';
-import { apiPost } from '../apigeneric.js';
+import { apiPost, apiDelete } from '../apigeneric.js';
 
 document.addEventListener('input', gestisciInputGlobali);
 document.addEventListener('click', globalClick);
@@ -39,76 +15,166 @@ const secondo_step = document.getElementById('secondo-step');
 const hid = document.getElementById('per_ordine_id');
 
 
-document.addEventListener('DOMContentLoaded', () => {
-        precaricaTavoliForm().then(() => {
-            // qui il DOM ha già le checkbox/input generati da precaricaTavoliForm
+document.addEventListener('DOMContentLoaded', initPaginaOrdine);
 
+async function initPaginaOrdine() {
+    try {
+        await precaricaTavoliForm();
 
-            const tavoliSelezionati = [...document.querySelectorAll('input[name="tavoliSelezionati[]"]:checked')]
-                .map(el => parseInt(el.value));
+        const ordineRipristinato = await ripristinaOrdine();
 
-            if (tavoliSelezionati.length > 0) {
-                controllaTavoloDisponibile(tavoliSelezionati);
+        if (ordineRipristinato && state.idOrdineInserito) {
+            hid.value = state.idOrdineInserito;
+            secondo_step.classList.remove('hider');
+            primo_step.classList.add('hider');
+            disegnaMomenti();
+            ripristinaQuantitaComanda();
+        } else {
+            const ordineLocale = leggiOrdineSalvato();
+
+            if (ordineLocale?.tavoli?.length) {
+                ordineLocale.tavoli.forEach(id => {
+                    const checkbox = document.querySelector(
+                        `input[name="tavoliSelezionati[]"][value="${id}"]`
+                    );
+
+                    if (checkbox) checkbox.checked = true;
+                });
             }
-        });
-    });
+        }
 
+        const tavoliSelezionati = [
+            ...document.querySelectorAll('input[name="tavoliSelezionati[]"]:checked')
+        ].map(el => Number(el.value));
+
+        if (tavoliSelezionati.length > 0) {
+            await controllaTavoloDisponibile(tavoliSelezionati);
+        }
+    } catch (error) {
+        console.error('Errore durante l’inizializzazione dell’ordine:', error);
+        alert(error.message || 'Impossibile caricare i dati dell’ordine.');
+    }
+}
 
     async function globalClick(e) {
     const btn_avanti = e.target.closest('.btn-avanti');
-    const div =document.getElementById('piatti_input');
-    const modal_bevande = e.target.closest('.dettaglioModal_bevande');
-    const divbev =document.getElementById('bevande_input');
+    const modal_item = e.target.closest('.dettaglioModal_item');
     const idOrdine = Number(hid.value);
-    const btn_aggiorna = e.target.closest('.aggiorna'); 
     const btn_indietro = e.target.closest('.btn-indietro'); 
-    
-    if (btn_avanti) {
-        
+
+    const btnEliminaOrdine = e.target.closest('.btn-elimina-ordine-in-corso');
+
+    if (btnEliminaOrdine) {
         e.preventDefault();
-        //controllo per evitare che il json salvato invii la funzione senza il permesso dell'utente
-        
-        
-        if (idOrdine > 0) {
 
-            alert("Ordine già inserito.");
-           
-            state.idOrdineInserito = idOrdine;
-            disegnaMomenti();
-            
-   
-            secondo_step.classList.remove('hider');
-            primo_step.classList.add('hider');
+        const ordineLocale = leggiOrdineSalvato();
+        const idDaEliminare = Number(
+            hid.value ||
+            state.idOrdineInserito ||
+            ordineLocale?.idOrdineInserito
+        );
 
-            console.log(idOrdine);
-
-            salvaOrdine(idOrdine, false);
-            ripristinaQuantitaComanda();
+        if (!confirm('Vuoi annullare definitivamente l’ordine in compilazione?')) {
             return;
         }
-        
 
+        try {
+            // Se esiste già nel DB, elimina ordine e relazioni collegate.
+            if (idDaEliminare > 0) {
+                await apiDelete(API_ORDINI, {
+                    type: 'composto',
+                    id: idDaEliminare
+                });
+            }
 
-        const id_ordine = await inserisciOrdine();
-        
-        if(Number.isNaN(id_ordine)){
-            return alert("Non è un numero. Riprova.");
+            // Solo dopo DELETE riuscita, elimina il salvataggio locale.
+            svuotaOrdineSalvato();
+
+            state.idOrdineInserito = null;
+            state.momentoAttivo = 1;
+            hid.value = '';
+
+            secondo_step.classList.add('hider');
+            primo_step.classList.remove('hider');
+
+            document.querySelectorAll('.btn-momento').forEach(button => {
+                button.classList.remove('attivo');
+            });
+
+            alert('Ordine in compilazione annullato.');
+        } catch (error) {
+            console.error('Errore durante l’annullamento dell’ordine:', error);
+            alert(error.message || 'Impossibile annullare l’ordine.');
         }
-        secondo_step.classList.remove('hider');
-        primo_step.classList.add('hider');
-        console.log(id_ordine);
-
-        alert("Nuovo ordine inserito");
-        hid.value = id_ordine;
-        state.idOrdineInserito = id_ordine;
-
-        salvaOrdine(state.idOrdineInserito, true);
-        
-        disegnaMomenti();
-        ripristinaQuantitaComanda()
 
         return;
     }
+    
+   if (btn_avanti) {
+    e.preventDefault();
+
+    try {
+        const ordineLocale = leggiOrdineSalvato();
+        const idSalvato = Number(
+            ordineLocale?.idOrdineInserito ?? state.idOrdineInserito
+        );
+
+        // 1. Ripresa ordine parziale: non creare nulla nel database.
+        if (idSalvato > 0) {
+            const riprendi = confirm(
+                'È presente un ordine parzialmente compilato. Vuoi riprenderlo?'
+            );
+
+            if (riprendi) {
+                hid.value = idSalvato;
+                state.idOrdineInserito = idSalvato;
+
+                secondo_step.classList.remove('hider');
+                primo_step.classList.add('hider');
+
+                await disegnaMomenti();
+                ripristinaQuantitaComanda();
+                return;
+            }
+        }
+
+        // 2. Se l'ordine è già stato valorizzato nel campo hidden, apri lo step 2.
+        if (idOrdine > 0) {
+            state.idOrdineInserito = idOrdine;
+
+            secondo_step.classList.remove('hider');
+            primo_step.classList.add('hider');
+
+            await disegnaMomenti();
+            ripristinaQuantitaComanda();
+            return;
+        }
+
+        // 3. Nuovo ordine: crea ordine + relazioni iniziali.
+        const nuovoIdOrdine = await inserisciOrdine();
+
+        if (!Number.isInteger(Number(nuovoIdOrdine)) || Number(nuovoIdOrdine) <= 0) {
+            throw new Error('ID del nuovo ordine non valido');
+        }
+
+        // Usa qui le firme già definite nei tuoi moduli.
+        await inserisciOrdineStato(nuovoIdOrdine /*, ID_STATO_APERTO */);
+        await inserisciOrdineTavolo(nuovoIdOrdine /*, tavoliSelezionati */);
+
+        hid.value = nuovoIdOrdine;
+        state.idOrdineInserito = nuovoIdOrdine;
+        salvaOrdine(nuovoIdOrdine, true);
+
+        secondo_step.classList.remove('hider');
+        primo_step.classList.add('hider');
+
+        await disegnaMomenti();
+        ripristinaQuantitaComanda();
+    } catch (error) {
+        console.error('Errore nella creazione o ripresa dell’ordine:', error);
+        alert(error.message || 'Impossibile avviare l’ordine.');
+    }
+}
 
     const btn_momento = e.target.closest('.btn-momento'); 
 
@@ -121,16 +187,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    if(modal_bevande){
+    if(modal_item){
         
-        if(!modal_bevande) return;
+        if(!modal_item) return;
         console.log('visto')
-        await mostraDettaglioItem(Number(modal_bevande.dataset.id));
+        await mostraDettaglioItem(Number(modal_item.dataset.id));
 
     }
     const chiudiModal = e.target.closest('.chiudiModal'); 
+    if(!chiudiModal) return;
     if(chiudiModal){
-        if(!chiudiModal) return;
+        
         e.preventDefault();
 
         chiudiModal.closest('dialog').close();
@@ -153,34 +220,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!controllaMomentoSelezionato()) {
             if(!confirm("vuoi stampare la comada ? ")) return false;
         };
-        /*inserisciComandaDb();*/
+        /*inserire la relazione piatti item nel db*/
         return;
     }
 
     
 
-    if (e.target.classList.contains("sottrazione")) {
-    const id = e.target.dataset.id;
-    console.log('sottrazione');
-    const tipo = e.target.dataset.rif;
-    if (!controllaMomentoSelezionato()) { e.target.value = 0; return; }
-    aggiornaVoceComanda(id, {
-        variazione: -1
-    });
-  
-    
-      }
+    const btnSottrazione = e.target.closest('.sottrazione');
+    const btnAddizione = e.target.closest('.addizione');
 
-    if(e.target.classList.contains("addizione")){
-        const id = e.target.dataset.id;
-        console.log('addizione');
-        const tipo = e.target.dataset.rif;
-        if (!controllaMomentoSelezionato()) { e.target.value = 0; return; }
-                    aggiornaVoceComanda(id, {
-            variazione: 1
-        });
+    if (btnSottrazione) {
+        if (!controllaMomentoSelezionato()) {
+            btnSottrazione.value = 0;
+            return;
+        }
 
-        
+        aggiornaVoceComanda(btnSottrazione.dataset.id, { variazione: -1 });
+        return;
+    }
+
+    if (btnAddizione) {
+        if (!controllaMomentoSelezionato()) {
+            btnAddizione.value = 0;
+            return;
+        }
+
+        aggiornaVoceComanda(btnAddizione.dataset.id, { variazione: 1 });
+        return;
     }
 }
 
@@ -188,16 +254,16 @@ function gestisciInputGlobali(e) {
     console.log("pigiato A!");
     // Variazione manuale quantità piatti
     if (e.target.classList.contains("quantita") || e.target.classList.contains("note")) {
-        const id_piatto = Number(e.target.dataset.id);
-        const quantita = document.querySelector(`.quantita[data-id="${id_piatto}"]`);
-        const nome_pietanza = document.querySelector(`#nome-piatto${id_piatto}`);
-        const prezzo  = document.querySelector(`#prezzo${id_piatto}`);
-        const note = document.querySelector(`#note-${id_piatto}`);
+        if(!e.target.dataset.id) return;
+        const id_item = Number(e.target.dataset.id);
+        const quantita = document.querySelector(`.quantita[data-id="${id_item}"]`);
+        const note = document.querySelector(`.note[data-id="${id_item}"]`);
         if (!controllaMomentoSelezionato()) { e.target.value = 0; return; }
-        aggiornaVoceComanda(id_piatto, {
+        aggiornaVoceComanda(id_item, {
             quantita: quantita.value,
             note: note.value,
         });
         salvaOrdine(state.idOrdineInserito, false);
     }
+   
 }

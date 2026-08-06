@@ -4,6 +4,12 @@ import { state, CHIAVE_ORDINE, resetState } from './variabilistato.js';
 import { caricaOrdiniOggi } from '../ordini/tavoli-ordine.js'; // wrapper apiGet su ?type=oggi
 
 export function salvaOrdine(id_ordine, salvaTavoli = true) {
+    console.log("salvaOrdine chiamata", {
+        id_ordine,
+        salvaTavoli,
+        comanda: state.comanda
+    });
+
     const tavoliSelezionati = [...document.querySelectorAll('input[name="tavoliSelezionati[]"]:checked')]
         .map(el => parseInt(el.value));
 
@@ -25,7 +31,7 @@ export function leggiOrdineSalvato() {
         const json = localStorage.getItem(CHIAVE_ORDINE);
         return json ? JSON.parse(json) : null;
     } catch {
-        svuotaStato();
+        resetState();
         return null;
     }
 }
@@ -60,7 +66,7 @@ export async function ripristinaOrdine() {
     );
 
     if (!esiste) {
-        svuotaStato();
+        resetState();
         return false;
     }
 
@@ -68,5 +74,6 @@ export async function ripristinaOrdine() {
 }
 
 export function svuotaOrdineSalvato() {
-    svuotaStato(); // azzera sia lo state in memoria sia il localStorage, un solo punto (vedi nota su state.js)
+    console.log("svuotaOrdineSalvato chiamata");
+    resetState(); // azzera sia lo state in memoria sia il localStorage, un solo punto (vedi nota su state.js)
 }

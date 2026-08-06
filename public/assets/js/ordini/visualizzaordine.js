@@ -1,4 +1,7 @@
 import { attachDragAndDrop } from './dragdrop.js';
+import { apiGet,apiDelete,apiPatch,apiPost,apiPut } from '../apigeneric.js';
+import { state,showError } from './variabilistato.js';
+
 
 const API_ORDINI = '/ristorante/api/ordini.php';
 
@@ -10,8 +13,10 @@ const NOMI_MOMENTI = {
     5: 'Da evadere'
 };
 
-document.addEventListener('DOMContentLoaded', initVisualizzaOrdine);
-
+document.addEventListener('DOMContentLoaded', () => {
+            attachItemActions();
+            initVisualizzaOrdine();
+        });
 async function initVisualizzaOrdine() {
     try {
         const orderId = new URLSearchParams(window.location.search).get('id');
@@ -19,9 +24,13 @@ async function initVisualizzaOrdine() {
             return showError('ID ordine mancante nell\'URL');
         }
 
-        const items = await fetchOrderItems(orderId);
-        if (!items || !items.length) {
-            return showError('Ordine non trovato o senza elementi');
+        const items = await apiGet(API_ORDINI,{
+            type:"ordine",
+            id:orderId
+        });
+        
+        if (!items?.length) {
+            return showError('Nessun elemento trovato per questo ordine');
         }
 
         renderOrderHeader(items[0]);
@@ -32,15 +41,7 @@ async function initVisualizzaOrdine() {
     }
 }
 
-async function fetchOrderItems(orderId) {
-    const params = new URLSearchParams({ type: 'ordine', id: orderId });
-    const response = await fetch(`${API_ORDINI}?${params.toString()}`);
-    if (!response.ok) {
-        throw new Error(`Errore API: ${response.status}`);
-    }
-    const json = await response.json();
-    return json.data ?? [];
-}
+
 
 function renderOrderHeader(order) {
     const header = document.getElementById('order-header');
@@ -60,7 +61,7 @@ function renderOrderHeader(order) {
     `;
 }
 
-function groupItemsByMoment(items) {
+function raggruppaPerMomento(items) {
     return items.reduce((acc, item) => {
         const momento = item.id_momento ?? '0';
         if (!acc[momento]) acc[momento] = [];
@@ -71,12 +72,12 @@ function groupItemsByMoment(items) {
 
 function renderOrderBoard(items) {
     const board = document.getElementById('order-board');
-    const grouped = groupItemsByMoment(items);
-    const activeMomenti = Object.keys(grouped).sort((a,b) => Number(a) - Number(b));
+    const grouped = raggruppaPerMomento(items);
+    const momentiPresenti = Object.keys(grouped).sort((a,b) => Number(a) - Number(b));
     const momenti = Object.keys(NOMI_MOMENTI);
     board.innerHTML = `
         <div class="order-board">
-            ${momenti.map(momento => renderMomentColumn(momento, grouped[momento] || [], activeMomenti)).join('')}
+            ${momenti.map(momento => renderMomentColumn(momento, grouped[momento] || [], momentiPresenti)).join('')}
         </div>
     `;
     attachDragAndDrop({
@@ -85,18 +86,22 @@ function renderOrderBoard(items) {
         onDrop: async ({ card, payload, zone }) => {
             const newMomentoId = zone.dataset.momentoId;
             card.dataset.momentoId = newMomentoId;
-            try {
-                await updateItemMoment(payload.orderId, payload.itemId, Number(newMomentoId));
-            } catch (error) {
-                throw error;
-            }
+            await apiPut(
+                API_ORDINI,
+                { type: 'item_momento' },
+                {
+                    id_ordine: Number(payload.orderId),
+                    id_comanda_dettaglio: Number(payload.itemId),
+                    id_momento: Number(newMomentoId)
+                }
+            );
         }
     });
-    attachItemActions();
+
 }
 
-function renderMomentColumn(momento, items, activeMomenti) {
-    const portataIndex = activeMomenti.indexOf(momento);
+function renderMomentColumn(momento, items, momentiPresenti) {
+    const portataIndex = momentiPresenti.indexOf(momento);
     const portataLabel = portataIndex !== -1 ? ` - Portata ${portataIndex + 1}` : '';
     return `
         <section class="momento-colonna">
@@ -134,105 +139,65 @@ function renderOrderItem(item) {
 }
 
 function attachItemActions() {
-    document.querySelectorAll('.item-card .btn-delete').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const card = event.target.closest('.item-card');
-            const itemId = card.dataset.itemId;
-            const orderId = card.dataset.orderId;
-            const momento = card.dataset.momentoId;
-            if (!confirm('Eliminare questo elemento dalla comanda?')) {
-                return;
-            }
-            await deleteOrderItem(orderId, itemId, momento);
+    document.addEventListener('click', async (event) => {
+        const button = event.target.closest(
+            '.btn-delete, .btn-edit, .btn-qty-increment, .btn-qty-decrement'
+        );
+        if (!button) return;
+
+        const card = button.closest('.item-card');
+        if (!card) return;
+
+        const { itemId, orderId, momentoId: momento } = card.dataset;
+        const quantitaEl = card.querySelector('.item-quantita');
+        const quantitaCorrente = Number(quantitaEl.textContent.trim());
+
+        
+        if (button.matches('.btn-delete')) {
+            if (!confirm('Eliminare questo elemento dalla comanda?')) return;
+
+            await apiDelete(
+                API_ORDINI,
+                { type: 'item_momento', id: orderId },
+                {
+                    id_comanda_dettaglio: Number(itemId),
+                    id_momento: Number(momento)
+                }
+            );
+
             card.remove();
-        });
-    });
+            return;
+        }
 
-    document.querySelectorAll('.item-card .btn-edit').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const card = event.target.closest('.item-card');
-            const itemId = card.dataset.itemId;
-            const orderId = card.dataset.orderId;
-            const momento = card.dataset.momentoId;
-            const quantitaEl = card.querySelector('.item-quantita');
-            const currentQuantity = Number(quantitaEl.textContent.trim());
-            const newQuantity = prompt('Inserisci nuova quantità', String(currentQuantity));
-            if (!newQuantity || Number(newQuantity) <= 0) return;
-            await updateOrderItemQuantity(orderId, itemId, momento, Number(newQuantity));
-            quantitaEl.textContent = String(Number(newQuantity));
-        });
-    });
+        let nuovaQuantita;
 
-    document.querySelectorAll('.item-card .btn-qty-increment').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const card = event.target.closest('.item-card');
-            const itemId = card.dataset.itemId;
-            const orderId = card.dataset.orderId;
-            const momento = card.dataset.momentoId;
-            const quantitaEl = card.querySelector('.item-quantita');
-            const currentQuantity = Number(quantitaEl.textContent.trim());
-            const newQuantity = currentQuantity + 1;
-            await updateOrderItemQuantity(orderId, itemId, momento, newQuantity);
-            quantitaEl.textContent = String(newQuantity);
-        });
-    });
+        if (button.matches('.btn-edit')) {
+            const valore = prompt('Inserisci nuova quantità', String(quantitaCorrente));
+            const nuovaQuantita = Number(valore);
 
-    document.querySelectorAll('.item-card .btn-qty-decrement').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const card = event.target.closest('.item-card');
-            const itemId = card.dataset.itemId;
-            const orderId = card.dataset.orderId;
-            const momento = card.dataset.momentoId;
-            const quantitaEl = card.querySelector('.item-quantita');
-            const currentQuantity = Number(quantitaEl.textContent.trim());
-            const newQuantity = Math.max(1, currentQuantity - 1);
-            await updateOrderItemQuantity(orderId, itemId, momento, newQuantity);
-            quantitaEl.textContent = String(newQuantity);
-        });
+            if (!Number.isInteger(nuovaQuantita) || nuovaQuantita <= 0) return;
+        } else if (button.matches('.btn-qty-increment')) {
+            nuovaQuantita = quantitaCorrente + 1;
+        } else {
+            nuovaQuantita = Math.max(1, quantitaCorrente - 1);
+        }
+
+        await apiPut(
+            API_ORDINI,
+            { type: 'item_quantita_momento' },
+            {
+                id_ordine: Number(orderId),
+                id_comanda_dettaglio: Number(itemId),
+                id_momento: Number(momento),
+                quantita: nuovaQuantita
+            }
+        );
+
+        quantitaEl.textContent = String(nuovaQuantita);
     });
 }
 
-async function deleteOrderItem(orderId, itemId, momento) {
-    const response = await fetch(`${API_ORDINI}?type=item_momento&id=${orderId}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_comanda_dettaglio: Number(itemId), id_momento: Number(momento) })
-    });
-    if (!response.ok) {
-        throw new Error('Impossibile eliminare l\'elemento');
-    }
-    return response.json();
-}
 
-async function updateOrderItemQuantity(orderId, itemId, momento, quantita) {
-    const response = await fetch(`${API_ORDINI}?type=item_quantita_momento`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_ordine: Number(orderId), id_comanda_dettaglio: Number(itemId), id_momento: Number(momento), quantita })
-    });
-    if (!response.ok) {
-        throw new Error('Impossibile aggiornare la quantità');
-    }
-    return response.json();
-}
 
-async function updateItemMoment(orderId, itemId, newMomento) {
-    const response = await fetch(`${API_ORDINI}?type=item_momento`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_ordine: Number(orderId), id_comanda_dettaglio: Number(itemId), id_momento: Number(newMomento) })
-    });
-    if (!response.ok) {
-        throw new Error('Impossibile spostare l\'elemento');
-    }
-    return response.json();
-}
 
-function showError(message) {
-    const container = document.getElementById('order-error');
-    const board = document.getElementById('order-board');
-    const header = document.getElementById('order-header');
-    container.textContent = message;
-    board.innerHTML = '';
-    header.innerHTML = '';
-}
+

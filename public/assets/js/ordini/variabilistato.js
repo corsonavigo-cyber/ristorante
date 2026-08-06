@@ -2,7 +2,9 @@ export const CHIAVE_ORDINE = "id_ordine";
 
 export const state = {
     comanda: [],           // voci selezionate
-    items: [],             // anagrafica bevande caricata da precaricaBevandeForm
+    items: [], 
+    piatti: [],
+    bevande: [],            // anagrafica bevande caricata da precaricaBevandeForm
     momenti: [],
     tavoliInUso: [],          // tavoli confermati per l'ordine corrente
     momentoAttivo: 1,          // 1=antipasto,2=primo,3=secondo,4=dolci,5=da evadere subito
@@ -14,8 +16,10 @@ export const state = {
 export function resetState() {
     Object.assign(state, {
         comanda: [],
+        items: [],
         piatti: [],
         bevande: [],
+        momenti: [],
         tavoliInUso: [],
         momentoAttivo: 1,
         idOrdineInserito: null,
@@ -23,4 +27,13 @@ export function resetState() {
     });
 
     localStorage.removeItem(CHIAVE_ORDINE);
+}
+
+function showError(message) {
+    const container = document.getElementById('order-error');
+    const board = document.getElementById('order-board');
+    const header = document.getElementById('order-header');
+    container.textContent = message;
+    board.innerHTML = '';
+    header.innerHTML = '';
 }

@@ -51,59 +51,133 @@ const fasciaLavoro = fasceOrarie.find(fascia =>
     minutiAttuali <= oraInMinuti(fascia.fine)
 );
 //da inserire carica ordini su tavololo, se c'è un ordine la prenotazione viene disattivata automaticamente
-async function caricaElementiTavolo(id_tavolo){
-    console.log(`Caricamento elementi per il tavolo ${id_tavolo}`);
-    const prenotazioniCollegate = await API_tav_function.apiGet(API_PRENOTAZIONI, {
-            type: 'tavolo',
-            id: id_tavolo
-        });
-    const ordiniCollegati = await API_tav_function.apiGet(API_ORDINI,{
-        type : 'stato',
-        id : id_tavolo,
-        id_stato : parseInt(1)
+async function recuperaPrenotazioniTavolo(id_tavolo) {
+    return await API_tav_function.apiGet(API_PRENOTAZIONI, {
+        type: 'tavolo',
+        id: id_tavolo
     });
-    const contenitore = document.querySelector(`#prenotato[data-id-tavolo="${id_tavolo}"]`);
+}
+
+async function recuperaOrdiniTavolo(id_tavolo) {
+    return await API_tav_function.apiGet(API_ORDINI, {
+        type: 'stato',
+        id: id_tavolo,
+        id_stato: 1
+    });
+}
+
+function filtraPrenotazioniOggi(prenotazioni) {
+    if (!fasciaLavoro) return [];
+
+    return prenotazioni.filter(prenotazione =>
+        prenotazione.data_in_prenotazione === Utilis.today() &&
+        oraInMinuti(prenotazione.ora_prenotazione) >= oraInMinuti(fasciaLavoro.inizio) &&
+        oraInMinuti(prenotazione.ora_prenotazione) <= oraInMinuti(fasciaLavoro.fine)
+    );
+}
+
+function determinaPrecedenza(ordini) {
+    return ordini.length > 0 ? 'ordine' : 'prenotazione';
+}
+
+function mostraTavoloLibero(contenitore, id_tavolo) {
+
+    contenitore.innerHTML = `
+        <a href="../prenotazioni/inserisciprenotazioni.php?id=${id_tavolo}"
+           class="btn btn-inserisci-prenotazione">
+           Prenota
+        </a>
+
+        <h4>LIBERO</h4>
+
+        <a href="../ordini/inserisciordine.php?id=${id_tavolo}"
+           class="btn btn-inserisci-comanda">
+           +Comanda
+        </a>
+    `;
+}
+
+function mostraPrenotazioni(contenitore, prenotazioni) {
+
+    contenitore.innerHTML = prenotazioni.map(p => `
+        <h4 class="comment"><b>${p.nome_prenotazione}</b></h4>
+        <p class="comment">${p.numero_persone} persone</p>
+        <p class="comment">Ora arrivo ${p.ora_prenotazione}</p>
+        <p class="comment">${p.data_in_prenotazione}</p>
+
+        <a class="btn"
+           href="modificaprenotazione.php?id=${p.id_prenotazione}">
+           Modifica ✏️
+        </a>
+
+        <button
+            class="btn-elimina-prenotazione"
+            data-id="${p.id_prenotazione}">
+            Elimina 🗑️
+        </button>
+
+        <button
+            class="btn-disattiva-prenotazione"
+            data-id="${p.id_prenotazione}">
+            Apri Ordine
+        </button>
+    `).join('');
+}
+
+
+function mostraOrdini(contenitore, ordini, id_tavolo) {
+
+    contenitore.innerHTML = ordini.map(o => `
+        <h4 class="comment"><b>Ordine Aperto</b></h4>
+
+        <p class="comment">Tavolo ${id_tavolo}</p>
+
+        <p class="comment">
+            Stato: ${o.id_stato === 1 ? 'In corso' : 'Chiuso'}
+        </p>
+
+        <a class="btn"
+           href="../ordini/visualizzaordine.php?id=${o.id_ordine}">
+           Visualizza Ordine
+        </a>
+
+        <button
+            class="btn-elimina-ordine"
+            data-id="${o.id_ordine}">
+            Elimina Ordine
+        </button>
+    `).join('');
+}
+
+
+async function caricaElementiTavolo(id_tavolo) {
+
+    console.log(`Caricamento elementi per il tavolo ${id_tavolo}`);
+
+    const prenotazioni = await recuperaPrenotazioniTavolo(id_tavolo);
+    const ordini = await recuperaOrdiniTavolo(id_tavolo);
+
+    const contenitore = document.querySelector(
+        `#prenotato[data-id-tavolo="${id_tavolo}"]`
+    );
+
     if (!contenitore) return;
 
-const prenotazioniOggi = prenotazioniCollegate.filter(prenotazione =>
-    prenotazione.data_in_prenotazione === Utilis.today() &&
-    fasciaLavoro &&
-    oraInMinuti(prenotazione.ora_prenotazione) >= oraInMinuti(fasciaLavoro.inizio) &&
-    oraInMinuti(prenotazione.ora_prenotazione) <= oraInMinuti(fasciaLavoro.fine)
-);
+    const prenotazioniOggi = filtraPrenotazioniOggi(prenotazioni);
 
-    const precedenza = ordiniCollegati.length > 0 ? 'ordine' : 'prenotazione';
-    if (precedenza === 'prenotazione') {
-        if(prenotazioniOggi.length <= 0){
-            return contenitore.innerHTML =`
-        <a href="../prenotazioni/inserisciprenotazioni.php?id=${id_tavolo}" class="btn btn-inserisci-prenotazione">Prenota</a>
-        <h4>LIBERO</h4>
-        <a href="../ordini/inserisciordine.php?id=${id_tavolo}" class="btn btn-inserisci-comanda">+Comanda</a>
-            `;
-        }
-        contenitore.innerHTML = prenotazioniOggi.map(p => `
-            <h4 class="comment"><b>${p.nome_prenotazione}</b></h4>
-            <p class="comment">${p.numero_persone} persone</p>
-            <p class="comment">Ora arrivo ${p.ora_prenotazione}</p>
-            <p class="comment">${p.data_in_prenotazione}</p>
-            <a class="btn" href="modificaprenotazione.php?id=${p.id_prenotazione}">Modifica ✏️</a>
-            <button type="button" class="btn-elimina-prenotazione" data-id="${p.id_prenotazione}">Elimina 🗑️</button>
-            <button type="button" class="btn-disattiva-prenotazione" data-id="${p.id_prenotazione}">Apri Ordine</button>
-
-        `).join('');
-        }
-    if (precedenza === 'ordine') {
-        contenitore.innerHTML = ordiniCollegati.map(o => `
-            <h4 class="comment"><b>Ordine Aperto</b></h4>
-            <p class="comment">Tavolo ${id_tavolo}</p>
-            <p class="comment">Stato: ${o.id_stato === 1 ? 'In corso' : 'Chiuso'}</p>
-            <a class="btn" href="../ordini/visualizzaordine.php?id=${o.id_ordine}">Visualizza Ordine</a>
-            <button type="button" class="btn-elimina-ordine" data-id="${o.id_ordine}">Elimina Ordine</button >
-        `).join('');
-    } else {
-       
+    if (determinaPrecedenza(ordini) === 'ordine') {
+        mostraOrdini(contenitore, ordini, id_tavolo);
+        return;
     }
+
+    if (prenotazioniOggi.length > 0) {
+        mostraPrenotazioni(contenitore, prenotazioniOggi);
+        return;
+    }
+
+    mostraTavoloLibero(contenitore, id_tavolo);
 }
+
 
 async function eliminaTavoloClick(e) {
     try {

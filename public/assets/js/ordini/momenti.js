@@ -1,21 +1,15 @@
 import { apiGet } from '../apigeneric.js';
 import { state } from './variabilistato.js';
 
-export async function caricaMomenti(){
-
-    if(state.momenti.length){
-
+export async function caricaMomenti() {
+    if (Array.isArray(state.momenti) && state.momenti.length) {
         return state.momenti;
-
     }
 
-    state.momenti = await apiGet(
-         API_ORDINI,
-        { type:"momenti" }
-    );
+    const momenti = await apiGet(API_ORDINI, { type: 'momenti' });
 
+    state.momenti = Array.isArray(momenti) ? momenti : [];
     return state.momenti;
-
 }
 
 export async function disegnaMomenti() {

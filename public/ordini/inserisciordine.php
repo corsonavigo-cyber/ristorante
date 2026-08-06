@@ -21,7 +21,7 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
      <form action="" id="form_inserisci_ordine" method="POST">
         <input type="hidden" id="per_ordine_id" name="nascosto" value="">
         <button id="salva" > Salva </button>
-       <div id="primo-step"> 
+       <section id="primo-step"> 
         <label for="numero-persone">Numero Persone : </label>
         <input type="number"  id="numero-persone" name="numero-persone" required> 
 
@@ -37,12 +37,11 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
         <button id="avanti" type="button" class="btn-avanti" data-id="#">Avanti</button>
        <div>
     </div>
-   </div>
-      <div id="secondo-step" class="piattir hider">
+</section>
+      <section id="secondo-step" class="piattir hider">
         <div id="contenitore">
           <div class="componi-comanda">
-             <button type="button" id="aggiorna" class="aggiorna">Aggiorna</button> 
-             <button type="button" id="indietro" class="btn-indietro">Indietro</button>
+             <button type="button" id="btn-elimina-ordine-in-corso" class="btn-elimina-ordine-in-corso">Elimina</button>
             <div id="momenti-servizio">
             </div>
          
@@ -57,10 +56,6 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
               <div id="bevande" >
 
                 <h3>Bevande:</h3>  
-                <dialog id="dettaglioModal_bevande"> 
-                <button type="button"  id="chiudiModal" class="chiudiModal" aria-label="Chiudi">&times;</button>
-                <div id="dettaglioContenuto_bevande"></div>
-                </dialog>
                 <a class="btn" id="linkbev" href="#">+ bevanda  fuorimenu</a>
                 <div id="bevande_input">
             
@@ -75,9 +70,11 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
 
         </div>
         </div>    
-           
+          <dialog id="dettaglioModal_item" class="dettaglioModal">
+            <button type="button"  id="chiudiModal" class="chiudiModal" aria-label="Chiudi">&times;</button>
+            <div id="dettaglioContenuto_item"></div>
        <button type="button"  class="btn-inserisci-ordine hider" data-id="#">Inserisci & Stampa Comanda</button>
-      </div>
+</section>
    
       </form>
   

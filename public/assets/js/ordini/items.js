@@ -8,6 +8,13 @@ function aggiornaLinkFuoriMenu() {
     link.href = `nuovopiattofuorimenu.php?id=${state.idOrdineInserito ?? ""}`;
 }
 
+function separaItems(items) {
+    return {
+        piatti: items.filter(i => i.tipo === "piatto"),
+        bevande: items.filter(i => i.tipo === "bevanda")
+    };
+}
+
 export async function precaricaItemsForm(){
     aggiornaLinkFuoriMenu();
 
@@ -19,11 +26,13 @@ export async function precaricaItemsForm(){
         }
     );
 
-    state.piatti = state.items.filter(item => item.tipo === "piatto");
-    state.bevande = state.items.filter(item => item.tipo === "bevanda");
+    const { piatti, bevande } = separaItems(state.items);
 
-    renderItems(state.piatti, "piatti_input", "piatto");
-    renderItems(state.bevande, "bevande_input", "bevanda");
+    state.piatti = piatti;
+    state.bevande = bevande;
+
+    renderItems(piatti, "piatti_input", "piatto");
+    renderItems(bevande, "bevande_input", "bevanda");
 }
 
 function renderItems(items, containerId, tipo) {
@@ -31,7 +40,6 @@ function renderItems(items, containerId, tipo) {
     if (!container) return;
 
     container.innerHTML = items
-        .filter(item => item.in_menu === "si")
         .map(item => renderItemCard(item, tipo))
         .join("");
 }
@@ -45,7 +53,7 @@ function renderItemCard(item, tipo) {
 
 <button
     type="button"
-    class="btn-inserisci-${tipo}-ordine ${tipo === 'bevanda' ? 'ins-bev' : ''}"
+    class="btn-inserisci-${tipo}-ordine ${tipo === 'bevanda' ? 'ins-bevanda' : 'ins-piatto'}"
     id="nome-${tipo}${item.id_item}"
     data-id="${item.id_item}"
     data-nome="${item.nome}"
@@ -71,10 +79,10 @@ ${allergeniText ? allergeniText.split(", ").join(", ") : "Nessun allergene"}
 
 <input
     type="number"
-    class="quantita${tipo === 'bevanda' ? '-bev' : ''}"
+    class="quantita${tipo === 'bevanda' ? '-bevanda' : '-piatto'}"
     data-id="${item.id_item}"
     data-tipo="${tipo}"
-    id="quantita${tipo === 'bevanda' ? '-bev-' : ''}${item.id_item}"
+    id="quantita${tipo === 'bevanda' ? '-bevanda-' : '-piatto-'}${item.id_item}"
     value="0"
     min="0">
 
@@ -84,8 +92,8 @@ ${allergeniText ? allergeniText.split(", ").join(", ") : "Nessun allergene"}
 
 <input
     type="text"
-    class="note${tipo === 'bevanda' ? '-bev' : ''}"
-    id="note-${tipo === 'bevanda' ? 'bev-' : ''}${item.id_item}"
+    class="note${tipo === 'bevanda' ? '-bevanda' : 'piatto'}"
+    id="note-${tipo === 'bevanda' ? 'bevanda-' : 'piatto'}${item.id_item}"
     data-id="${item.id_item}"
     data-tipo="${tipo}"
     maxlength="100"
@@ -97,7 +105,6 @@ ${allergeniText ? allergeniText.split(", ").join(", ") : "Nessun allergene"}
 
 `;
 }
-//da modificare con le correzioni
 
 export function mostraDettaglioItem(idItem) {
 
@@ -106,72 +113,84 @@ export function mostraDettaglioItem(idItem) {
 
     if (!modal || !contenitore) return;
 
-    const item = state.bevande.find(
-        b => Number(b.id_item) === Number(idItem)
+    const item = state.items.find(
+        i => Number(i.id_item) === Number(idItem)
     );
 
     if (!item) return;
 
-    const contieneAlcol = item.categoria === 'item_alcolica' ? 'Sì' : 'No';
-    const allergeniText = item.nomi_allergeni ?? item.allergeni ?? item.lista_allergeni ?? 'Nessun allergene';
+    const allergeniText =
+        item.nomi_allergeni ??
+        item.allergeni ??
+        item.lista_allergeni ??
+        "Nessun allergene";
+
+    const infoAggiuntive = item.tipo === "bevanda"
+        ? `
+            <p class="comment">
+                Contiene Alcol: ${item.categoria === "item_alcolica" ? "Sì" : "No"}
+            </p>
+        `
+        : `
+            <p class="comment">
+                Categoria: ${item.categoria}
+            </p>
+        `;
 
     contenitore.innerHTML = `
-
 <div
-class="btn-inserisci-itemmenu-ordine"
-id="nome-item${item.id_item}"
-data-id="${item.id_item}"
-data-nome="${item.nome}">
+    class="btn-inserisci-itemmenu-ordine"
+    id="nome-item${item.id_item}"
+    data-id="${item.id_item}"
+    data-nome="${item.nome}"
+    data-tipo="${item.tipo}">
 
-<h3 class="comment">
-<b>${item.nome}</b>
-</h3>
+    <h3 class="comment">
+        <b>${item.nome}</b>
+    </h3>
 
-<p class="comment">
-${item.descrizione}
-</p>
+    <p class="comment">
+        ${item.descrizione}
+    </p>
 
-<p
-class="comment"
-id="prezzo-bev${item.id_item}"
-data-prezzo="${item.prezzo}">
-Prezzo: ${item.prezzo} €
-</p>
+    <p
+        class="comment"
+        id="prezzo-item${item.id_item}"
+        data-prezzo="${item.prezzo}">
+        Prezzo: ${item.prezzo} €
+    </p>
 
-<p class="comment">
-Contiene Alcol: ${contieneAlcol}
-</p>
+    ${infoAggiuntive}
 
-<p class="elenco_allergeni">
-${allergeniText}
-</p>
+    <p class="elenco_allergeni">
+        ${allergeniText}
+    </p>
 
-<label>Quantità</label>
+    <label>Quantità</label>
 
-<input
-type="number"
-class="quantita-bev"
-id="quantita-bev-${item.id_item}"
-data-id="${item.id_item}"
-data-tipo="bevanda"
-value="0"
-min="0">
+    <input
+        type="number"
+        class="quantita-item"
+        id="quantita-item-${item.id_item}"
+        data-id="${item.id_item}"
+        data-tipo="${item.tipo}"
+        value="0"
+        min="0">
 
-<br>
+    <br>
 
-<label>Note</label>
+    <label>Note</label>
 
-<input
-type="text"
-class="note-bev"
-id="note-bev-${bevanda.id_item}"
-data-id="${item.id_item}"
-data-tipo="item"
-maxlength="100"
-placeholder="...">
+    <input
+        type="text"
+        class="note-item"
+        id="note-item-${item.id_item}"
+        data-id="${item.id_item}"
+        data-tipo="${item.tipo}"
+        maxlength="100"
+        placeholder="...">
 
 </div>
-
 `;
 
     modal.showModal();

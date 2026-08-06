@@ -24,15 +24,18 @@ export function apiPost(urlApi, payload) {
     });
 }
 
-export function apiPut(urlApi,elemento, payload, type = "") {
-    const id = leggiId(elemento, payload);
-    const params = new URLSearchParams({ id });
+export function apiPut(urlApi, elementoOParametri, payload, type = "") {
+    const isElementoDom = elementoOParametri instanceof Element;
 
-    if (type) params.set("type", type);
+    const params = isElementoDom
+        ? new URLSearchParams({ id: leggiId(elementoOParametri, payload) })
+        : new URLSearchParams(elementoOParametri);
+
+    if (type) params.set('type', type);
 
     return richiesta(`${urlApi}?${params}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
 }
@@ -48,9 +51,13 @@ export function apiPatch(urlApi, elemento, payload) {
     });
 }
 
-export function apiDelete(urlApi, params = {}) {
-    const query = new URLSearchParams(params);
-    return richiesta(`${urlApi}?${query}`, {
-        method: 'DELETE'
-    });
+export function apiDelete(urlApi, params = {}, payload = null) {
+    const options = { method: 'DELETE' };
+
+    if (payload !== null) {
+        options.headers = { 'Content-Type': 'application/json' };
+        options.body = JSON.stringify(payload);
+    }
+
+    return richiesta(`${urlApi}?${new URLSearchParams(params)}`, options);
 }
