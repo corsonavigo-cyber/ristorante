@@ -26,7 +26,7 @@ async function caricaTavoli (){
        <button type="button" class="btn-elimina" data-id="${tavolo.id_tavolo}">🗑️</button>
        <p class="comment">Posti max ${tavolo.posti_max} </p>
        <!--per visualizzazione in caso di tavolo prenotato-->
-       <div class="tavolo" id="prenotato" data-id-tavolo="${tavolo.id_tavolo}">  </div> 
+       <div class="tavolo" id="prenotato" data-id_tavolo="${tavolo.id_tavolo}" style="">  </div> 
        <!--link AJAX per inviare la modifica tavolo-->
        
     </div>`).join('');
@@ -42,7 +42,7 @@ const adesso = new Date();
 const minutiAttuali = adesso.getHours() * 60 + adesso.getMinutes();
 
 const fasceOrarie = [
-    { inizio: "12:00", fine: "15:00" },
+    { inizio: "12:00", fine: "18:59" },
     { inizio: "19:00", fine: "23:30" }
 ];
 
@@ -97,10 +97,12 @@ function mostraTavoloLibero(contenitore, id_tavolo) {
     `;
 }
 
-function mostraPrenotazioni(contenitore, prenotazioni) {
-
+function mostraPrenotazioni(contenitore, prenotazioni, id_tavolo) {
+    
     contenitore.innerHTML = prenotazioni.map(p => `
+        <div class="elemento" data-id_elemento_da_mettere_in_evidenza="${p.id_prenotazione}">
         <h4 class="comment"><b>${p.nome_prenotazione}</b></h4>
+        <h5 class="comment">Tavolo ${p.numero_tavoli}</h5>
         <p class="comment">${p.numero_persone} persone</p>
         <p class="comment">Ora arrivo ${p.ora_prenotazione}</p>
         <p class="comment">${p.data_in_prenotazione}</p>
@@ -118,19 +120,23 @@ function mostraPrenotazioni(contenitore, prenotazioni) {
 
         <button
             class="btn-disattiva-prenotazione"
-            data-id="${p.id_prenotazione}">
+            data-id="${p.id_prenotazione}"
+            data-tavolo="${p.numero_tavoli}">
             Apri Ordine
         </button>
     `).join('');
+     divEvidenza = document.querySelector(`.elemento[data-id_elemento_da_mettere_in_evidenza="${prenotazioni[0].id_prenotazione}"]`);
+     coloratavoli(divEvidenza,id_tavolo);
 }
 
 
 function mostraOrdini(contenitore, ordini, id_tavolo) {
-
+     
     contenitore.innerHTML = ordini.map(o => `
+        <div class="elemento" data-id_elemento_da_mettere_in_evidenza="${o.id_ordine}">
         <h4 class="comment"><b>Ordine Aperto</b></h4>
 
-        <p class="comment">Tavolo ${id_tavolo}</p>
+        <p class="comment">Tavolo id ${id_tavolo}</p>
 
         <p class="comment">
             Stato: ${o.id_stato === 1 ? 'In corso' : 'Chiuso'}
@@ -146,8 +152,29 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
             data-id="${o.id_ordine}">
             Elimina Ordine
         </button>
+        </div>
     `).join('');
+    divEvidenza= contenitore.querySelector(`.elemento`);
+     coloratavoli(divEvidenza,id_tavolo);
 }
+function coloratavoli(contenitore,id_elemento_da_mettere_in_evidenza){
+    const color=randomColor();
+    console.log(`Colorazione tavolo ${id_elemento_da_mettere_in_evidenza} con colore ${color}`);
+    if (contenitore.dataset.id_elemento_da_mettere_in_evidenza) {
+        console.log('entrato')
+            contenitore.style.backgroundColor = color;
+        } else {
+            contenitore.style.backgroundColor = '';
+        }
+  
+}
+
+function randomColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgba(${r}, ${g}, ${b},0.2)`;
+        }
 
 
 async function caricaElementiTavolo(id_tavolo) {
@@ -158,7 +185,7 @@ async function caricaElementiTavolo(id_tavolo) {
     const ordini = await recuperaOrdiniTavolo(id_tavolo);
 
     const contenitore = document.querySelector(
-        `#prenotato[data-id-tavolo="${id_tavolo}"]`
+        `#prenotato[data-id_tavolo="${id_tavolo}"]`
     );
 
     if (!contenitore) return;
@@ -171,7 +198,7 @@ async function caricaElementiTavolo(id_tavolo) {
     }
 
     if (prenotazioniOggi.length > 0) {
-        mostraPrenotazioni(contenitore, prenotazioniOggi);
+        mostraPrenotazioni(contenitore, prenotazioniOggi, id_tavolo);
         return;
     }
 
@@ -242,3 +269,4 @@ async function eliminaTavoloClick(e) {
         alert(errore.message);
     }
 }
+    

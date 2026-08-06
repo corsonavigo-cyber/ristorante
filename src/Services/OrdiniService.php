@@ -160,9 +160,10 @@ class OrdiniService {
 
         #salto l'autorizzazione in base al ruolo
        try {
-             $this->ordiniRepo->relazioneOrdineTavolo($id_ordine,$tavoli);
-             $this->logger->info("Ordine inserito correttamente id_ordine {$id_ordine} sul tavolo {$tavoli}: inserito con successo");
-             return true;
+            $this->ordiniRepo->relazioneOrdineTavolo($id_ordine,$tavoli);
+            $tavoliString = is_array($tavoli) ? implode(', ', $tavoli) : $tavoli;
+
+            $this->logger->info("Ordine inserito correttamente id_ordine {$id_ordine} sul tavolo {$tavoliString}: inserito con successo");             return true;
              
         }catch (\Throwable $e) {
              $this->logger->error("Relazione ordine {$id_ordine} non inserita: {$e->getMessage()}");

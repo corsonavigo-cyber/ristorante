@@ -42,7 +42,7 @@ export async function disegnaMomenti() {
 
         ${
             attivo
-                ? `<h3>${attivo.nome_servizio.toUpperCase()}</h3>`
+                ? `<h3>${attivo.nome_servizio}</h3>`
                 : ""
         }
     `;

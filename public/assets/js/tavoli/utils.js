@@ -5,6 +5,22 @@ export function today() {
     return d.toISOString().split('T')[0]; // "2026-06-30"
 }
 
+export function mostraAvviso(sezione, avviso, messaggio, positivo = false) {
+    if (!sezione || !avviso) {
+        console.error('Elemento sezione o avviso non trovato');
+        return;
+    }
+
+    if (messaggio) {
+        avviso.textContent = messaggio;
+        sezione.classList.remove('warning', 'controllopositivo');
+        sezione.classList.add(positivo ? 'controllopositivo' : 'warning');
+    } else {
+        avviso.textContent = '';
+        sezione.classList.remove('warning', 'controllopositivo');
+    }
+}
+
 export async function erroreRisposta(risposta) {
     const json = await risposta.json().catch(() => null);
     return new Error(json?.data ?? `Errore HTTP ${risposta.status}`);

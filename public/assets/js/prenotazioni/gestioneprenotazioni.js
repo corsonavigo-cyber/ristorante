@@ -125,6 +125,7 @@ export async function eliminaPrenotazioneClick(e){
 
         //recupero il data set da data-id
         const id_disattiva =btn_disattiva.dataset.id;
+        const id_tavolo =btn_disattiva.dataset.tavolo;
         //blocco l'esecuzione se non arriva l'id
         if(!id_disattiva){
           throw new Error('Non è stato possibile disattivare la Prenotazione , manca ID!');
@@ -137,7 +138,7 @@ export async function eliminaPrenotazioneClick(e){
               );
 
               //se il flusso del programma non viene interrotto ricarico i piatti
-              window.location.reload();
+        window.location.href = `../ordini/inserisciordine.php?id=${id_tavolo}&id_prenotazione=${id_disattiva}`;
             
     }catch (errore){
         console.error(errore);

@@ -6,7 +6,7 @@ import { ripristinaOrdine, salvaOrdine, svuotaOrdineSalvato, leggiOrdineSalvato 
 import { precaricaTavoliForm, controllaTavoloDisponibile } from './tavoli-ordine.js';
 import { inserisciOrdine, inserisciOrdineStato, inserisciOrdineTavolo,inserisciComanda, inserisciItemOrdine } from './ordine.js';
 import { apiPost, apiDelete } from '../apigeneric.js';
-import { annullaOrdineInCompilazione } from './elimina.js';
+import { annullaOrdineInCompilazione } from './eliminazioni.js';
 
 document.addEventListener('input', gestisciInputGlobali);
 document.addEventListener('click', globalClick);

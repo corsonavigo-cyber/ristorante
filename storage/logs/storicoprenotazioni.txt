@@ -5,3 +5,10 @@
 [2026-08-03 11:04:59] [SPOSTATA] Prenotazione 9: modificata con successo sia il tavolo che la prenotazione
 [2026-08-03 11:33:03] [EFFETTUATA] Prenotazione inserita correttamente id_prenotazione 21 sul tavolo 6
 [2026-08-03 11:34:44] [EFFETTUATA] Prenotazione inserita correttamente id_prenotazione 22 sul tavolo 6
+[2026-08-06 12:35:39] [EFFETTUATA] Prenotazione inserita correttamente id_prenotazione 23 sul tavolo 3, 4, 5, 6
+[2026-08-06 12:35:48] [NON PRESENTATI] Prenotazione 23 : annullata con successo 
+[2026-08-06 15:17:53] [NON PRESENTATI] Prenotazione 23 : annullata con successo 
+[2026-08-06 15:23:28] [NON PRESENTATI] Prenotazione 23 : annullata con successo 
+[2026-08-06 15:25:23] [NON PRESENTATI] Prenotazione 23 : annullata con successo 
+[2026-08-06 15:46:24] [CANCELLATA] Prenotazione id 23 (gianni) rimossa
+[2026-08-06 15:48:28] [NON PRESENTATI] Prenotazione 22 : annullata con successo 

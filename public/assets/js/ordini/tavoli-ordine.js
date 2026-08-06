@@ -1,5 +1,6 @@
 import { apiGet, apiPost, apiPatch } from '../apigeneric.js';
 import { state,  CHIAVE_ORDINE } from './variabilistato.js';
+import { mostraAvviso } from '../tavoli/utils.js';
 
 export function caricaOrdiniOggi() {
     return apiGet( API_ORDINI, { type: 'oggi' });
@@ -46,15 +47,17 @@ export async function controllaTavoloDisponibile(tavoliSelezionati = []) {
     mostraAvviso(sezione, avviso, "", true);
     return true;
 }
-export async function precaricaTavoliForm(id_tavolo_arrivato_url) {
-    // legge l'id dall'URL: modificaprenotazione.php?id=5
+export async function precaricaTavoliForm() {
+    // legge tavoli
     const risposta = await fetch(`${API}`);
     const json = await risposta.json();
     const data = json.data; // ← prendi il primo elemento
-       
+    
     const lavagna = document.getElementById('tavoli_checkbox');
    
-    id_tavolo_arrivato_url= new URLSearchParams(window.location.search).get('id');
+    const id_tavolo_arrivato_url= new URLSearchParams(window.location.search).get('id');
+    const prenotazione = new URLSearchParams(window.location.search).get('id_prenotazione')? new URLSearchParams(window.location.search).get('id_prenotazione'):null;
+    
     if(id_tavolo_arrivato_url && state.confirmGiaChiesto){
         await controllaPostiTavoloDisponibili();
         return;
@@ -62,7 +65,13 @@ export async function precaricaTavoliForm(id_tavolo_arrivato_url) {
     lavagna.innerHTML = data.map(tavolo => `
        <li><label><input type="checkbox" name="tavoliSelezionati[]" id="id_${tavolo.id_tavolo}" value="${tavolo.id_tavolo}" data-posti="${tavolo.posti_max}">Numero Tavolo ${tavolo.numero_tavolo} posti ${tavolo.posti_max}</label></li>`).join('');
     console.log("ID Tavolo arrivato dall'URL:", parseInt(id_tavolo_arrivato_url));
-    await selezionatavolo(id_tavolo_arrivato_url);
+    if(prenotazione){
+        const prenotazione_tavoli = await apiGet(API_PRENOTAZIONI, { type: 'prenotazioni', id: prenotazione });
+        selezionatavolo(prenotazione_tavoli.id_tavoli );
+
+    }else{
+        selezionatavolo(parseInt(id_tavolo_arrivato_url));
+    }
     
 }
 

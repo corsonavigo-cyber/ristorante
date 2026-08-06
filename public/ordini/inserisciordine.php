@@ -20,7 +20,8 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
    <div class="piatto">
      <form action="" id="form_inserisci_ordine" method="POST">
         <input type="hidden" id="per_ordine_id" name="nascosto" value="">
-        <button id="salva" > Salva </button>
+        <button type="button"id="salva" > Salva </button>
+
        <section id="primo-step"> 
         <label for="numero-persone">Numero Persone : </label>
         <input type="number"  id="numero-persone" name="numero-persone" required> 
@@ -83,6 +84,7 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
     const API = '/ristorante/api/tavoli.php';
     const API_ORDINI = '/ristorante/api/ordini.php';
     const API_MENU = '/ristorante/api/menu.php';
+    const API_PRENOTAZIONI = '/ristorante/api/prenotazioni.php';
 
 </script>
 <script type="module" src="/ristorante/public/assets/js/ordini/init-ordine.js" defer></script> 
