@@ -12,3 +12,4 @@
 [2026-08-06 15:25:23] [NON PRESENTATI] Prenotazione 23 : annullata con successo 
 [2026-08-06 15:46:24] [CANCELLATA] Prenotazione id 23 (gianni) rimossa
 [2026-08-06 15:48:28] [NON PRESENTATI] Prenotazione 22 : annullata con successo 
+[2026-08-07 10:23:24] [CANCELLATA] Prenotazione 7 : eliminata con successo dal tavolo

@@ -113,7 +113,7 @@ function mostraPrenotazioni(contenitore, prenotazioni, id_tavolo) {
         </a>
 
         <button
-            class="btn-elimina-prenotazione"
+            class="btn-elimina-elemento"
             data-id="${p.id_prenotazione}">
             Elimina 🗑️
         </button>
@@ -125,7 +125,7 @@ function mostraPrenotazioni(contenitore, prenotazioni, id_tavolo) {
             Apri Ordine
         </button>
     `).join('');
-     divEvidenza = document.querySelector(`.elemento[data-id_elemento_da_mettere_in_evidenza="${prenotazioni[0].id_prenotazione}"]`);
+     const divEvidenza = contenitore.querySelector(`.elemento`);
      coloratavoli(divEvidenza,id_tavolo);
 }
 
@@ -136,8 +136,8 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
         <div class="elemento" data-id_elemento_da_mettere_in_evidenza="${o.id_ordine}">
         <h4 class="comment"><b>Ordine Aperto</b></h4>
 
-        <p class="comment">Tavolo id ${id_tavolo}</p>
 
+        <p class="comment">Numero Persone ${o.numero_persone}</p>
         <p class="comment">
             Stato: ${o.id_stato === 1 ? 'In corso' : 'Chiuso'}
         </p>
@@ -147,14 +147,15 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
            Visualizza Ordine
         </a>
 
+        
         <button
-            class="btn-elimina-ordine"
+            class="btn-elimina-elemento"
             data-id="${o.id_ordine}">
             Elimina Ordine
         </button>
         </div>
     `).join('');
-    divEvidenza= contenitore.querySelector(`.elemento`);
+    const divEvidenza= contenitore.querySelector(`.elemento`)? contenitore.querySelector(`.elemento`): null;
      coloratavoli(divEvidenza,id_tavolo);
 }
 function coloratavoli(contenitore,id_elemento_da_mettere_in_evidenza){
@@ -208,9 +209,9 @@ async function caricaElementiTavolo(id_tavolo) {
 
 async function eliminaTavoloClick(e) {
     try {
-        const btn = e.target instanceof Element ? e.target.closest('.btn-elimina') : null;
+        const btn = e.target instanceof Element ? e.target.closest('.btn-elimina-elemento') : null;
 
-        if (!btn) return;
+        if (!btn) return console.log('Click non su bottone elimina tavolo');
 
         const idElimina = btn.dataset.id;
 

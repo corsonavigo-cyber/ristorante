@@ -29,7 +29,7 @@ export function resetState() {
     localStorage.removeItem(CHIAVE_ORDINE);
 }
 
-function showError(message) {
+export function showError(message) {
     const container = document.getElementById('order-error');
     const board = document.getElementById('order-board');
     const header = document.getElementById('order-header');

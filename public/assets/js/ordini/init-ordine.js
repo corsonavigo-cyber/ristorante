@@ -20,28 +20,38 @@ document.addEventListener('DOMContentLoaded', initPaginaOrdine);
 
 async function initPaginaOrdine() {
     try {
-        await precaricaTavoliForm();
+        if(!primo_step.classList.contains('hider')) {
+            await precaricaTavoliForm();
+        
+            const ordineRipristinato = await ripristinaOrdine();
 
-        const ordineRipristinato = await ripristinaOrdine();
+            if (ordineRipristinato && state.idOrdineInserito) {
+            
+                hid.value = state.idOrdineInserito;
+                secondo_step.classList.remove('hider');
+                primo_step.classList.add('hider');
+                disegnaMomenti();
+                ripristinaQuantitaComanda();
+            } else {
+                const ordineLocale = leggiOrdineSalvato();
 
-        if (ordineRipristinato && state.idOrdineInserito) {
-            hid.value = state.idOrdineInserito;
-            secondo_step.classList.remove('hider');
-            primo_step.classList.add('hider');
-            disegnaMomenti();
-            ripristinaQuantitaComanda();
-        } else {
-            const ordineLocale = leggiOrdineSalvato();
+                if (ordineLocale?.tavoli?.length) {
+                    ordineLocale.tavoli.forEach(id => {
+                        const checkbox = document.querySelector(
+                            `input[name="tavoliSelezionati[]"][value="${id}"]`
+                        );
 
-            if (ordineLocale?.tavoli?.length) {
-                ordineLocale.tavoli.forEach(id => {
-                    const checkbox = document.querySelector(
-                        `input[name="tavoliSelezionati[]"][value="${id}"]`
-                    );
-
-                    if (checkbox) checkbox.checked = true;
-                });
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
             }
+        }else if(!secondo_step.classList.contains('hider')) {
+            const ordineLocale = leggiOrdineSalvato();
+            if (ordineLocale?.id_ordine) {
+                hid.value = ordineLocale.id_ordine;
+                state.idOrdineInserito = ordineLocale.id_ordine;
+            }
+            
         }
 
         const tavoliSelezionati = [
@@ -111,8 +121,9 @@ async function initPaginaOrdine() {
         // 1. Ripresa ordine parziale: non creare nulla nel database.
         if (idSalvato > 0) {
             const riprendi = confirm(
-                'È presente un ordine parzialmente compilato. Vuoi riprenderlo?'
+                'È presente un ordine parzialmente compilato. Vuoi riprenderlo? Se scegli "No", verrà creato un nuovo ordine e quello precedente sarà eliminato.'
             );
+            alert("apertura nuovo ordine");
 
             if (riprendi) {
                 hid.value = idSalvato;
@@ -141,7 +152,6 @@ async function initPaginaOrdine() {
 
         // 3. Nuovo ordine: crea ordine + relazioni iniziali.
         const nuovoIdOrdine = await inserisciOrdine();
-
         if (!Number.isInteger(Number(nuovoIdOrdine)) || Number(nuovoIdOrdine) <= 0) {
             throw new Error('ID del nuovo ordine non valido');
         }

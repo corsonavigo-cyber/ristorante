@@ -30,13 +30,13 @@ class OrdiniRepositories extends BaseRepositories {
     relazione_stato_ordine.id_stato,
     stato_conto.nome_stato
 FROM ordine
-JOIN ordine_tavolo 
+LEFT JOIN ordine_tavolo 
     ON ordine_tavolo.id_ordine = ordine.id_ordine
-JOIN tavolo 
+LEFT JOIN tavolo 
     ON tavolo.id_tavolo = ordine_tavolo.id_tavolo
-JOIN relazione_ordine_item 
+LEFT JOIN relazione_ordine_item 
     ON relazione_ordine_item.id_ordine = ordine.id_ordine
-JOIN item_menu 
+LEFT JOIN item_menu 
     ON item_menu.id_item = relazione_ordine_item.id_item
 LEFT JOIN (
     -- pre-aggregazione: un allergene concat per id_item, evita di moltiplicare le righe dell'ordine
@@ -48,9 +48,9 @@ LEFT JOIN (
     GROUP BY relazione_allergeni_item.id_item
 ) AS allergeni_item 
     ON allergeni_item.id_item = item_menu.id_item
-JOIN relazione_stato_ordine 
+LEFT JOIN relazione_stato_ordine 
     ON relazione_stato_ordine.id_ordine = ordine.id_ordine
-JOIN stato_conto 
+LEFT JOIN stato_conto 
     ON stato_conto.id_stato = relazione_stato_ordine.id_stato";
 
      private const API_TOT_GROUP_ORDER = "

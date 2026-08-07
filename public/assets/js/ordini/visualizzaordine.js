@@ -1,7 +1,7 @@
 import { attachDragAndDrop } from './dragdrop.js';
 import { apiGet,apiDelete,apiPatch,apiPost,apiPut } from '../apigeneric.js';
-import { state,showError } from './variabilistato.js';
-import { eliminaItemNellOrdineClick } from './eliminazioni.js';
+import { state, showError } from './variabilistato.js';
+import { eliminaItemNellOrdine } from './eliminazioni.js';
 
 
 const API_ORDINI = '/ristorante/api/ordini.php';
@@ -30,10 +30,13 @@ async function initVisualizzaOrdine() {
             id:orderId
         });
         
-        if (!items?.length) {
-            return showError('Nessun elemento trovato per questo ordine');
+        if (!items?.id_comanda_dettaglio) {
+            
+            alert('Nessun elemento trovato per questo ordine');
+            renderOrderHeader(items[0]);
+            return;
         }
-
+        
         renderOrderHeader(items[0]);
         renderOrderBoard(items);
     } catch (error) {
@@ -43,7 +46,16 @@ async function initVisualizzaOrdine() {
 }
 
 
-
+function eliminaItemNellOrdineClick() {
+    btn_elimina_item = e.target.closest('.btn-elimina-singolo-item');
+    if (!btn_elimina_item) return;
+    confirm('Vuoi eliminare questo elemento dalla comanda?');
+    eliminaItemNellOrdine({
+        orderId: btn_elimina_item.dataset.orderId,
+        itemId: btn_elimina_item.dataset.itemId,
+        momento: btn_elimina_item.dataset.momentoId
+    }); 
+}
 function renderOrderHeader(order) {
     const header = document.getElementById('order-header');
     header.innerHTML = `

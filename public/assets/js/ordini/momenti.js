@@ -32,7 +32,7 @@ export async function disegnaMomenti() {
                         <button
                             class="btn-momento ${Number(m.id_momento)===Number(state.momentoAttivo) ? 'attivo':''}"
                             data-id="${m.id_momento}">
-                            ${m.nome_servizio}
+                            ${m.nome_momento}
                         </button>
                     </div>
                 `).join("")
@@ -49,7 +49,7 @@ export async function disegnaMomenti() {
 }
 
 export function cambiaMomento(idMomento){
-
+    console.log("cambiaMomento", idMomento);
     state.momentoAttivo = Number(idMomento);
 
 }

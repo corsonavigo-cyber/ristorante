@@ -21,7 +21,7 @@ export async function precaricaItemsForm(){
     state.items = await apiGet(
         API_MENU,
         {
-            type: "dettaglio",
+            type: "item",
             in_menu: "si"
         }
     );

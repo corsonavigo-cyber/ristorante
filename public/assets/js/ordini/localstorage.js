@@ -15,7 +15,7 @@ export function salvaOrdine(id_ordine, salvaTavoli = true) {
 
     if (salvaTavoli) state.tavoliInUso = tavoliSelezionati;
 
-    const step = document.getElementById('secondo-step').classList.contains('hider') ? 1 : 2;
+    const step = document.getElementById('secondo-step').classList.contains('hider') ? 2 : 1;
     const ordine = {
         id_ordine,
         step,
@@ -29,6 +29,7 @@ export function salvaOrdine(id_ordine, salvaTavoli = true) {
 export function leggiOrdineSalvato() {
     try {
         const json = localStorage.getItem(CHIAVE_ORDINE);
+        
         return json ? JSON.parse(json) : null;
     } catch {
         resetState();
@@ -39,38 +40,39 @@ export function leggiOrdineSalvato() {
 // Ripristina lo stato da localStorage, senza verificare nulla lato server.
 // Usata quando sai già che l'ordine in bozza è ancora valido (es. dopo un
 // controllo posti tavolo appena fatto).
-export function ripristinaOrdineLocale() {
-    const ordine = leggiOrdineSalvato();
+export function ripristinaOrdineLocale(ordine) {
+   
     if (!ordine) return false;
-
     state.comanda = ordine.comanda ?? [];
     state.idOrdineInserito = ordine.id_ordine ?? null;
     state.tavoliInUso = ordine.tavoli ?? [];
-    return Number(ordine.step) === 2;
+    
+    return parseInt(ordine.step) === parseInt(2);
 }
 
 // Ripristina lo stato controllando prima che l'ordine esista ancora nel DB:
 // se è stato cancellato/evaso lato server, pulisce la bozza locale invece
 // di far ripartire l'utente da uno stato incoerente.
 export async function ripristinaOrdine() {
+    
     const ordine = leggiOrdineSalvato();
-
+    
     if (!ordine) {
         return false;
     }
-
+    console.log("chiamata ripristinata chiamata", ordine);
     const ordiniOggi = await caricaOrdiniOggi();
-
+    console.log("ordiniOggi", ordiniOggi);
     const esiste = ordiniOggi.some(
         o => Number(o.id_ordine) === Number(ordine.id_ordine)
     );
-
+    console.log("esiste", esiste);
     if (!esiste) {
         resetState();
         return false;
     }
 
-    return ripristinaOrdineLocale();
+    return ripristinaOrdineLocale(ordine);
 }
 
 export function svuotaOrdineSalvato() {
