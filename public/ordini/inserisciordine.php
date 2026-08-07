@@ -71,10 +71,22 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
 
         </div>
         </div>    
-          <dialog id="dettaglioModal_item" class="dettaglioModal">
-            <button type="button"  id="chiudiModal" class="chiudiModal" aria-label="Chiudi">&times;</button>
-            <div id="dettaglioContenuto_item"></div>
-       <button type="button"  class="btn-inserisci-ordine hider" data-id="#">Inserisci & Stampa Comanda</button>
+         <dialog id="dettaglioModal_item" class="dettaglioModal">
+
+    <div id="dettaglioContenuto_item"></div>
+
+    <div class="azioni-modal">
+        <button type="button" id="btn-annulla-item" class="chiudiModal" data-salva="false">
+            Annulla
+        </button>
+
+        <button type="button" id="btn-salva-item" class="chiudiModal" data-salva="true">
+            Salva
+        </button>
+    </div>
+
+</dialog>
+<button type="button"  class="btn-inserisci-ordine hider" data-id="#">Inserisci & Stampa Comanda</button>
 </section>
    
       </form>

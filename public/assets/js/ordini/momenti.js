@@ -28,8 +28,10 @@ export async function disegnaMomenti() {
 
             ${
                 momenti.map(m=>`
-                    <div class="mmomenti">
+                    <div class="momenti">
                         <button
+                            type="button"
+                            
                             class="btn-momento ${Number(m.id_momento)===Number(state.momentoAttivo) ? 'attivo':''}"
                             data-id="${m.id_momento}">
                             ${m.nome_momento}

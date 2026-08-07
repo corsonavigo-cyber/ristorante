@@ -15,7 +15,7 @@ export function salvaOrdine(id_ordine, salvaTavoli = true) {
 
     if (salvaTavoli) state.tavoliInUso = tavoliSelezionati;
 
-    const step = document.getElementById('secondo-step').classList.contains('hider') ? 2 : 1;
+    const step = 2;
     const ordine = {
         id_ordine,
         step,
