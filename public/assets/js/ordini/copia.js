@@ -22,6 +22,8 @@ async function initPaginaOrdine() {
         const ordineLocale = leggiOrdineSalvato();
         const idSalvato = Number(ordineLocale?.idOrdineInserito ?? state.idOrdineInserito);
 
+        // Ordine già confermato in precedenza (idSalvato valido in localStorage):
+        // salta lo step 1 e apri sempre lo step 2 al reload, senza chiedere conferma di nuovo.
         if (idSalvato > 0) {
             hid.value = idSalvato;
             state.idOrdineInserito = idSalvato;
@@ -66,9 +68,10 @@ async function initPaginaOrdine() {
 }
 
 async function globalClick(e) {
+    // IMPORTANTE: closest() vuole il selettore CSS con il punto (es. '.btn-avanti'),
+    // e ritorna l'ELEMENTO (o null) - non un booleano come classList.contains().
     const idOrdine = Number(hid.value);
 
-    // 1. Elimina ordine in corso
     const btnEliminaOrdine = e.target.closest('.btn-elimina-ordine-in-corso');
     if (btnEliminaOrdine) {
         e.preventDefault();
@@ -99,7 +102,6 @@ async function globalClick(e) {
         return;
     }
 
-    // 2. Pulsante Avanti (Creazione o Ripresa Ordine)
     const btnAvanti = e.target.closest('.btn-avanti');
     if (btnAvanti) {
         e.preventDefault();
@@ -110,15 +112,17 @@ async function globalClick(e) {
                 ordineLocale?.idOrdineInserito ?? state.idOrdineInserito
             );
 
+            // 1. Ripresa ordine parziale: non creare nulla nel database.
             if (idSalvato > 0) {
                 const riprendi = confirm(
                     'È presente un ordine parzialmente compilato. Vuoi riprenderlo? Se scegli "No", verrà creato un nuovo ordine e quello precedente sarà eliminato.'
                 );
+                
 
                 if (riprendi) {
                     hid.value = idSalvato;
                     state.idOrdineInserito = idSalvato;
-                    state.step = parseInt(2);
+                    state.step =  parseInt(2);
                     secondo_step.classList.remove('hider');
                     primo_step.classList.add('hider');
                     aggiornaVoceComanda(state.idOrdineInserito, true);
@@ -128,6 +132,7 @@ async function globalClick(e) {
                 }
             }
 
+            // 2. Ordine già valorizzato nel campo hidden: apri step 2.
             if (idOrdine > 0) {
                 state.idOrdineInserito = idOrdine;
 
@@ -139,6 +144,7 @@ async function globalClick(e) {
                 return;
             }
 
+            // 3. Nuovo ordine: crea ordine + relazioni iniziali.
             const nuovoIdOrdine = await inserisciOrdine();
             if (!Number.isInteger(Number(nuovoIdOrdine)) || Number(nuovoIdOrdine) <= 0) {
                 throw new Error('ID del nuovo ordine non valido');
@@ -162,8 +168,6 @@ async function globalClick(e) {
         }
         return;
     }
-
-    // 3. Elimina singola voce
     const btn_elimina = e.target.closest('.btn-elimina-voce');
     if (btn_elimina) {
         e.preventDefault();
@@ -172,7 +176,6 @@ async function globalClick(e) {
         return;
     }
 
-    // 4. Pulsante Indietro
     const btnIndietro = e.target.closest('.btn-indietro');
     if (btnIndietro) {
         e.preventDefault();
@@ -183,8 +186,8 @@ async function globalClick(e) {
         return;
     }
 
-    // 5. Pulsante Dettaglio
-       const modalItem = e.target.closest('.btn-dettaglio');
+    // Verifica che questa sia davvero la classe usata sul bottone "Dettagli" della card.
+    const modalItem = e.target.closest('.btn-dettaglio');
     if (modalItem) {
         console.log('Clic su bottone Dettagli per item con ID:', modalItem.dataset.id);
         e.preventDefault();
@@ -226,7 +229,8 @@ async function globalClick(e) {
 
         return;
     }
-      const btnMomento = e.target.closest('.btn-momento');
+
+    const btnMomento = e.target.closest('.btn-momento');
 
     if (btnMomento) {
 
@@ -259,54 +263,35 @@ async function globalClick(e) {
     const btnAddizione = e.target.closest('.addizione');
     if (btnAddizione) {
         e.preventDefault();
-        const id_relazione = btnSottrazione.dataset.relazione;
-
         if (!controllaMomentoSelezionato()) return;
-        aggiornaVoceComanda(btnAddizione.dataset.id, {id_relazione : id_relazione, quantita: quantita ,note:  '' ,variazione: +1});
+        aggiornaVoceComanda(btnSottrazione.dataset.id, {idRelazioneItem : id_relazione, quantita: quantita ,note:  '' ,variazione: +1});
         return;
     }
-
 }
-    async function gestisciInputGlobali(e) {
-    const target = e.target;
-    
-    // Controlliamo se l'elemento è una nota o un input quantità manuale
-    const isNote = target.classList.contains('note') || target.classList.contains('note-bev');
-    const isQuantita = target.classList.contains('quantita');
 
-    if (!isNote && !isQuantita) return;
-
-    if (!controllaMomentoSelezionato()) { 
-        target.value = 0; 
-        return; 
+function gestisciInputGlobali(e) {
+    const isQuantita = e.target.classList.contains('quantita');
+    const isNote = e.target.classList.contains('note');
+ 
+    if (!isQuantita && !isNote) return;
+    if (!e.target.dataset.id) return;
+ 
+    const id_item = Number(e.target.dataset.id);
+    const quantita = document.querySelector(`.quantita[data-id="${id_item}"]`);
+    const note = document.querySelector(`.note[data-id="${id_item}"]`);
+ 
+    if (!controllaMomentoSelezionato()) { e.target.value = 0; return; }
+ 
+    // Se l'utente scrive una nota mentre la quantità è ancora 0, la portiamo a 1
+    // (altrimenti la nota resterebbe associata a un item con quantità nulla).
+    if (isNote && note.value.trim() !== '' && Number(quantita.value) === 0) {
+        quantita.value = 1;
     }
-
-    const id_item = Number(target.dataset.id);
-    const tipo = target.dataset.tipo;
-    const idRelazione = target.dataset.relazione; // Recupera l'UUID (idRelazioneItem)
-
-    // Trova i relativi elementi della stessa riga identificandoli con l'UUID
-    const quantitaInput = document.querySelector(`input[data-id="${id_item}"][data-tipo="${tipo}"][data-relazione="${idRelazione}"].quantita`)
-                          || document.querySelector(`p[data-id="${id_item}"][data-tipo="${tipo}"][data-relazione="${idRelazione}"]`);
-    
-    const noteInput = document.querySelector(`[data-id="${id_item}"][data-tipo="${tipo}"][data-relazione="${idRelazione}"].note`) 
-                      || document.querySelector(`[data-id="${id_item}"][data-tipo="${tipo}"][data-relazione="${idRelazione}"].note-bev`);
-
-    let valoreQuantita = quantitaInput ? Number(quantitaInput.value || quantitaInput.textContent) : 0;
-
-    // Se scrive una nota ma la quantità è a 0, la forza a 1
-    if (isNote && target.value.trim() !== '' && valoreQuantita === 0) {
-        valoreQuantita = 1;
-        if (quantitaInput) {
-            if (quantitaInput.tagName === 'INPUT') quantitaInput.value = 1;
-            else quantitaInput.textContent = '1';
-        }
-    }
-
-    // Aggiorna lo stato globale e la precomanda rispettando i parametri richiesti
+ 
     aggiornaVoceComanda(id_item, {
-        idRelazioneItem: idRelazione,
-        quantita: valoreQuantita,
-        note: noteInput ? noteInput.value : ''
+        quantita: quantita.value,
+        note: note?.value,
     });
+ 
+    salvaOrdine(state.idOrdineInserito, false);
 }
