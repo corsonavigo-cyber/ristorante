@@ -34,7 +34,6 @@ export async function precaricaItemsForm(){
     renderItems(piatti, "piatti_input", "piatto");
     renderItems(bevande, "bevande_input", "bevanda");
 
-    aggiornaQuantitaItemsRenderizzati();
 }
 
 function renderItems(items, containerId, tipo) {
@@ -86,24 +85,7 @@ function renderItemCard(item, tipo) {
 
 <div class="controllo-quantita">
 
-<button
-    type="button"
-    class="sottrazione"
-    data-id="${item.id_item}"
-    data-tipo="${tipo}">
-    −
-</button>
 
-<p
-    type="number"
-    class="quantita${tipo === 'bevanda' ? '-bevanda' : '-piatto'} quantita"
-    data-id="${item.id_item}"
-    data-tipo="${tipo}"
-    data-relazione="${item.idRelazioneItem}"
-    id="quantita${tipo === 'bevanda' ? '-bevanda-' : '-piatto-'}${item.id_item}"
-    min="0"> 
-    ${state.comanda.find(row => row.id_item === item.id_item)?.quantita || 0}
-</p>
 <button
     type="button"
     class="addizione"
@@ -118,42 +100,14 @@ function renderItemCard(item, tipo) {
 
 `;
 }
-function aggiornaQuantitaItemsRenderizzati() {
 
-    const quantitaPerItem = new Map();
-
-    state.comanda
-        .filter(voce => Number(voce.id_momento) === Number(state.momentoAttivo))
-        .forEach(voce => {
-
-            const key = `${voce.tipo}-${voce.id_item}`;
-
-            quantitaPerItem.set(
-                key,
-                (quantitaPerItem.get(key) ?? 0) + Number(voce.quantita)
-            );
-
-        });
-
-    quantitaPerItem.forEach((quantita, key) => {
-
-        const display = document.getElementById(`quantita-${key}`);
-
-        if (display) {
-            display.value = quantita;
-        }
-
-    });
-
-}
-export function mostraDettaglioItem(idItem) {
+export function mostraDettaglioItem(idItem, voceEsistente = null) {
 
     const modal = document.getElementById("dettaglioModal_item");
     const contenitore = document.getElementById("dettaglioContenuto_item");
-    console.log(document.getElementById("dettaglioModal_bevande"));
-    console.log(document.getElementById("dettaglioContenuto_item"));
+   
     if (!modal || !contenitore) return;
-    console.log('sono qui', idItem);
+    console.log('sono qui in mostra dettaglio item', idItem);
 
     const item = state.items.find(
         i => Number(i.id_item) === Number(idItem)
@@ -179,63 +133,41 @@ export function mostraDettaglioItem(idItem) {
             </p>
         `;
 
+
+         // Se voceEsistente è passata, usiamo i suoi valori, altrimenti 0 e ''
+    const qtaDefault = voceEsistente ? voceEsistente.quantita : 0;
+    const noteDefault = voceEsistente ? voceEsistente.note : '';
+    const idRelazione = voceEsistente ? voceEsistente.id_relazione_item : '';
+
+
     contenitore.innerHTML = `
-<div
-    class="btn-inserisci-itemmenu-ordine"
-    id="nome-item${item.id_item}"
-    data-id="${item.id_item}"
-    data-nome="${item.nome}"
-    data-tipo="${item.tipo}">
+        <div class="dettaglio-container" data-id="${item.id_item}">
+            <h3><b>${item.nome}</b></h3>
+            <p>${item.descrizione}</p>
+            <label>Quantità</label>
+            <input type="number" class="quantita-item" value="${qtaDefault}">
+            <label>Note</label>
+            <input type="text" class="note-item" value="${noteDefault}">
+            <button id="btn-conferma-dettaglio">Salva</button>
+        </div>
+    `;
 
-    <h3 class="comment">
-        <b>${item.nome}</b>
-    </h3>
+    // AGGIUNTA: Listener per il salvataggio
+    const btnSalva = contenitore.querySelector('#btn-conferma-dettaglio');
+    btnSalva.onclick = () => {
+        const qta = Number(contenitore.querySelector('.quantita-item').value);
+        const note = contenitore.querySelector('.note-item').value;
 
-    <p class="comment">
-        ${item.descrizione}
-    </p>
+        // Chiamiamo la funzione di aggiornamento
+        // Se idRelazione è vuota, crea una riga nuova, altrimenti aggiorna quella esistente
+        aggiornaVoceComanda(idItem, {
+            idRelazioneItem: idRelazione || null, 
+            quantita: qta,
+            note: note
+        });
 
-    <p
-        class="comment"
-        id="prezzo-item${item.id_item}"
-        data-prezzo="${item.prezzo}">
-        Prezzo: ${item.prezzo} €
-    </p>
-
-    ${infoAggiuntive}
-
-    <p class="elenco_allergeni">
-        ${allergeniText}
-    </p>
-
-    <label>Quantità</label>
-
-   <input
-        type="number"
-        class="quantita-item quantita"
-        id="quantita-item-${item.id_item}"
-        data-id="${item.id_item}"
-        data-tipo="${item.tipo}"
-        value="0"
-        min="0">
-    <br>
-
-    <label>Note</label>
-
-    <input
-        type="text"
-        class="note-item note"
-        id="note-item-${item.id_item}"
-        data-id="${item.id_item}"
-        data-tipo="${item.tipo}"
-        maxlength="100"
-        placeholder="...">
-
-    
-
-    <br>
-</div>
-`;
+        modal.close();
+    };
 
     modal.showModal();
 }

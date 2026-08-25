@@ -191,42 +191,43 @@ async function globalClick(e) {
         await mostraDettaglioItem(Number(modalItem.dataset.id));
         return;
     }
+    
     const btnChiudi = e.target.closest('.chiudiModal') ;
 
     if (btnChiudi) {
 
         e.preventDefault();
-
-        const dialog = btnChiudi.closest('dialog');
-
-        if (btnChiudi.dataset.salva === "true") {
-
-            const idItem = Number(dialog.dataset.idItem);
-
-            const quantita = Number(
-                dialog.querySelector('.quantita').value
-            );
-
-            const note = dialog.querySelector('.note').value;
-
-            aggiornaVoceComanda(idItem, {
-                quantita,
-                note
-            });
-
-            salvaOrdine(state.idOrdineInserito, false);
-
-            aggiornaQuantitaItemsRenderizzati();
-
-            disegnaPreComanda();
-
-        }
-
         dialog.close();
 
         return;
     }
-      const btnMomento = e.target.closest('.btn-momento');
+    
+    const dialog = document.getElementById("dettaglioModal_item");
+    const salvaModal = document.querySelector('#btn-conferma-dettaglio');
+
+    if(salvaModal){
+        e.preventDefault();
+
+        const idItem = Number(dialog.dataset.idItem);
+
+        const quantita = Number(
+                dialog.querySelector('.quantita').value
+            );
+
+        const note = dialog.querySelector('.note').value;
+
+        aggiornaVoceComanda(idItem, {
+            idRelazioneItem: idRelazioneItem,
+            quantita: quantita,
+            note: note
+            });
+
+           
+            dialog.close();
+        }
+
+    
+    const btnMomento = e.target.closest('.btn-momento');
 
     if (btnMomento) {
 
@@ -234,7 +235,6 @@ async function globalClick(e) {
 
         cambiaMomento(Number(btnMomento.dataset.id));
 
-        aggiornaQuantitaItemsRenderizzati();
 
         return;
     }
@@ -250,20 +250,37 @@ async function globalClick(e) {
 
     const btnSottrazione = e.target.closest('.sottrazione');
     if (btnSottrazione) {
+        e.preventDefault();
         if (!controllaMomentoSelezionato()) return;
-        const id_relazione = btnSottrazione.dataset.relazione;
-        aggiornaVoceComanda(btnSottrazione.dataset.id, {id_relazione_item : id_relazione, quantita: quantita ,note:  '' ,variazione: -1});
+        const idRelazione = btnSottrazione.dataset.relazione;
+        const idItem = btnSottrazione.dataset.id;
+        aggiornaVoceComanda(idItem , {id_relazione_item : idRelazione, variazione: -1});
         return;
     }
 
     const btnAddizione = e.target.closest('.addizione');
     if (btnAddizione) {
         e.preventDefault();
-        const id_relazione = btnSottrazione.dataset.relazione;
-
         if (!controllaMomentoSelezionato()) return;
-        aggiornaVoceComanda(btnAddizione.dataset.id, {id_relazione : id_relazione, quantita: quantita ,note:  '' ,variazione: +1});
+
+        const idRelazione = btnAddizione.dataset.relazione;
+        const idItem = btnAddizione.dataset.id;
+        aggiornaVoceComanda(idItem , {id_relazione_item : idRelazione, variazione: 1});
         return;
+    }
+
+    const btnModifica = e.target.closest('.btn-modifica-voce');
+    if (btnModifica) {
+        e.preventDefault();
+        const idRelazione = btnModifica.dataset.relazione;
+        const idItem = btnModifica.dataset.id;
+        
+        // Trova la voce nello stato
+        const voce = state.comanda.find(v => v.id_relazione_item === idRelazione);
+        if (voce) {
+            // Riusiamo la funzione mostraDettaglioItem, ma dobbiamo dirle che è una modifica
+            mostraDettaglioItem(idItem, voce); 
+        }   
     }
 
 }

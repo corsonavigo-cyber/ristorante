@@ -2,9 +2,7 @@
 
 import { state } from "./variabilistato.js";
 import { salvaOrdine } from "./localstorage.js";
-import {
-    precaricaItemsForm
-} from "./items.js";
+
 
 const NOMI_MOMENTI = {
     1: "ANTIPASTO",
@@ -28,9 +26,9 @@ export function aggiornaVoceComanda(
     idItem,
     {
         idRelazioneItem = null,
-        quantita,
+        quantita = null, // se passi quantita specifica
         note = '',
-        variazione
+        variazione = null // se passi +/- 1
     } = {}
 ) {
     const item = recuperaItem(idItem);
@@ -40,21 +38,19 @@ export function aggiornaVoceComanda(
         return;
     }
 
-    let indice = idRelazioneItem
-        ? state.comanda.findIndex(voce =>
-            voce.id_relazione_item === idRelazioneItem
-        )
+    let indice = idRelazioneItem 
+        ? state.comanda.findIndex(v => v.id_relazione_item === idRelazioneItem)
         : -1;
+    //se non ci sono note e id relazione, significa che sto facendo un aggiunta rapida 
+     if (indice === -1 && idRelazioneItem === null) {
+        indice = state.comanda.findIndex(v => 
+            Number(v.id_item) === Number(idItem) && (v.note || '') === note
+        );
+    }
 
-    
+    const quantitaAttuale = indice !== -1 ? Number(state.comanda[indice].quantita) : 0;
+    const nuovaQuantita = (variazione !== null) ? (quantitaAttuale + variazione) : (quantita ?? 1);
 
-    const quantitaAttuale = indice === -1
-        ? 0
-        : Number(state.comanda[indice].quantita);
-
-    const nuovaQuantita = Number.isFinite(Number(variazione))
-        ? quantitaAttuale + Number(variazione)
-        : Number(quantita);
     //gestione eliminazione
  
     if (nuovaQuantita <= 0) {
@@ -63,11 +59,10 @@ export function aggiornaVoceComanda(
             state.comanda.splice(indice, 1);
         }
 
-    } else{
-        if (indice !== -1) {
+    } else if (indice !== -1) {
             state.comanda[indice].quantita = nuovaQuantita;
-            state.comanda[indice].note = note;
-        }else{
+            if(note !== '' || note !== undefined) state.comanda[indice].note = note;
+    }else{
             //aggiungi nuova voce
             state.comanda.push({
                 id_relazione_item: crypto.randomUUID(),
@@ -81,96 +76,15 @@ export function aggiornaVoceComanda(
                 id_ordine: state.idOrdineInserito
             });
         }
-       }
-
-     salvaOrdine(state.idOrdineInserito,false);
-       disegnaPreComanda();
-       aggiornaInputPerNuovoMomento();
-}  
-
-
        
 
+     salvaOrdine(state.idOrdineInserito,false);
+     disegnaPreComanda();
   
+}   
+
+
  
-
-export function aggiornaInputPerNuovoMomento() {
-    //resetta gli input  a 0
-    const inputs = document.querySelectorAll(`[data-id][data-tipo]`);
-    inputs.forEach(el => el.value = 0);
-    //valori attuali
-
-    state.comanda.forEach(voce => {
-
-        if (Number(voce.id_momento) !== Number(state.momentoAttivo)) return;
-    
-
-        const input = document.querySelector(
-            `[data-id="${voce.id_item}"][data-tipo="${voce.tipo}"]`
-        );
-
-        if(input){
-            //somma totale 
-        }
-
-        const note = document.querySelector(
-            `[data-id="${voce.id_item}"][data-tipo="${voce.tipo}"].note,
-             [data-id="${voce.id_item}"][data-tipo="${voce.tipo}"].note-bev`
-        );
-
-        const display = document.querySelector(
-            `#quantita-comment-${voce.id_item}`
-        );
-
-        // Somma di tutte le quantità dello stesso item nello stesso momento
-        const quantitaTotale = state.comanda
-            .filter(v =>
-                Number(v.id_item) === Number(voce.id_item) &&
-                Number(v.id_momento) === Number(state.momentoAttivo)
-            )
-            .reduce((tot, v) => tot + Number(v.quantita), 0);
-
-        // Solo l'input "principale" mostra il totale
-         if (input) {
-            input.value = quantitaTotale;
-            // Stampa l'attributo data-relazione dentro l'elemento HTML
-            
-        }
-
-        const btn_meno = document.querySelector(
-            `[data-id="${voce.id_item}"][data-tipo="${voce.tipo}"].sottrazione`
-        );
-        
-        if (btn_meno) {
-            btn_meno.setAttribute('data-relazione', voce.idRelazioneItem);
-        }
-        const btn_addizione =document.querySelector(
-            `[data-id="${voce.id_item}"][data-tipo="${voce.tipo}"].addizione`
-        );
-        if (btn_addizione) {
-            btn_addizione.setAttribute('data-relazione', voce.idRelazioneItem);
-        }
-        
-
-        if (display) {
-            display.innerHTML = `<strong>${quantitaTotale}</strong>`;
-        }
-
-    });
-
-}
-
-function trovaVoce(idItem, momento = state.momentoAttivo, note = '') {
-
-    return state.comanda.findIndex(voce =>
-
-        Number(voce.id_item) === Number(idItem) &&
-        Number(voce.id_momento) === Number(momento) &&
-        (voce.note ?? '') === (note ?? '')
-
-    );
-
-}
 export function eliminaVoce(idRelazioneItem) {
     console.log('entrato elimana');
     console.log(idRelazioneItem);
@@ -183,15 +97,6 @@ export function eliminaVoce(idRelazioneItem) {
     aggiornaInputPerNuovoMomento();
 }
 
-export async function ripristinaQuantitaComanda() {
-
-    await precaricaItemsForm();
-
-    aggiornaInputPerNuovoMomento();
-
-    disegnaPreComanda();
-
-}
 
 function renderVoce(voce) {
     return `
@@ -214,6 +119,11 @@ function renderVoce(voce) {
 
             ${voce.note ? `<em>(${voce.note})</em>` : ""}
 
+             <button type="button" class="btn-modifica-voce" 
+                    data-relazione="${voce.id_relazione_item}" 
+                    data-id="${voce.id_item}">
+                ✏️
+            </button>
             <button
                 type="button"
                 class="btn-elimina-voce"
@@ -226,26 +136,20 @@ function renderVoce(voce) {
             <button
                 type="button"
                 class="sottrazione"
-                data-id="${item.id_item}"
-                data-tipo="${tipo}">
+                data-id="${voce.id_item}"
+                data-relazione="${voce.id_relazione_item}"
+                data-tipo="${voce.tipo}">
                 −
             </button>
 
-            <p
-                type="number"
-                class="quantita${tipo === 'bevanda' ? '-bevanda' : '-piatto'} quantita"
-                data-id="${item.id_item}"
-                data-tipo="${tipo}"
-                data-relazione="${item.idRelazioneItem}"
-                id="quantita${tipo === 'bevanda' ? '-bevanda-' : '-piatto-'}${item.id_item}"
-                min="0"> 
-                ${state.comanda.find(row => row.id_item === item.id_item)?.quantita || 0}
-            </p>
+            <span class="quantita-display">${voce.quantita}</span>
+
             <button
                 type="button"
                 class="addizione"
-                data-id="${item.id_item}"
-                data-tipo="${tipo}">
+                data-id="${voce.id_item}"
+                data-relazione="${voce.id_relazione_item}"
+                data-tipo="${voce.tipo}">
                 +
             </button>
 
