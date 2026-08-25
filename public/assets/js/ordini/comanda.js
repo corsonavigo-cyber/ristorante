@@ -29,21 +29,24 @@ export function aggiornaVoceComanda(
     {
         idRelazioneItem = null,
         quantita,
-        note,
+        note = '',
         variazione
     } = {}
 ) {
-
-    const indice = idRelazioneItem
-        ? trovaVoce(idRelazioneItem)
-        : -1;
-
     const item = recuperaItem(idItem);
 
     if (!item) {
         console.warn('Item non trovato', idItem);
         return;
     }
+
+    let indice = idRelazioneItem
+        ? state.comanda.findIndex(voce =>
+            voce.id_relazione_item === idRelazioneItem
+        )
+        : -1;
+
+    
 
     const quantitaAttuale = indice === -1
         ? 0
@@ -52,60 +55,63 @@ export function aggiornaVoceComanda(
     const nuovaQuantita = Number.isFinite(Number(variazione))
         ? quantitaAttuale + Number(variazione)
         : Number(quantita);
-
-    if (!Number.isFinite(nuovaQuantita)) {
-        console.warn('Quantità non valida', quantita);
-        return;
-    }
-
+    //gestione eliminazione
+ 
     if (nuovaQuantita <= 0) {
 
         if (indice !== -1) {
             state.comanda.splice(indice, 1);
         }
 
-    } else if (indice !== -1) {
-
-        state.comanda[indice].quantita = nuovaQuantita;
-
-        if (note !== undefined) {
+    } else{
+        if (indice !== -1) {
+            state.comanda[indice].quantita = nuovaQuantita;
             state.comanda[indice].note = note;
+        }else{
+            //aggiungi nuova voce
+            state.comanda.push({
+                id_relazione_item: crypto.randomUUID(),
+                id_item:  item.id_item,
+                tipo: item.tipo,
+                nome: item.nome,
+                prezzo: Number(item.prezzo),
+                id_momento: state.momentoAttivo,
+                quantita: nuovaQuantita,
+                note: note,
+                id_ordine: state.idOrdineInserito
+            });
         }
+       }
 
-    } else {
+     salvaOrdine(state.idOrdineInserito,false);
+       disegnaPreComanda();
+       aggiornaInputPerNuovoMomento();
+}  
 
-        state.comanda.push({
-            id_relazione_item: crypto.randomUUID(),
-            id_item: item.id_item,
-            tipo: item.tipo,
-            categoria: item.categoria,
-            nome: item.nome,
-            prezzo: Number(item.prezzo),
-            id_momento: state.momentoAttivo,
-            quantita: nuovaQuantita,
-            note: note ?? '',
-            id_ordine: state.idOrdineInserito
-        });
 
-    }
+       
 
-    salvaOrdine(state.idOrdineInserito, false);
-    disegnaPreComanda();
-}
-
+  
  
 
 export function aggiornaInputPerNuovoMomento() {
+    //resetta gli input  a 0
+    const inputs = document.querySelectorAll(`[data-id][data-tipo]`);
+    inputs.forEach(el => el.value = 0);
+    //valori attuali
 
     state.comanda.forEach(voce => {
 
-        if (Number(voce.id_momento) !== Number(state.momentoAttivo)) {
-            return;
-        }
+        if (Number(voce.id_momento) !== Number(state.momentoAttivo)) return;
+    
 
         const input = document.querySelector(
             `[data-id="${voce.id_item}"][data-tipo="${voce.tipo}"]`
         );
+
+        if(input){
+            //somma totale 
+        }
 
         const note = document.querySelector(
             `[data-id="${voce.id_item}"][data-tipo="${voce.tipo}"].note,
@@ -214,6 +220,36 @@ function renderVoce(voce) {
                 data-relazione="${voce.id_relazione_item}">
                 ✕
             </button>
+
+            <div class="controllo-quantita">
+
+            <button
+                type="button"
+                class="sottrazione"
+                data-id="${item.id_item}"
+                data-tipo="${tipo}">
+                −
+            </button>
+
+            <p
+                type="number"
+                class="quantita${tipo === 'bevanda' ? '-bevanda' : '-piatto'} quantita"
+                data-id="${item.id_item}"
+                data-tipo="${tipo}"
+                data-relazione="${item.idRelazioneItem}"
+                id="quantita${tipo === 'bevanda' ? '-bevanda-' : '-piatto-'}${item.id_item}"
+                min="0"> 
+                ${state.comanda.find(row => row.id_item === item.id_item)?.quantita || 0}
+            </p>
+            <button
+                type="button"
+                class="addizione"
+                data-id="${item.id_item}"
+                data-tipo="${tipo}">
+                +
+            </button>
+
+            </div>
 
         </li>
     `;
