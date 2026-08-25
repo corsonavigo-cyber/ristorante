@@ -44,7 +44,8 @@ export function aggiornaVoceComanda(
     //se non ci sono note e id relazione, significa che sto facendo un aggiunta rapida 
      if (indice === -1 && idRelazioneItem === null) {
         indice = state.comanda.findIndex(v => 
-            Number(v.id_item) === Number(idItem) && (v.note || '') === note
+            Number(v.id_item) === Number(idItem) && (v.note || '') === note && Number(v.id_momento) === Number(state.momentoAttivo) &&
+        (v.note || '') === note
         );
     }
 
@@ -61,7 +62,7 @@ export function aggiornaVoceComanda(
 
     } else if (indice !== -1) {
             state.comanda[indice].quantita = nuovaQuantita;
-            if(note !== '' || note !== undefined) state.comanda[indice].note = note;
+            if(note !== '' && note !== undefined) state.comanda[indice].note = note;
     }else{
             //aggiungi nuova voce
             state.comanda.push({

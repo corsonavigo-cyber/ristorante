@@ -152,22 +152,8 @@ export function mostraDettaglioItem(idItem, voceEsistente = null) {
         </div>
     `;
 
-    // AGGIUNTA: Listener per il salvataggio
-    const btnSalva = contenitore.querySelector('#btn-conferma-dettaglio');
-    btnSalva.onclick = () => {
-        const qta = Number(contenitore.querySelector('.quantita-item').value);
-        const note = contenitore.querySelector('.note-item').value;
-
-        // Chiamiamo la funzione di aggiornamento
-        // Se idRelazione è vuota, crea una riga nuova, altrimenti aggiorna quella esistente
-        aggiornaVoceComanda(idItem, {
-            idRelazioneItem: idRelazione || null, 
-            quantita: qta,
-            note: note
-        });
-
-        modal.close();
-    };
+    modal.close();
+    
 
     modal.showModal();
 }
