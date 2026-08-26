@@ -15,7 +15,7 @@ const NOMI_MOMENTI = {
 
 
 function recuperaItem(idItem) {
-
+    console.log(state.items)
     return state.items.find(item =>
         Number(item.id_item) === Number(idItem)
     );
@@ -39,10 +39,10 @@ export function aggiornaVoceComanda(
     }
 
     let indice = idRelazioneItem 
-        ? state.comanda.findIndex(v => v.id_relazione_item === idRelazioneItem)
+        ? state.comanda.findIndex(v => v.id_comanda_dettaglio === idRelazioneItem)
         : -1;
     //se non ci sono note e id relazione, significa che sto facendo un aggiunta rapida 
-     if (indice === -1 && idRelazioneItem === null) {
+    if (indice === -1 && idRelazioneItem === null) {
         indice = state.comanda.findIndex(v => 
             Number(v.id_item) === Number(idItem) && (v.note || '') === note && Number(v.id_momento) === Number(state.momentoAttivo) &&
         (v.note || '') === note
@@ -66,7 +66,7 @@ export function aggiornaVoceComanda(
     }else{
             //aggiungi nuova voce
             state.comanda.push({
-                id_relazione_item: crypto.randomUUID(),
+                id_comanda_dettaglio: crypto.randomUUID(),
                 id_item:  item.id_item,
                 tipo: item.tipo,
                 nome: item.nome,
@@ -90,20 +90,21 @@ export function eliminaVoce(idRelazioneItem) {
     console.log('entrato elimana');
     console.log(idRelazioneItem);
     state.comanda = state.comanda.filter(
-        voce => voce.id_relazione_item !== idRelazioneItem
+        voce => voce.id_comanda_dettaglio !== idRelazioneItem
     );
     console.log(state.comanda);
     salvaOrdine(state.idOrdineInserito, false);
     disegnaPreComanda();
-    aggiornaInputPerNuovoMomento();
 }
 
 
 function renderVoce(voce) {
     return `
         <li
-            data-relazione="${voce.id_relazione_item}"
+            data-relazione="${voce.id_comanda_dettaglio}"
             data-id="${voce.id_item}"
+            data-momento="${voce.id_momento}"
+            draggable="true">
             class="voce-trascinabile">
 
             <span class="badge-item badge-${voce.tipo}">
@@ -121,14 +122,14 @@ function renderVoce(voce) {
             ${voce.note ? `<em>(${voce.note})</em>` : ""}
 
              <button type="button" class="btn-modifica-voce" 
-                    data-relazione="${voce.id_relazione_item}" 
+                    data-relazione="${voce.id_comanda_dettaglio}" 
                     data-id="${voce.id_item}">
                 ✏️
             </button>
             <button
                 type="button"
                 class="btn-elimina-voce"
-                data-relazione="${voce.id_relazione_item}">
+                data-relazione="${voce.id_comanda_dettaglio}">
                 ✕
             </button>
 
@@ -138,7 +139,7 @@ function renderVoce(voce) {
                 type="button"
                 class="sottrazione"
                 data-id="${voce.id_item}"
-                data-relazione="${voce.id_relazione_item}"
+                data-relazione="${voce.id_comanda_dettaglio}"
                 data-tipo="${voce.tipo}">
                 −
             </button>
@@ -149,7 +150,7 @@ function renderVoce(voce) {
                 type="button"
                 class="addizione"
                 data-id="${voce.id_item}"
-                data-relazione="${voce.id_relazione_item}"
+                data-relazione="${voce.id_comanda_dettaglio}"
                 data-tipo="${voce.tipo}">
                 +
             </button>
