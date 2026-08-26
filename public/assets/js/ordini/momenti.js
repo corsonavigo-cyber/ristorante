@@ -1,5 +1,7 @@
 import { apiGet } from '../apigeneric.js';
 import { state } from './variabilistato.js';
+import { precaricaItemsForm } from './items.js'
+import { disegnaPreComanda } from './comanda.js';
 
 export async function caricaMomenti() {
     if (Array.isArray(state.momenti) && state.momenti.length) {
@@ -48,12 +50,14 @@ export async function disegnaMomenti() {
                 : ""
         }
     `;
+    await precaricaItemsForm();
+    await disegnaPreComanda();
 }
 
 export function cambiaMomento(idMomento){
     console.log("cambiaMomento", idMomento);
     state.momentoAttivo = Number(idMomento);
-
+    disegnaMomenti();
 }
 
 export function controllaMomentoSelezionato(){

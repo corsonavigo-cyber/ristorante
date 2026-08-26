@@ -1,6 +1,6 @@
 import { state } from './variabilistato.js';
 import { mostraDettaglioItem } from './items.js';
-import { aggiornaVoceComanda, ripristinaQuantitaComanda, eliminaVoce } from './comanda.js';
+import { aggiornaVoceComanda, eliminaVoce, initDragAndDropComanda } from './comanda.js';
 import { cambiaMomento, controllaMomentoSelezionato, disegnaMomenti } from './momenti.js';
 import { ripristinaOrdine, salvaOrdine, svuotaOrdineSalvato, leggiOrdineSalvato } from './localstorage.js';
 import { precaricaTavoliForm, controllaTavoloDisponibile } from './tavoli-ordine.js';
@@ -30,7 +30,7 @@ async function initPaginaOrdine() {
             primo_step.classList.add('hider');
 
             await disegnaMomenti();
-            ripristinaQuantitaComanda();
+            
         } else if (!primo_step.classList.contains('hider')) {
             await precaricaTavoliForm();
 
@@ -41,7 +41,6 @@ async function initPaginaOrdine() {
                 secondo_step.classList.remove('hider');
                 primo_step.classList.add('hider');
                 disegnaMomenti();
-                ripristinaQuantitaComanda();
             } else if (ordineLocale?.tavoli?.length) {
                 ordineLocale.tavoli.forEach(id => {
                     const checkbox = document.querySelector(
@@ -63,11 +62,12 @@ async function initPaginaOrdine() {
         console.error('Errore durante l\u2019inizializzazione dell\u2019ordine:', error);
         alert(error.message || 'Impossibile caricare i dati dell\u2019ordine.');
     }
+    initDragAndDropComanda();
 }
 
 async function globalClick(e) {
     const idOrdine = Number(hid.value);
-
+    const dialog = document.getElementById("dettaglioModal_item");
     // 1. Elimina ordine in corso
     const btnEliminaOrdine = e.target.closest('.btn-elimina-ordine-in-corso');
     if (btnEliminaOrdine) {
@@ -123,7 +123,7 @@ async function globalClick(e) {
                     primo_step.classList.add('hider');
                     aggiornaVoceComanda(state.idOrdineInserito, true);
                     await disegnaMomenti();
-                    ripristinaQuantitaComanda();
+                    
                     return;
                 }
             }
@@ -135,7 +135,6 @@ async function globalClick(e) {
                 primo_step.classList.add('hider');
 
                 await disegnaMomenti();
-                ripristinaQuantitaComanda();
                 return;
             }
 
@@ -155,7 +154,7 @@ async function globalClick(e) {
             primo_step.classList.add('hider');
 
             await disegnaMomenti();
-            ripristinaQuantitaComanda();
+            
         } catch (error) {
             console.error('Errore nella creazione o ripresa dell\u2019ordine:', error);
             alert(error.message || 'Impossibile avviare l\u2019ordine.');
@@ -192,7 +191,7 @@ async function globalClick(e) {
         return;
     }
     
-    const btnChiudi = e.target.closest('.chiudiModal') ;
+    const btnChiudi = e.target.closest('#btn-annulla-item') ;
 
     if (btnChiudi) {
 
@@ -202,19 +201,19 @@ async function globalClick(e) {
         return;
     }
     
-    const dialog = document.getElementById("dettaglioModal_item");
-    const salvaModal = document.querySelector('#btn-conferma-dettaglio');
-
+    
+    const salvaModal = e.target.closest('#btn-salva-item');
     if(salvaModal){
         e.preventDefault();
 
         const idItem = Number(dialog.dataset.idItem);
-
+        const idRelazioneItem = dialog.dataset.idRelazione;
+        console.log("relazione "+idRelazioneItem);
         const quantita = Number(
-                dialog.querySelector('.quantita').value
+                dialog.querySelector('.quantita-item').value
             );
 
-        const note = dialog.querySelector('.note').value;
+        const note = dialog.querySelector('.note-item').value;
 
         aggiornaVoceComanda(idItem, {
             idRelazioneItem: idRelazioneItem,
@@ -222,7 +221,8 @@ async function globalClick(e) {
             note: note
             });
 
-           
+            console.log('noteInput trovato:', note, 'valore:', note?.value);
+
             dialog.close();
         }
 
@@ -254,7 +254,7 @@ async function globalClick(e) {
         if (!controllaMomentoSelezionato()) return;
         const idRelazione = btnSottrazione.dataset.relazione;
         const idItem = btnSottrazione.dataset.id;
-        aggiornaVoceComanda(idItem , {id_relazione_item : idRelazione, variazione: -1});
+        aggiornaVoceComanda(idItem , {id_comanda_dettaglio : idRelazione, variazione: -1});
         return;
     }
 
@@ -265,7 +265,7 @@ async function globalClick(e) {
 
         const idRelazione = btnAddizione.dataset.relazione;
         const idItem = btnAddizione.dataset.id;
-        aggiornaVoceComanda(idItem , {id_relazione_item : idRelazione, variazione: 1});
+        aggiornaVoceComanda(idItem , {id_comanda_dettaglio : idRelazione, variazione: 1});
         return;
     }
 
@@ -276,11 +276,12 @@ async function globalClick(e) {
         const idItem = btnModifica.dataset.id;
         
         // Trova la voce nello stato
-        const voce = state.comanda.find(v => v.id_relazione_item === idRelazione);
+        const voce = state.comanda.find(v => v.id_comanda_dettaglio === idRelazione);
         if (voce) {
             // Riusiamo la funzione mostraDettaglioItem, ma dobbiamo dirle che è una modifica
             mostraDettaglioItem(idItem, voce); 
         }   
+        return;
     }
 
 }

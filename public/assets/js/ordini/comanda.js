@@ -2,7 +2,7 @@
 
 import { state } from "./variabilistato.js";
 import { salvaOrdine } from "./localstorage.js";
-
+import { attachDragAndDrop } from "./drag.js";  
 
 const NOMI_MOMENTI = {
     1: "ANTIPASTO",
@@ -12,7 +12,24 @@ const NOMI_MOMENTI = {
     5: "DA EVADERE SUBITO"
 };
 
-
+export function initDragAndDropComanda() {
+   
+    attachDragAndDrop({
+        container: document.getElementById('riassunto-ordine'),
+        onDrop: ({ payload, zone }) => {
+            const nuovoMomento = Number(zone.dataset.momentoId);
+            const voce = state.comanda.find(
+                v => v.id_comanda_dettaglio === payload.idRelazione
+            );
+             console.log("chiamo drag")
+            if (voce && voce.id_momento !== nuovoMomento) {
+                voce.id_momento = nuovoMomento;
+                salvaOrdine(state.idOrdineInserito, false);
+                disegnaPreComanda();
+            }
+        }
+    });
+}
 
 function recuperaItem(idItem) {
     console.log(state.items)
@@ -104,7 +121,7 @@ function renderVoce(voce) {
             data-relazione="${voce.id_comanda_dettaglio}"
             data-id="${voce.id_item}"
             data-momento="${voce.id_momento}"
-            draggable="true">
+            draggable="true"
             class="voce-trascinabile">
 
             <span class="badge-item badge-${voce.tipo}">
@@ -174,29 +191,21 @@ export function disegnaPreComanda() {
     }
 
     const raggruppati = state.comanda.reduce((acc, voce) => {
-
-        if (!acc[voce.id_momento]) {
-            acc[voce.id_momento] = [];
-        }
-
+        if (!acc[voce.id_momento]) acc[voce.id_momento] = [];
         acc[voce.id_momento].push(voce);
-
-        return acc;
-
+        return acc; 
     }, {});
 
-    contenitore.innerHTML = Object.entries(raggruppati)
-
-        .sort(([a], [b]) => Number(a) - Number(b))
-
-        .map(([momento, voci]) => `
-            <li class="titolo-momento">
-                ${NOMI_MOMENTI[momento]}
-            </li>
-
-            ${voci.map(renderVoce).join("")}
-        `)
-
+    contenitore.innerHTML = Object.entries(NOMI_MOMENTI)
+        .map(([idMomento, nomeMomento]) => {
+            const voci = raggruppati[idMomento] || [];
+            return `
+                <ul class="momento-dropzone" data-momento-id="${idMomento}">
+                    <li class="titolo-momento">${nomeMomento}</li>
+                    ${voci.map(renderVoce).join("")}
+                </ul>
+            `;
+        })
         .join("");
 }
 

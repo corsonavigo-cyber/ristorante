@@ -6,3 +6,6 @@
 [2026-08-07 11:17:15] [APERTO] Ordine inserito correttamente id_ordine 10 sul tavolo: inserito con successo
 [2026-08-07 13:12:52] [APERTO] Ordine inserito correttamente id_ordine 11 sul tavolo: inserito con successo
 [2026-08-07 15:10:42] [APERTO] Ordine inserito correttamente id_ordine 12 sul tavolo: inserito con successo
+[2026-08-26 09:16:41] [APERTO] Ordine inserito correttamente id_ordine 13 sul tavolo: inserito con successo
+[2026-08-26 10:28:08] [APERTO] Ordine inserito correttamente id_ordine 14 sul tavolo: inserito con successo
+[2026-08-26 10:28:08] [APERTO] Ordine inserito correttamente id_ordine 15 sul tavolo: inserito con successo

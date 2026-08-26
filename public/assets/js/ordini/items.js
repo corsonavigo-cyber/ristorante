@@ -25,10 +25,10 @@ export async function precaricaItemsForm(){
             in_menu: "si"
         }
     );
-
     const { piatti, bevande } = separaItems(state.items);
 
     state.piatti = piatti;
+
     state.bevande = bevande;
 
     renderItems(piatti, "piatti_input", "piatto");
@@ -137,7 +137,7 @@ export function mostraDettaglioItem(idItem, voceEsistente = null) {
          // Se voceEsistente è passata, usiamo i suoi valori, altrimenti 0 e ''
     const qtaDefault = voceEsistente ? voceEsistente.quantita : 0;
     const noteDefault = voceEsistente ? voceEsistente.note : '';
-    const idRelazione = voceEsistente ? voceEsistente.id_relazione_item : '';
+    const idRelazione = voceEsistente ? voceEsistente.id_comanda_dettaglio : '';
 
 
     contenitore.innerHTML = `
@@ -148,9 +148,11 @@ export function mostraDettaglioItem(idItem, voceEsistente = null) {
             <input type="number" class="quantita-item" value="${qtaDefault}">
             <label>Note</label>
             <input type="text" class="note-item" value="${noteDefault}">
-            <button id="btn-conferma-dettaglio">Salva</button>
         </div>
     `;
+
+    modal.dataset.idItem = idItem;
+    modal.dataset.idRelazione = idRelazione;
 
     modal.close();
     
