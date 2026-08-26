@@ -227,19 +227,35 @@ td,th{
     margin: 0 0 0.75rem;
     font-size: 1rem;
 }
-
+.drag-ghost {
+    opacity: 0.85;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+}
 .momento-dropzone {
     flex: 1 1 auto;
-    min-height: 160px;
+    min-height: 50px;
+    max-height: 400px; 
     border: 1px dashed #ccc;
     border-radius: 8px;
     padding: 0.75rem;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     gap: 0.75rem;
     background: #fff;
 }
+/* La voce che stai trascinando */
+.voce-trascinabile.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+}
 
+/* Stato di default: indica che la voce è trascinabile */
+.voce-trascinabile {
+    cursor: grab;
+    transition: opacity 0.15s ease, box-shadow 0.15s ease;
+}
 .item-card {
     display: flex;
     align-items: center;

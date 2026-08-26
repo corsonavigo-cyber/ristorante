@@ -5,7 +5,7 @@ import { cambiaMomento, controllaMomentoSelezionato, disegnaMomenti } from './mo
 import { ripristinaOrdine, salvaOrdine, svuotaOrdineSalvato, leggiOrdineSalvato } from './localstorage.js';
 import { precaricaTavoliForm, controllaTavoloDisponibile } from './tavoli-ordine.js';
 import { inserisciOrdine, inserisciOrdineStato, inserisciOrdineTavolo, inserisciComanda, inserisciItemOrdine } from './ordine.js';
-import { apiPost, apiDelete } from '../apigeneric.js';
+import { apiPost, apiDelete, apiGet } from '../apigeneric.js';
 import { annullaOrdineInCompilazione } from './eliminazioni.js';
 
 document.addEventListener('input', gestisciInputGlobali);
@@ -95,6 +95,39 @@ async function globalClick(e) {
         } catch (error) {
             console.error('Errore durante l\u2019annullamento dell\u2019ordine:', error);
             alert(error.message || 'Impossibile annullare l\u2019ordine.');
+        }
+        return;
+    }
+        //bottone Salva&Stampa
+    const btnSalvaStampa = e.target.closest('#salva-ordine-stampa');
+    if (btnSalvaStampa) {
+        e.preventDefault();
+
+        const idSalvato = Number(state.idOrdineInserito || hid.value);
+
+        if (!(idSalvato > 0)) {
+            alert('Nessun ordine da salvare.');
+            return;
+        }
+
+        if (state.comanda.length === 0) {
+            alert('La comanda è vuota, aggiungi almeno una voce.');
+            return;
+        }
+
+        if (!confirm('L\u2019ordine verrà salvato e inviato alla cucina/bar')) {
+            return;
+        }
+
+        try {
+            // invia tutte le voci della comanda al server (stato resta invariato: 1)
+            await inserisciComanda(idSalvato, state.comanda);
+
+            svuotaOrdineSalvato();
+            alert('Ordine inviato correttamente.');
+        } catch (error) {
+            console.error('Errore durante il salvataggio e stampa dell\u2019ordine:', error);
+            alert(error.message || 'Impossibile salvare e stampare l\u2019ordine.');
         }
         return;
     }

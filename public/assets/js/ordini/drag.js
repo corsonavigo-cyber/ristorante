@@ -1,3 +1,5 @@
+// drag.js — drag & drop con Pointer Events (mouse + touch)
+
 export function attachDragAndDrop({
     container,
     cardSelector = '.voce-trascinabile',
@@ -7,56 +9,88 @@ export function attachDragAndDrop({
 } = {}) {
     if (!container) return;
 
-    container.addEventListener('dragstart', e => {
+    let draggingCard = null;
+    let ghost = null;       // clone visivo che segue il dito/mouse
+    let payload = null;
+    let currentZone = null;
+
+    container.addEventListener('pointerdown', e => {
         const card = e.target.closest(cardSelector);
-        if (!card || e.target.closest('button')) {
-            e.preventDefault();
-            return;
-        }
-        card.classList.add('dragging');
-        const payload = typeof getDragPayload === 'function'
+        if (!card || e.target.closest('button')) return;
+
+        // Solo pointer primario (evita multi-touch accidentali)
+        if (!e.isPrimary) return;
+
+        draggingCard = card;
+        payload = typeof getDragPayload === 'function'
             ? getDragPayload(card)
             : { idRelazione: card.dataset.relazione, momentoId: card.dataset.momento };
-        e.dataTransfer.setData('text/plain', JSON.stringify(payload));
-        e.dataTransfer.effectAllowed = 'move';
+
+        card.setPointerCapture(e.pointerId);
+        card.classList.add('dragging');
+
+        // Ghost: clone posizionato in fixed, che segue il puntatore
+        const rect = card.getBoundingClientRect();
+        ghost = card.cloneNode(true);
+        ghost.classList.add('drag-ghost');
+        ghost.style.position = 'fixed';
+        ghost.style.left = `${rect.left}px`;
+        ghost.style.top = `${rect.top}px`;
+        ghost.style.width = `${rect.width}px`;
+        ghost.style.pointerEvents = 'none';
+        ghost.style.zIndex = '9999';
+        document.body.appendChild(ghost);
+
+        e.preventDefault(); // evita scroll/selezione testo durante il drag su touch
     });
 
-    container.addEventListener('dragend', e => {
-        const card = e.target.closest(cardSelector);
-        if (card) card.classList.remove('dragging');
-    });
+    container.addEventListener('pointermove', e => {
+        if (!draggingCard || !ghost) return;
 
-    container.addEventListener('dragenter', e => {
-        const zone = e.target.closest(dropzoneSelector);
-        if (!zone) return;
-        e.preventDefault();
-        zone.classList.add('drop-target');
-    });
+        ghost.style.left = `${e.clientX - ghost.offsetWidth / 2}px`;
+        ghost.style.top = `${e.clientY - ghost.offsetHeight / 2}px`;
 
-    container.addEventListener('dragover', e => {
-        const zone = e.target.closest(dropzoneSelector);
-        if (!zone) return;
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-    });
+        // Nascondi il ghost per un istante per rilevare cosa c'è sotto il puntatore
+        ghost.style.display = 'none';
+        const elementSotto = document.elementFromPoint(e.clientX, e.clientY);
+        ghost.style.display = '';
 
-    container.addEventListener('dragleave', e => {
-        const zone = e.target.closest(dropzoneSelector);
-        if (zone) zone.classList.remove('drop-target');
-    });
+        const zone = elementSotto?.closest(dropzoneSelector) ?? null;
 
-    container.addEventListener('drop', async e => {
-        const zone = e.target.closest(dropzoneSelector);
-        if (!zone) return;
-        e.preventDefault();
-        zone.classList.remove('drop-target');
-
-        const payload = JSON.parse(e.dataTransfer.getData('text/plain'));
-        const newMomentoId = zone.dataset.momentoId;
-        if (payload.momentoId === newMomentoId) return;
-
-        if (typeof onDrop === 'function') {
-            await onDrop({ payload, zone });
+        if (zone !== currentZone) {
+            if (currentZone) currentZone.classList.remove('drop-target');
+            if (zone) zone.classList.add('drop-target');
+            currentZone = zone;
         }
     });
+
+    async function terminaDrag(e) {
+        if (!draggingCard) return;
+
+        draggingCard.classList.remove('dragging');
+        if (currentZone) currentZone.classList.remove('drop-target');
+        if (ghost) {
+            ghost.remove();
+            ghost = null;
+        }
+
+        const zone = currentZone;
+        const cardPayload = payload;
+
+        draggingCard = null;
+        payload = null;
+        currentZone = null;
+
+        if (!zone) return; // rilasciato fuori da ogni dropzone: nessuna azione
+
+        const newMomentoId = zone.dataset.momentoId;
+        if (cardPayload.momentoId === newMomentoId) return;
+
+        if (typeof onDrop === 'function') {
+            await onDrop({ payload: cardPayload, zone });
+        }
+    }
+
+    container.addEventListener('pointerup', terminaDrag);
+    container.addEventListener('pointercancel', terminaDrag);
 }
