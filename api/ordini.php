@@ -98,9 +98,15 @@ try {
                 ) ?? []),
 
                 'item' => risposta($ordiniService->inserisciRelazioneOrdineItem(
-                    $body['id_ordine'], $body['id_item'], $body['id_momento'],
-                    $body['quantita'], $body['note'] ?? null
-                ) ?? []),
+                    $body['id_ordine'] ?? throw new \InvalidArgumentException('id_ordine mancante.'),
+                    $body['voci'] ?? []
+                ), 201),
+
+                'stampa' => (function () use ($body, $stampaService) {
+                    $idOrdine = (int) ($body['id_ordine'] ?? throw new \InvalidArgumentException('id_ordine mancante.'));
+                    $stampaService->generaComandaTxt($idOrdine);
+                    return risposta(['id_ordine' => $idOrdine, 'stampa' => 'accodata'], 201);
+                })(),
                 
                'ordinecompleto' => risposta([
                     'id_ordine' => $body['id_ordine'] ?? throw new \InvalidArgumentException('ID ordine mancante'),

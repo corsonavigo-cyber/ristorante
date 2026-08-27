@@ -4,8 +4,7 @@ import { aggiornaVoceComanda, eliminaVoce, initDragAndDropComanda } from './coma
 import { cambiaMomento, controllaMomentoSelezionato, disegnaMomenti } from './momenti.js';
 import { ripristinaOrdine, salvaOrdine, svuotaOrdineSalvato, leggiOrdineSalvato } from './localstorage.js';
 import { precaricaTavoliForm, controllaTavoloDisponibile } from './tavoli-ordine.js';
-import { inserisciOrdine, inserisciOrdineStato, inserisciOrdineTavolo, inserisciComanda, inserisciItemOrdine } from './ordine.js';
-import { apiPost, apiDelete, apiGet } from '../apigeneric.js';
+import { inserisciOrdine, inserisciOrdineStato, inserisciOrdineTavolo,  inserisciItemOrdine, stampaOrdine } from './ordine.js';
 import { annullaOrdineInCompilazione } from './eliminazioni.js';
 
 document.addEventListener('input', gestisciInputGlobali);
@@ -103,7 +102,7 @@ async function globalClick(e) {
     if (btnSalvaStampa) {
         e.preventDefault();
 
-        const idSalvato = Number(state.idOrdineInserito || hid.value);
+        const idSalvato = parseInt(state.idOrdineInserito || hid.value);
 
         if (!(idSalvato > 0)) {
             alert('Nessun ordine da salvare.');
@@ -118,20 +117,29 @@ async function globalClick(e) {
         if (!confirm('L\u2019ordine verrà salvato e inviato alla cucina/bar')) {
             return;
         }
+        console.log('Salvataggio e invio ordine con ID:', typeof( idSalvato), 'Voci:', state.comanda);
+        try {
+            await inserisciItemOrdine(idSalvato, state.comanda);
+        } catch (error) {
+            console.error('Errore durante il salvataggio dell\u2019ordine:', error);
+            alert(error.message || 'Impossibile salvare la comanda.');
+            return; // fermati qui: niente stampa se l'ordine non è stato salvato
+        }
 
         try {
-            // invia tutte le voci della comanda al server (stato resta invariato: 1)
-            await inserisciComanda(idSalvato, state.comanda);
-
-            svuotaOrdineSalvato();
-            alert('Ordine inviato correttamente.');
+            await stampaOrdine(idSalvato);
         } catch (error) {
-            console.error('Errore durante il salvataggio e stampa dell\u2019ordine:', error);
-            alert(error.message || 'Impossibile salvare e stampare l\u2019ordine.');
+            console.error('Errore durante la stampa dell\u2019ordine:', error);
+            alert('Ordine salvato, ma la stampa è fallita: ' + (error.message || 'errore sconosciuto'));
+            svuotaOrdineSalvato(); // l'ordine ESISTE comunque a DB, ha senso svuotare lo stato locale
+            return;
         }
+
+        svuotaOrdineSalvato();
+        alert('Ordine salvato e inviato alla cucina/bar con successo.');
+        window.location.href = '/ordini';
         return;
     }
-
     // 2. Pulsante Avanti (Creazione o Ripresa Ordine)
     const btnAvanti = e.target.closest('.btn-avanti');
     if (btnAvanti) {

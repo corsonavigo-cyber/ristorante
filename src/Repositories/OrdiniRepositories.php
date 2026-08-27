@@ -238,19 +238,51 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
 
      
 
-     public function inserisciRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita, ?string $note = null): int
+     public function inserisciRelazioneOrdineItem(int $id_ordine, array $voci): array
      {
-        $stmt = $this->pdo->prepare('INSERT INTO relazione_ordine_item (id_ordine, id_item, id_momento, quantita, note) VALUES (:id_ordine, :id_item, :id_momento, :quantita, :note)');
-        $stmt->execute([
-            'id_ordine' => $id_ordine,
-            'id_item' => $id_item,
-            'id_momento' => $id_momento,
-            'quantita' => $quantita,
-            'note' => $note,
-        ]);
-        return (int) $this->pdo->lastInsertId();
-     }
+        if(count($voci)===0){
+            return [];
+        }
 
+        $commitHere=false;
+        if(!$this->inTransaction()){
+            $this->iniziaTransazione();
+            $commitHere = true;
+        }
+
+        $stmt = $this->pdo->prepare('INSERT INTO relazione_ordine_item (id_ordine, id_item, id_momento, quantita, note) VALUES (:id_ordine, :id_item, :id_momento, :quantita, :note)');
+        $righeInserite = 0;
+        $idsInseriti = [];
+
+        try{
+            foreach ($voci as $voce){
+        
+            $stmt->execute([
+                'id_ordine'  => $id_ordine,
+                'id_item'    => $voce['id_item'],
+                'id_momento' => $voce['id_momento'],
+                'quantita'   => $voce['quantita'],
+                'note'       => $voce['note'] ?? null,
+                 ]);
+                $righeInserite += $stmt->rowCount();
+                $idsInseriti[] = (int) $this->pdo->lastInsertId();
+            }
+            if ($righeInserite !== count($voci)) {
+                 throw new \RuntimeException('Inserimento comanda incompleto');
+            }
+
+            if ($commitHere) {
+                $this->confermaTransazione();
+            }
+
+            return $idsInseriti;
+        } catch (\Throwable $e) {
+            if ($commitHere && $this->inTransaction()) {
+                $this->annullaTransazione();
+            }
+            throw $e;
+        }
+        }
 
 
 

@@ -20,7 +20,7 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
    <div class="piatto">
      <form action="" id="form_inserisci_ordine" method="POST">
         <input type="hidden" id="per_ordine_id" name="nascosto" value="">
-        <button type="button"id="salva-ordine-stampa" > Salva </button>
+        <button type="button"id="salva-ordine-stampa" > Salva&Stampa </button>
 
        <section id="primo-step"> 
         <label for="numero-persone">Numero Persone : </label>

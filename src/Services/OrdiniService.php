@@ -171,17 +171,29 @@ class OrdiniService {
         }   
     }
 
-    public function inserisciRelazioneOrdineItem(int $id_ordine, int $id_item, int $id_momento, int $quantita, ?string $note = null): bool{
+    public function inserisciRelazioneOrdineItem(int $id_ordine, array $voci): array
+    {
+    if (count($voci) === 0) {
+        throw new \InvalidArgumentException('La comanda non contiene elementi.'); // → 400
+    }
 
-        #salto l'autorizzazione in base al ruolo
-       try {
-             $this->ordiniRepo->inserisciRelazioneOrdineItem($id_ordine, $id_item, $id_momento, $quantita, $note );
-             $this->logger->info("Ordine associato correttamente id_ordine {$id_ordine} all' item {$id_item}");
-             return true;
-             
-        }catch (\Throwable $e) {
-             $this->logger->error("Ordine associazione  id_ordine {$id_ordine} all' item {$id_item} fallita: {$e->getMessage()}");
-             throw new \RuntimeException("Errore inserimento ordine-item: {$e->getMessage()}");
+    // validazione minima lato service, coerente con validaCampi() già usato in PrenotazioniService
+    foreach ($voci as $i => $voce) {
+        if (!isset($voce['id_item'], $voce['id_momento'], $voce['quantita'])) {
+            throw new \InvalidArgumentException("Voce comanda #{$i} incompleta."); // → 400
+        }
+        if ((int) $voce['quantita'] <= 0) {
+            throw new \InvalidArgumentException("Quantità non valida alla voce #{$i}."); // → 400
+        }
+    }
+
+    try {
+        $ids = $this->ordiniRepo->inserisciRelazioneOrdineItem($id_ordine, $voci);
+        $this->logger->info("Comanda inserita per l'ordine {$id_ordine}: " . count($ids) . " voci");
+        return $ids;
+    } catch (\Throwable $e) {
+        $this->logger->error("Inserimento comanda fallito per l'ordine {$id_ordine}: {$e->getMessage()}");
+        throw new \Exception("Errore inserimento ordine-item: {$e->getMessage()}"); 
         }   
     }
 

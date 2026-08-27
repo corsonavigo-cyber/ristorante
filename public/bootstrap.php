@@ -31,6 +31,7 @@ use App\Services\PrenotazioniService;
 use App\Services\StoricoPrenotazioniService;
 use App\Services\LeggiStoricoService;
 use App\Services\MenuService;
+use App\Services\StampaService;
 
 use App\Services\LoggerService;
 $dotenv =Dotenv::createImmutable(__DIR__.'/../');
@@ -57,9 +58,17 @@ $leggistoricoordiniRepository = new LeggiStoricoRepositories(
     dirname(__DIR__) . '/storage/logs/storicoordini.txt'
 );
 
+
 $ordiniRepository= new OrdiniRepositories($pdo);
 $scontrinoRepository= new ScontrinoRepositories($pdo);
 $storicoOrdini = new StoricoOrdiniService();
+
+$stampaService = new StampaService(
+    $ordiniRepository,
+    $logger,
+    dirname(__DIR__) . '/storage/logs/stampe'   // stesso pattern di storicoprenotazioni.txt/storicoordini.txt
+);
+
 
 //chiamo i service
 //scrittura
