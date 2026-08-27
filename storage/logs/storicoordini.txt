@@ -16,3 +16,4 @@
 [2026-08-27 12:29:42] [APERTO] Ordine inserito correttamente id_ordine 20 sul tavolo: inserito con successo
 [2026-08-27 12:43:03] [APERTO] Ordine inserito correttamente id_ordine 21 sul tavolo: inserito con successo
 [2026-08-27 12:58:04] [APERTO] Ordine inserito correttamente id_ordine 22 sul tavolo: inserito con successo
+[2026-08-27 13:22:42] [CANCELLATO] ordine id 20 ( del 2026-08-27 12:29:42 id tavolo  piatti  bevande  )

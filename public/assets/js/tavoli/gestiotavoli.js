@@ -1,14 +1,32 @@
 import * as API_tav_function from '../apigeneric.js';
 import * as Utilis from './utils.js';
 import  {eliminaPrenotazioneClick, disattivaPrenotazione} from '../prenotazioni/gestioneprenotazioni.js';
+import { eliminaOrdineClick } from '../ordini/eliminazioni.js';
 
 
 document.addEventListener('DOMContentLoaded', caricaTavoli);
 document.addEventListener('click', eliminaTavoloClick);
 document.addEventListener('click', eliminaPrenotazioneClick);
+document.addEventListener('click', eliminaOrdineDaLavagnaClick);
+
 document.addEventListener('click', disattivaPrenotazione);
 
+async function eliminaOrdineDaLavagnaClick(e) {
+    const btn = e.target instanceof Element ? e.target.closest('.btn-elimina-ordine') : null;
 
+    if (!btn) return;
+
+    const idOrdine = btn.dataset.id;
+
+    if (!idOrdine) {
+        throw new Error('ID ordine mancante nel bottone.');
+    }
+
+    if (!confirm('Vuoi eliminare questo ordine?')) return;
+
+    await eliminaOrdineClick({ target: btn });
+    window.location.reload();
+}   
 async function caricaTavoli (){
     const tavoli = await API_tav_function.apiGet(API);
     const lavagna = document.getElementById('lavagna_tavoli');
@@ -113,7 +131,7 @@ function mostraPrenotazioni(contenitore, prenotazioni, id_tavolo) {
         </a>
 
         <button
-            class="btn-elimina-elemento"
+            class="btn-elimina-prenotazione"
             data-id="${p.id_prenotazione}">
             Elimina Prenotazione🗑️
         </button>
@@ -149,7 +167,7 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
 
         
         <button
-            class="btn-elimina-elemento"
+            class="btn-elimina-ordine"
             data-id="${o.id_ordine}">
             Elimina Ordine 🗑️
         </button>
