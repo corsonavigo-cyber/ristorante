@@ -95,7 +95,11 @@ export async function inserisciItemOrdine(
     });
 
     // singola chiamata : atomica lato server (transazione), no invii paralleli
-    return apiPost(`${API_ORDINI}?type=stampa`, {
+    return insersciRelazioneOrdineItem(idOrdine, voci);
+}
+
+async function insersciRelazioneOrdineItem(idOrdine, voci) {
+    apiPost(`${API_ORDINI}?type=item`, {
         id_ordine: Number(idOrdine),
         voci
     });
@@ -133,7 +137,6 @@ export async function stampaOrdine(idOrdine) {
     if (!Number.isInteger(Number(idOrdine))) {
         throw new Error('ID ordine non valido.');
     }
-    await inserisciOrdineStato(idOrdine, 2); // Aggiorna lo stato dell'ordine a "stampa" (id_stato = 2)
     return apiPost(`${API_ORDINI}?type=stampa`, { id_ordine: idOrdine});
 }
 

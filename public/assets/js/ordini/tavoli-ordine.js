@@ -1,5 +1,5 @@
 import { apiGet, apiPost, apiPatch } from '../apigeneric.js';
-import { state,  CHIAVE_ORDINE } from './variabilistato.js';
+import { state } from './variabilistato.js';
 import { mostraAvviso } from '../tavoli/utils.js';
 
 export function caricaOrdiniOggi() {

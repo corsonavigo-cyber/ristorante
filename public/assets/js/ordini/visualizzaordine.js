@@ -1,6 +1,6 @@
 import { attachDragAndDrop } from './dragdrop.js';
-import { apiGet,apiDelete,apiPatch,apiPost,apiPut } from '../apigeneric.js';
-import { state, showError } from './variabilistato.js';
+import { apiGet,apiPut } from '../apigeneric.js';
+import { showError } from './variabilistato.js';
 import { eliminaItemNellOrdine } from './eliminazioni.js';
 
 

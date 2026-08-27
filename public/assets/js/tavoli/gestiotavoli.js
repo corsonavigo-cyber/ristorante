@@ -115,7 +115,7 @@ function mostraPrenotazioni(contenitore, prenotazioni, id_tavolo) {
         <button
             class="btn-elimina-elemento"
             data-id="${p.id_prenotazione}">
-            Elimina 🗑️
+            Elimina Prenotazione🗑️
         </button>
 
         <button
@@ -151,7 +151,7 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
         <button
             class="btn-elimina-elemento"
             data-id="${o.id_ordine}">
-            Elimina Ordine
+            Elimina Ordine 🗑️
         </button>
         </div>
     `).join('');
@@ -209,7 +209,7 @@ async function caricaElementiTavolo(id_tavolo) {
 
 async function eliminaTavoloClick(e) {
     try {
-        const btn = e.target instanceof Element ? e.target.closest('.btn-elimina-elemento') : null;
+        const btn = e.target instanceof Element ? e.target.closest('.btn-elimina') : null;
 
         if (!btn) return console.log('Click non su bottone elimina tavolo');
 

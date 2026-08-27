@@ -1,0 +1,19 @@
+================================
+  BAR
+  ORDINE #20
+  Tavolo/i: 6
+  2026-08-27 12:29:42
+================================
+
+[]
+  1x Acqua naturale 0.5L
+  1x Acqua naturale 0.5L
+
+[]
+  1x Succo di frutta
+  1x Succo di frutta
+
+[]
+  1x Birra artigianale
+  1x Birra artigianale
+================================

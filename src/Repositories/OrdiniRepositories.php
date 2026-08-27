@@ -17,6 +17,7 @@ class OrdiniRepositories extends BaseRepositories {
     relazione_ordine_item.id_comanda_dettaglio,
     relazione_ordine_item.id_item,
     relazione_ordine_item.id_momento,
+    momento_del_servizio.nome_momento,
     relazione_ordine_item.quantita,
     relazione_ordine_item.note,
     item_menu.tipo,
@@ -38,6 +39,8 @@ LEFT JOIN relazione_ordine_item
     ON relazione_ordine_item.id_ordine = ordine.id_ordine
 LEFT JOIN item_menu 
     ON item_menu.id_item = relazione_ordine_item.id_item
+LEFT JOIN momento_del_servizio
+    ON momento_del_servizio.id_momento = relazione_ordine_item.id_momento
 LEFT JOIN (
     -- pre-aggregazione: un allergene concat per id_item, evita di moltiplicare le righe dell'ordine
     SELECT 
@@ -59,10 +62,13 @@ GROUP BY
     relazione_ordine_item.id_comanda_dettaglio,
     item_menu.id_item,
     relazione_ordine_item.id_momento,
+    momento_del_servizio.nome_momento,
     stato_conto.nome_stato
+    
 ORDER BY 
     ordine.id_ordine,
     relazione_ordine_item.id_momento,
+    momento_del_servizio.nome_momento,
     item_menu.tipo";
 
     private function buildOrdiniQuery(string $filter = '', ?int $limit = null): string

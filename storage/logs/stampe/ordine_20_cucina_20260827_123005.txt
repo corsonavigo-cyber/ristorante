@@ -1,0 +1,19 @@
+================================
+  CUCINA
+  ORDINE #20
+  Tavolo/i: 6
+  2026-08-27 12:29:42
+================================
+
+[]
+  1x gelato
+  1x gelato
+
+[]
+  1x Spaghetti alla carbonara
+  1x Spaghetti alla carbonara
+
+[]
+  1x patatine fritte
+  1x patatine fritte
+================================

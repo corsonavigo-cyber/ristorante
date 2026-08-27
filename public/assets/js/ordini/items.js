@@ -74,14 +74,6 @@ function renderItemCard(item, tipo) {
 
 </div>
 
-<button
-    type="button"
-    class="btn-dettaglio"
-    data-id="${item.id_item}"
-    data-tipo="${tipo}">
-    Dettagli
-</button>
-
 
 <div class="controllo-quantita">
 

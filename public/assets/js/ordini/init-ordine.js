@@ -137,7 +137,7 @@ async function globalClick(e) {
 
         svuotaOrdineSalvato();
         alert('Ordine salvato e inviato alla cucina/bar con successo.');
-        window.location.href = '/ordini';
+        window.location.href = '../tavoli/gestionetavoli.php';
         return;
     }
     // 2. Pulsante Avanti (Creazione o Ripresa Ordine)
