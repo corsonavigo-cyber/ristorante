@@ -1,8 +1,4 @@
-import {
-    apiGet,
-    apiPost,
-    apiPatch
-} from '../apigeneric.js';
+import { apiGet, apiPost, apiPatch, apiPut, apiDelete } from '../apigeneric.js';
 
 const API_ORDINI = '/ristorante/api/ordini.php';
 
@@ -17,6 +13,65 @@ function leggiNumeroPersone() {
     return numeroPersone;
 }
 
+// api-ordini.js
+
+export async function eliminaItemComanda(idComandaDettaglio) {
+    if (!Number.isInteger(Number(idComandaDettaglio))) {
+        throw new Error('ID voce comanda non valido.');
+    }
+    return apiDelete(API_ORDINI, {
+        type: 'item_momento',
+        id: Number(idComandaDettaglio)
+    });
+}
+
+export async function aggiornaQuantitaItem(idOrdine, idComandaDettaglio, idMomento, quantita, note = '') {
+    if (!Number(idOrdine)) {
+        throw new Error('ID ordine non valido.');
+    }
+    if (!Number.isInteger(Number(idComandaDettaglio)) || !Number.isInteger(Number(idMomento))) {
+        throw new Error('ID voce o momento non validi.');
+    }
+    if (!Number.isInteger(Number(quantita)) || Number(quantita) <= 0) {
+        throw new Error('Quantità non valida.');
+    }
+    return apiPut(
+        `${API_ORDINI}?type=item_quantita_momento`,
+        {},
+        {
+            id_ordine: Number(idOrdine),
+            id_comanda_dettaglio: Number(idComandaDettaglio),
+            id_momento: Number(idMomento),
+            quantita: Number(quantita),
+            note: (note ?? '').toString().trim()
+        }
+    );
+}
+
+// Applica al DB le differenze calcolate da preparaAggiornamentoDb().
+export async function aggiornaComandaNelDb(idOrdine, { daEliminare, daAggiornare, daInserire }) {
+    // 1. Eliminazioni
+    for (const [i, voce] of daEliminare.entries()) {
+        if (!Number.isInteger(Number(voce.id_comanda_dettaglio))) {
+            throw new Error(`Voce da eliminare ${i + 1} non valida.`);
+        }
+        await eliminaItemComanda(voce.id_comanda_dettaglio);
+    }
+
+    // 2. Aggiornamenti (quantità + momento + note)
+    for (const [i, voce] of daAggiornare.entries()) {
+        if (!Number.isInteger(Number(voce.id_momento))) {
+            throw new Error(`Voce da aggiornare ${i + 1} senza momento valido.`);
+        }
+        await aggiornaQuantitaItem(idOrdine, voce.id_comanda_dettaglio, voce.id_momento, voce.quantita, voce.note);
+    }
+
+    // 3. Inserimenti — restano un'unica chiamata atomica (transazione lato server),
+    // coerente con inserisciItemOrdine già esistente
+    if (daInserire.length > 0) {
+        await inserisciItemOrdine(idOrdine, daInserire);
+    }
+}
 export function leggiTavoliSelezionati() {
     const tavoli = [
         ...document.querySelectorAll(
@@ -137,25 +192,7 @@ export async function aggiornaMomentoItem(idOrdine, idComandaDettaglio, idMoment
     );
 }
 
-// Aggiorna la quantità di un item già in comanda (PUT type=item_quantita_momento)
-export async function aggiornaQuantitaItem(idOrdine, idComandaDettaglio, idMomento, quantita) {
-    if (![idOrdine, idComandaDettaglio, idMomento].every(v => Number.isInteger(Number(v)))) {
-        throw new Error('Parametri item/momento non validi.');
-    }
-    if (!Number.isInteger(Number(quantita)) || Number(quantita) <= 0) {
-        throw new Error('Quantità non valida.');
-    }
-    return apiPut(
-        `${API_ORDINI}?type=item_quantita_momento`,
-        {},
-        {
-            id_ordine: Number(idOrdine),
-            id_comanda_dettaglio: Number(idComandaDettaglio),
-            id_momento: Number(idMomento),
-            quantita: Number(quantita)
-        }
-    );
-}
+
 
 export async function cambiaOrdineDalTavolo(idOrdine, tavoli = leggiTavoliSelezionati()) {
     if (!Number.isInteger(Number(idOrdine))) {

@@ -196,9 +196,7 @@ try {
                 'ordine_stato' => risposta($ordiniService->eliminaRelazioneOrdineStato($id)),
 
                 'item_momento' => risposta($ordiniService->eliminaRelazioneOrdineDiUnoSpecificoItem(
-                    $id,
-                    $body['id_momento'] ?? throw new \InvalidArgumentException('ID momento mancante'),
-                    $body['id_comanda_dettaglio'] ?? throw new \InvalidArgumentException('ID item mancante')
+                    $id
                 )),
                 'ordine_momento' => risposta($ordiniService->eliminaRelazioneOrdinePerMomento(
                     $id,

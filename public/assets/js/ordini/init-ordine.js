@@ -127,7 +127,7 @@ async function globalClick(e) {
         }
 
         try {
-            await await stampaOrdine(idSalvato);
+         await stampaOrdine(idSalvato);
         } catch (error) {
             console.error('Errore durante la stampa dell\u2019ordine:', error);
             alert('Ordine salvato, ma la stampa è fallita: ' + (error.message || 'errore sconosciuto'));

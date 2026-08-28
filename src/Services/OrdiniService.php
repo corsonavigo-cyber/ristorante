@@ -302,19 +302,19 @@ class OrdiniService {
 
     
 
-    public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_ordine,int $id_comanda_dettaglio, int $id_momento):bool
+    public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_comanda_dettaglio):bool
     {
      try {
-          $this->ordiniRepo->eliminaRelazioneOrdineDiUnoSpecificoItem($id_ordine, $id_comanda_dettaglio, $id_momento);
+          $this->ordiniRepo->eliminaRelazioneOrdineDiUnoSpecificoItem($id_comanda_dettaglio);
          
-          $this->logger->info("Relazione  Momento Pietanze{$id_momento} SU ITEM: eliminata con successo dal tavolo ");
-          $this->storicoordini->cancellato("Relazione Momento stato per Pietanze {$id_momento} IN ITEM: eliminato con successo dal tavolo");
+          $this->logger->info("Relazione  Momento Pietanze SU ITEM: eliminata con successo dal tavolo ");
+          $this->storicoordini->cancellato("Relazione Momento stato per Pietanze  IN ITEM: eliminato con successo dal tavolo");
          
           return true;
              
      }catch (\Throwable $e) {
 
-             $this->logger->error("Eliminazione Momento Pietanze {$id_momento} fallita: {$e->getMessage()}");
+             $this->logger->error("Eliminazione Momento Pietanze  fallita: {$e->getMessage()}");
              return false;
      }       
     }

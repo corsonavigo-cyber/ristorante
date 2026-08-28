@@ -5,7 +5,7 @@ import { aggiornaVoceComanda, eliminaVoce, initDragAndDropComanda } from './coma
 import { cambiaMomento, controllaMomentoSelezionato, disegnaMomenti } from './momenti.js';
 import { ripristinaOrdine, salvaOrdine, svuotaOrdineSalvato, leggiOrdineSalvato } from './localstorage.js';
 import { precaricaTavoliForm, controllaTavoloDisponibile } from './tavoli-ordine.js';
-import { stampaOrdine } from './ordine.js';
+import { stampaOrdine, aggiornaComandaNelDb } from './ordine.js';
 import { caricaOrdine,  cambiaOrdineDalTavolo } from './ordine.js'; 
 
 //document.addEventListener('input', gestisciInputGlobali);
@@ -257,11 +257,10 @@ async function globalClick(e) {
             if (!confirm('L\u2019ordine verrà salvato e inviato alla cucina/bar')) {
                 return;
             }
-            await preparaAggiornamentoDb(state.comanda, state.comandaOriginale);
-            console.log(state.comanda, state.comandaOriginale)
-            console.log('Modifica in corso:', typeof( idSalvato), 'Voci:', state.comanda);
+            const operazioni = await preparaAggiornamentoDb(state.comanda, state.comandaOriginale);
+            console.log(operazioni)
             try {
-                //codice per le diverse chiamate al db
+                //await aggiornaComandaNelDb(idSalvato, diff);
             } catch (error) {
                 console.error('Errore durante il salvataggio dell\u2019ordine:', error);
                 alert(error.message || 'Impossibile salvare la comanda.');

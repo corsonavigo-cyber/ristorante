@@ -33,7 +33,7 @@ export function initDragAndDropComanda() {
 }
 
 function recuperaItem(idItem) {
-    console.log(state.items)
+    
     return state.items.find(item =>
         Number(item.id_item) === Number(idItem)
     );
