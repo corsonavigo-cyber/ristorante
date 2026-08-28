@@ -17,7 +17,7 @@ function leggiNumeroPersone() {
     return numeroPersone;
 }
 
-function leggiTavoliSelezionati() {
+export function leggiTavoliSelezionati() {
     const tavoli = [
         ...document.querySelectorAll(
             'input[name="tavoliSelezionati[]"]:checked'
@@ -99,12 +99,63 @@ export async function inserisciItemOrdine(
 }
 
 async function insersciRelazioneOrdineItem(idOrdine, voci) {
-    apiPost(`${API_ORDINI}?type=item`, {
+    return apiPost(`${API_ORDINI}?type=item`, {   // <-- manca "return"
         id_ordine: Number(idOrdine),
         voci
     });
 }
 
+// Sposta l'intero ordine da un momento all'altro (PUT type=momento)
+export async function aggiornaMomentoOrdine(idOrdine, idMomentoVecchio, idMomentoNuovo) {
+    if (![idOrdine, idMomentoVecchio, idMomentoNuovo].every(v => Number.isInteger(Number(v)))) {
+        throw new Error('Parametri momento non validi.');
+    }
+    return apiPut(
+        `${API_ORDINI}?type=momento`,
+        {}, // nessun id in querystring richiesto, il PHP legge tutto dal body
+        {
+            id_ordine: Number(idOrdine),
+            id_momento_vecchio: Number(idMomentoVecchio),
+            id_momento_nuovo: Number(idMomentoNuovo)
+        }
+    );
+}
+
+// Sposta un singolo item di comanda in un altro momento (PUT type=item_momento)
+export async function aggiornaMomentoItem(idOrdine, idComandaDettaglio, idMomento) {
+    if (![idOrdine, idComandaDettaglio, idMomento].every(v => Number.isInteger(Number(v)))) {
+        throw new Error('Parametri item/momento non validi.');
+    }
+    return apiPut(
+        `${API_ORDINI}?type=item_momento`,
+        {},
+        {
+            id_ordine: Number(idOrdine),
+            id_comanda_dettaglio: Number(idComandaDettaglio),
+            id_momento: Number(idMomento)
+        }
+    );
+}
+
+// Aggiorna la quantità di un item già in comanda (PUT type=item_quantita_momento)
+export async function aggiornaQuantitaItem(idOrdine, idComandaDettaglio, idMomento, quantita) {
+    if (![idOrdine, idComandaDettaglio, idMomento].every(v => Number.isInteger(Number(v)))) {
+        throw new Error('Parametri item/momento non validi.');
+    }
+    if (!Number.isInteger(Number(quantita)) || Number(quantita) <= 0) {
+        throw new Error('Quantità non valida.');
+    }
+    return apiPut(
+        `${API_ORDINI}?type=item_quantita_momento`,
+        {},
+        {
+            id_ordine: Number(idOrdine),
+            id_comanda_dettaglio: Number(idComandaDettaglio),
+            id_momento: Number(idMomento),
+            quantita: Number(quantita)
+        }
+    );
+}
 
 export async function cambiaOrdineDalTavolo(idOrdine, tavoli = leggiTavoliSelezionati()) {
     if (!Number.isInteger(Number(idOrdine))) {
@@ -133,11 +184,14 @@ export async function caricaOrdine(idOrdine) {
 }
 
 
-export async function stampaOrdine(idOrdine) {
+export async function stampaOrdine(idOrdine, isModifica = false) {
     if (!Number.isInteger(Number(idOrdine))) {
         throw new Error('ID ordine non valido.');
     }
-    return apiPost(`${API_ORDINI}?type=stampa`, { id_ordine: idOrdine});
+    return apiPost(`${API_ORDINI}?type=stampa`, {
+        id_ordine: idOrdine,
+        modifica: isModifica
+    });
 }
 
 export async function creaOrdineConTavoli() {

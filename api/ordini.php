@@ -102,9 +102,10 @@ try {
                     $body['voci'] ?? []
                 ), 201),
 
-                'stampa' => (function () use ($body, $stampaService) {
+             'stampa' => (function () use ($body, $stampaService) {
                     $idOrdine = (int) ($body['id_ordine'] ?? throw new \InvalidArgumentException('id_ordine mancante.'));
-                    $stampaService->generaComandaTxt($idOrdine);
+                    $isModifica = filter_var($body['modifica'] ?? false, FILTER_VALIDATE_BOOLEAN);
+                    $stampaService->generaComandaTxt($idOrdine, $isModifica);
                     return risposta(['id_ordine' => $idOrdine, 'stampa' => 'accodata'], 201);
                 })(),
                 
@@ -146,7 +147,7 @@ try {
                     $body['id_ordine'], $body['id_comanda_dettaglio'], $body['id_momento']
                 ) ?? []),
                 'item_quantita_momento' => risposta($ordiniService->aggiornaQuantitaRelazioneOrdineItem(
-                    $body['id_ordine'], $body['id_comanda_dettaglio'], $body['id_momento'], $body['quantita'],
+                    $body['id_ordine'], $body['id_comanda_dettaglio'], $body['id_momento'], $body['quantita'], $body['note']
                 ) ?? []),
 
 

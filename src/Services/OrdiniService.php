@@ -532,10 +532,10 @@ class OrdiniService {
 
     
 
-    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento, int $quantita):bool{
+    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento, int $quantita, string $note):bool{
        
        try {
-             $this->ordiniRepo->aggiornaQuantitaRelazioneOrdineItem($id_ordine, $id_comanda_dettaglio, $id_momento, $quantita);
+             $this->ordiniRepo->aggiornaQuantitaRelazioneOrdineItem($id_ordine, $id_comanda_dettaglio, $id_momento, $quantita, $note);
              
              $this->logger->info("bevanda id {$id_comanda_dettaglio} : aggiornata con successo sul/i quantita {$quantita} ");
              return true;

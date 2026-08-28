@@ -11,6 +11,7 @@ export async function caricaMomenti() {
     const momenti = await apiGet(API_ORDINI, { type: 'momenti' });
 
     state.momenti = Array.isArray(momenti) ? momenti : [];
+    console.log('sono in momenti', state.momenti, momenti)
     return state.momenti;
 }
 
@@ -20,7 +21,7 @@ export async function disegnaMomenti() {
     if (!contenitore) return;
 
     const momenti = await caricaMomenti();
-
+    console.log(state)
     const attivo = momenti.find(
         m => Number(m.id_momento) === Number(state.momentoAttivo)
     );

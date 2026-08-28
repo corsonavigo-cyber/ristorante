@@ -9,7 +9,8 @@ const NOMI_MOMENTI = {
     2: "PRIMO",
     3: "SECONDO",
     4: "DOLCI",
-    5: "DA EVADERE SUBITO"
+    5: "DA EVADERE SUBITO",
+    6: "ALTRO"
 };
 
 export function initDragAndDropComanda() {
@@ -19,7 +20,7 @@ export function initDragAndDropComanda() {
         onDrop: ({ payload, zone }) => {
             const nuovoMomento = Number(zone.dataset.momentoId);
             const voce = state.comanda.find(
-                v => v.id_comanda_dettaglio === payload.idRelazione
+                v => String(v.id_comanda_dettaglio) === String(payload.idRelazione)
             );
              console.log("chiamo drag")
             if (voce && voce.id_momento !== nuovoMomento) {
@@ -49,6 +50,7 @@ export function aggiornaVoceComanda(
     } = {}
 ) {
     const item = recuperaItem(idItem);
+    console.log(idRelazioneItem,idItem)
 
     if (!item) {
         console.warn('Item non trovato', idItem);
@@ -56,8 +58,9 @@ export function aggiornaVoceComanda(
     }
 
     let indice = idRelazioneItem 
-        ? state.comanda.findIndex(v => v.id_comanda_dettaglio === idRelazioneItem)
+        ? state.comanda.findIndex(v => String(v.id_comanda_dettaglio) === String(idRelazioneItem))
         : -1;
+    console.log(indice)
     //se non ci sono note e id relazione, significa che sto facendo un aggiunta rapida 
     if (indice === -1 && idRelazioneItem === null) {
         indice = state.comanda.findIndex(v => 
@@ -104,12 +107,19 @@ export function aggiornaVoceComanda(
 
  
 export function eliminaVoce(idRelazioneItem) {
-    console.log('entrato elimana');
-    console.log(idRelazioneItem);
-    state.comanda = state.comanda.filter(
-        voce => voce.id_comanda_dettaglio !== idRelazioneItem
-    );
-    console.log(state.comanda);
+    console.log('entrato elimina');
+    
+    // Convertiamo l'ID in arrivo in numero per sicurezza
+    const idDaEliminare = String(idRelazioneItem);
+    
+
+    state.comanda = state.comanda.filter(voce => {
+        // Convertiamo anche l'ID della voce in numero per essere sicuri
+        const idVoce = String(voce.id_comanda_dettaglio);
+        return idVoce !== idDaEliminare;
+    });
+
+    
     salvaOrdine(state.idOrdineInserito, false);
     disegnaPreComanda();
 }

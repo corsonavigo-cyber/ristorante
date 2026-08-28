@@ -127,7 +127,7 @@ async function globalClick(e) {
         }
 
         try {
-            await stampaOrdine(idSalvato);
+            await await stampaOrdine(idSalvato);
         } catch (error) {
             console.error('Errore durante la stampa dell\u2019ordine:', error);
             alert('Ordine salvato, ma la stampa è fallita: ' + (error.message || 'errore sconosciuto'));
@@ -295,7 +295,7 @@ async function globalClick(e) {
         if (!controllaMomentoSelezionato()) return;
         const idRelazione = btnSottrazione.dataset.relazione;
         const idItem = btnSottrazione.dataset.id;
-        aggiornaVoceComanda(idItem , {id_comanda_dettaglio : idRelazione, variazione: -1});
+        aggiornaVoceComanda(idItem , {idRelazioneItem : idRelazione, variazione: -1});
         return;
     }
 
@@ -306,7 +306,7 @@ async function globalClick(e) {
 
         const idRelazione = btnAddizione.dataset.relazione;
         const idItem = btnAddizione.dataset.id;
-        aggiornaVoceComanda(idItem , {id_comanda_dettaglio : idRelazione, variazione: 1});
+        aggiornaVoceComanda(idItem , {idRelazioneItem : idRelazione, variazione: 1});
         return;
     }
 

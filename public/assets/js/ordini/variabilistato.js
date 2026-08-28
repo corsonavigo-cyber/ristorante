@@ -9,7 +9,8 @@ export const state = {
     tavoliInUso: [],          // tavoli confermati per l'ordine corrente
     momentoAttivo: 1,          // 1=antipasto,2=primo,3=secondo,4=dolci,5=da evadere subito
     idOrdineInserito: null,     // valorizzato solo dopo POST riuscita su ordinecompleto
-    confirmGiaChiesto: false     // evita di richiedere più volte la conferma "riprendi bozza?"
+    confirmGiaChiesto: false ,    // evita di richiedere più volte la conferma "riprendi bozza?"
+    comandaOriginale: []
 };
 
 // reset esplicito dopo l'invio definitivo della comanda al server

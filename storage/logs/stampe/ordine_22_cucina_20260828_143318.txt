@@ -1,0 +1,16 @@
+================================
+  CUCINA
+  *** ORDINE MODIFICATO ***
+  ORDINE #22
+  Tavolo/i: 22
+  2026-08-28 12:58:04
+================================
+
+[prima portata]
+  1x Spaghetti alla carbonara
+     nota: tytej
+  1x Spaghetti alla carbonara
+
+[quarta portata]
+  1x patatine fritte
+================================

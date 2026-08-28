@@ -426,14 +426,15 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
         
     
 
-    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento, int $quantita): bool
+    public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento, int $quantita, string $note): bool
     {
         $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET quantita = :quantita WHERE id_ordine = :id_ordine AND id_comanda_dettaglio = :id_comanda_dettaglio AND id_momento = :id_momento');
         $stmt->execute([
             'id_ordine' => $id_ordine,
             'id_comanda_dettaglio' => $id_comanda_dettaglio,
             'id_momento' => $id_momento,
-            'quantita' => $quantita
+            'quantita' => $quantita,
+            'note'=>$note
         ]);
         return $stmt->rowCount() > 0;
     }

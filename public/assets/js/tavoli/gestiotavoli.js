@@ -161,15 +161,20 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
         </p>
 
         <a class="btn"
-           href="../ordini/visualizzaordine.php?id=${o.id_ordine}">
-           Visualizza Ordine
+           href="../ordini/modificaordine.php?id_ordine=${o.id_ordine}&id=${Number(o.id_tavoli)}">
+           Modifica
         </a>
 
+        <a href="../ordini/visualizzaordine?id=${o.id_ordine}"
+            class="btn"
+            data-id="${o.id_ordine}">
+            Conto 
+        </a>
         
         <button
             class="btn-elimina-ordine"
             data-id="${o.id_ordine}">
-            Elimina Ordine 🗑️
+            Elimina 🗑️
         </button>
         </div>
     `).join('');

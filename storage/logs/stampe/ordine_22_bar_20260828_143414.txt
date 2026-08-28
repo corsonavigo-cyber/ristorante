@@ -1,0 +1,15 @@
+================================
+  BAR
+  *** ORDINE MODIFICATO ***
+  ORDINE #22
+  Tavolo/i: 22
+  2026-08-28 12:58:04
+================================
+
+[prima portata]
+  1x Vino rosso della casa
+
+[quarta portata]
+  3x Coca-Cola 0.33L
+  1x Birra artigianale
+================================
