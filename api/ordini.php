@@ -18,23 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$method = $_SERVER['REQUEST_METHOD'];
 
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
-if ($id === false) {
-    throw new InvalidArgumentException('ID non valido');
-}
-$type = isset($_GET['type']) ? strtolower(trim($_GET['type'])) : '';
-$id_stato = filter_input(INPUT_GET, 'id_stato', FILTER_VALIDATE_INT);
-if ($id_stato === false) {
-    throw new InvalidArgumentException('ID stato non valido');
-}
-$momento = isset($_GET['momento']) ? strtolower(trim($_GET['momento'])) : null ;
-$id_momento = filter_input(INPUT_GET, 'id_momento', FILTER_VALIDATE_INT);
-if ($id_momento === false) {
-    throw new InvalidArgumentException('ID momento non valido');
-}
 function risposta(mixed $data, int $status = 200): void {
     http_response_code($status);
     echo json_encode(['success' => $status < 400, 'data' => $data]);
@@ -42,6 +26,34 @@ function risposta(mixed $data, int $status = 200): void {
 }
 
 try {
+    $method = $_SERVER['REQUEST_METHOD'];
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
+    $type = strtolower(trim($_GET['type'] ?? ''));
+    //funzione per estrazione sicura id
+    $getId = fn($key) => filter_input(INPUT_GET, $key, FILTER_VALIDATE_INT) ?: throw new InvalidArgumentException("Parametro $key non valido");
+    // Estrazione parametri sicura
+    $id = $getId('id');
+    $id_stato = $getId('id_stato');
+    $id_momento = $getId('id_momento');
+
+    $momento = isset($_GET['momento']) ? strtolower(trim($_GET['momento'])) : null ;
+
+
+    // Decodifica JSON una volta sola
+    $body = [];
+    if (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
+        $input = file_get_contents('php://input');
+        if (!empty($input)) {
+            $body = json_decode($input, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new InvalidArgumentException('JSON malformato');
+            }
+        }
+    }
+
     switch ($method) {
         case 'GET':
             if (!$type) {
@@ -224,6 +236,6 @@ try {
     risposta($e->getMessage(), 400);
 } catch (\RuntimeException $e) {
     risposta($e->getMessage(), 404);
-} catch (\Exception $e) {
+} catch (\Throwable $e) {  
     risposta($e->getMessage(), 500);
 }

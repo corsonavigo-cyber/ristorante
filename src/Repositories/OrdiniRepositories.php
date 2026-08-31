@@ -337,21 +337,19 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
         
      }
 
-     public function eliminaRelazioneOrdinePerMomento(int $id_ordine, int $id_momento): bool
+     public function eliminaRelazioneOrdinePerMomento(int $id_comanda_dettaglio, int $id_momento): bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE  $id_comanda_dettaglio = : $id_comanda_dettaglio');
+        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE  $id_comanda_dettaglio = : $id_comanda_dettaglio AND AND id_momento = :id_momento');
         return $stmt->execute([
-            'id_ordine' => $id_ordine,
+            'id_comanda_dettaglio' => $id_comanda_dettaglio,
             'id_momento' => $id_momento
         ]);
      }
 
-     public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_ordine,int $id_comanda_dettaglio, int $id_momento): bool
+     public function eliminaRelazioneOrdineDiUnoSpecificoItem(int $id_comanda_dettaglio): bool
      {
-        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE id_ordine = :id_ordine AND id_momento = :id_momento AND id_comanda_dettaglio = :id_comanda_dettaglio');
+        $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE id_comanda_dettaglio = :id_comanda_dettaglio ');
         return $stmt->execute([
-            'id_momento' => $id_momento,
-            'id_ordine' => $id_ordine,
             'id_comanda_dettaglio' => $id_comanda_dettaglio
         ]);
      }

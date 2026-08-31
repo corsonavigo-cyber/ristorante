@@ -40,6 +40,53 @@ class StampaService
     return $percorsi;
 }
 
+public function generaScontrinoTxt(int $id_scontrino): string
+{
+    // 1. Recupero dati scontrino e dettagli tramite il tuo ScontrinoService o Repo
+    // Assumiamo che tu abbia un metodo nel repo che fa il JOIN tra scontrino_emesso e scontrino_dettaglio
+    $dati = $this->ordiniRepo->getDettagliScontrinoCompleto($id_scontrino); 
+    
+    if (empty($dati)) {
+        throw new \RuntimeException("Scontrino {$id_scontrino} non trovato");
+    }
+
+    $testo = $this->formattaScontrino($dati);
+    return $this->salvaSuFile($id_scontrino, $testo, 'scontrino');
+}
+
+private function formattaScontrino(array $dati): string
+{
+    $righe = [];
+    $righe[] = "        RICEVUTA FISCALE";
+    $righe[] = str_repeat('-', 32);
+    $righe[] = "Data: " . $dati['data_e_ora_pagamento'];
+    $righe[] = "Scontrino #: " . $dati['id_scontrino'];
+    $righe[] = str_repeat('-', 32);
+
+    $totaleImposta = 0;
+
+    foreach ($dati['items'] as $item) {
+        $subtotale = $item['quantita'] * $item['prezzo_unitario_storico'];
+        // Calcolo IVA sul rigo
+        $iva = $subtotale * ($item['aliquota_iva_storica'] / 100);
+        $totaleImposta += $iva;
+
+        $righe[] = sprintf("%d x %-15s %8.2f", 
+            $item['quantita'], 
+            substr($item['nome'], 0, 15), 
+            $subtotale
+        );
+        $righe[] = "   (IVA {$item['aliquota_iva_storica']}%)";
+    }
+
+    $righe[] = str_repeat('-', 32);
+    $righe[] = sprintf("TOTALE IVA: %18.2f", $totaleImposta);
+    $righe[] = sprintf("TOTALE: %24.2f", $dati['totale']);
+    $righe[] = str_repeat('=', 32);
+
+    return implode("\n", $righe) . "\n";
+}
+
 private function formattaComanda(array $testata, array $voci, string $destinazione, bool $isModifica = false): string
 {
     $righe = [];

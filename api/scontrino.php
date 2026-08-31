@@ -5,93 +5,102 @@ require_once __DIR__ . '/../public/bootstrap.php';
 
 header('Content-Type: application/json');
 
-$type = $_GET['type'] ?? null;
-$id = isset($_GET['id']) ? (int)$_GET['id'] : null;
-$data_e_ora_pagamento = $_GET['data_e_ora_pagamento'] ?? null;
 
-$body = json_decode(file_get_contents('php://input'), true) ?? [];
+function scontrinoValidaCampi(array $body, array $campiRichiesti): void
+{
+    $mancanti = array_diff($campiRichiesti, array_keys($body));
+    if (!empty($mancanti)) {
+        throw new InvalidArgumentException('Campi mancanti nel body: ' . implode(', ', $mancanti));
+    }
+}
+function risposta(mixed $data, int $status = 200): void {
+    http_response_code($status);
+    echo json_encode(['success' => $status < 400, 'data' => $data]);
+    exit;
+}
 
 try {
+    $type = $_GET['type'] ?? null;
+    $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
+    $data_e_ora_pagamento = $_GET['data_e_ora_pagamento'] ?? null;
+    // 2. Decodifica JSON una volta sola
+    $body = [];
+    if (in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PATCH'])) {
+        $input = file_get_contents('php://input');
+        if (!empty($input)) {
+            $body = json_decode($input, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new InvalidArgumentException('JSON malformato');
+            }
+        }
+    }
+    //Routing
 
     match ([$_SERVER['REQUEST_METHOD'], $type, $id !== null, $data_e_ora_pagamento !== null]) {
 
-        ['GET', 'scontrini', false, false] => (function () use ($scontrinoService) {
-            http_response_code(200);
-            echo json_encode([
-                'data' => $scontrinoService->visualizzaTuttiGliScontrini()
-            ]);
-        })(),
+        ['GET', 'scontrini', false, false] =>  risposta($scontrinoService->visualizzaTuttiGliScontrini()),
 
-        ['GET', 'scontrino', true, false] => (function () use ($scontrinoService, $id) {
-            http_response_code(200);
-            echo json_encode([
-                'data' => $scontrinoService->recuperaUnScontrino($id)
-            ]);
-        })(),
+        ['GET', 'scontrino', true, false] => risposta($scontrinoService->recuperaUnScontrino($id)),
 
-        ['GET', 'scontrini_oggi', false, false] => (function () use ($scontrinoService) {
-            http_response_code(200);
-            echo json_encode([
-                'data' => $scontrinoService->visualizzaTuttiGliScontriniOggi()
-            ]);
-        })(),
+        ['GET', 'scontrini_oggi', false, false] => risposta($scontrinoService->visualizzaTuttiGliScontriniOggi()),
 
-        ['GET', 'incasso_giornata', false, false] => (function () use ($scontrinoService) {
-            http_response_code(200);
-            echo json_encode([
-                'data' => $scontrinoService->visualizzaIlTotDegliScontriniOggi()
-            ]);
-        })(),
+        ['GET', 'incasso_giornata', false, false] =>  risposta($scontrinoService->visualizzaIlTotDegliScontriniOggi()),
 
-        ['GET', 'scontrini_data', false, true] => (function () use ($scontrinoService, $data_e_ora_pagamento) {
-            http_response_code(200);
-            echo json_encode([
-                'data' => $scontrinoService->visualizzaTuttiGliScontriniData($data_e_ora_pagamento)
-            ]);
-        })(),
+        ['GET', 'scontrini_data', false, true] =>  risposta($scontrinoService->visualizzaTuttiGliScontriniData($data_e_ora_pagamento)),
 
         ['POST', 'nuovo_scontrino', false, false] => (function () use ($scontrinoService, $body) {
+ 
+            scontrinoValidaCampi($body, ['id_ordine', 'totale', 'dettagli']);
+ 
+            $id_scontrino = $scontrinoService->nuovoScontrino(
+                (int) $body['id_ordine'],
+                (float) $body['totale'],
+                $body['dettagli']
+            );
+ 
+            if ($id_scontrino === null) {
+                risposta('Nessun dettaglio fornito, scontrino non generato', 400);
+            }
+ 
+            risposta($id_scontrino, 201);
+        })(),
 
-            http_response_code(201);
-
-            echo json_encode([
-                'data' => $scontrinoService->nuovoScontrino(
-                    $body['id_ordine'],
-                    $body['numero_persone'],
-                    $body['piatti'],
-                    $body['bevande'],
-                    $body['tot']
-                )
-            ]);
-
+        ['POST', 'stampa', false, false] => (function () use ($stampaService, $body) {
+        // Validazione dei campi necessari
+            if (!isset($body['id_ordine'])) {
+                throw new InvalidArgumentException('id_ordine mancante nel body');
+            }
+            
+            $isModifica = filter_var($body['modifica'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            
+            // Chiamata al servizio
+            $percorsi = $stampaService->generaComandaTxt((int)$body['id_ordine'], $isModifica);
+            
+            risposta(['id_ordine' => $body['id_ordine'], 'files' => $percorsi], 201);
         })(),
 
         ['PATCH', 'storno', false, false] => (function () use ($scontrinoService, $body) {
-
-            http_response_code(200);
-
-            echo json_encode([
-                'data' => $scontrinoService->annullaScontrino(
-                    $body['id_scontrino'],
-                    $body['id_ordine']
-                )
-            ]);
-
+            scontrinoValidaCampi($body, ['id_scontrino', 'id_ordine']);
+ 
+            $esito = $scontrinoService->annullaScontrino(
+                (int) $body['id_scontrino'],
+                (int) $body['id_ordine']
+            );
+ 
+            risposta($esito, $esito ? 200 : 404);
         })(),
 
         default => throw new InvalidArgumentException('Endpoint non valido'),
     };
 
-} catch (ValueError $e) {
-    http_response_code(422);
-    echo json_encode(['data' => $e->getMessage()]);
-} catch (InvalidArgumentException $e) {
-    http_response_code(400);
-    echo json_encode(['data' => $e->getMessage()]);
-} catch (RuntimeException $e) {
-    http_response_code(404);
-    echo json_encode(['data' => $e->getMessage()]);
-} catch (Throwable $e) {
-    http_response_code(500);
-    echo json_encode(['data' => $e->getMessage()]);
+} catch (\ValueError $e) {
+    risposta('Valore enum non valido: ' . $e->getMessage(), 422);
+} catch (\InvalidArgumentException $e ) {
+    risposta($e->getMessage(), 400);
+} catch (\TypeError $e) {
+    risposta($e->getMessage(), 400);
+} catch (\RuntimeException $e) {
+    risposta($e->getMessage(), 404);
+} catch (\Throwable $e) {  
+    risposta($e->getMessage(), 500);
 }

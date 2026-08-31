@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace App\Services;
 use App\Repositories\ScontrinoRepositories;
-use PDO;
+
 
 class ScontrinoService {
     public function __construct(private ScontrinoRepositories $scontrinoRepo, private LoggerService $logger,private StoricoOrdiniService $storicoOrdini){} 
@@ -37,13 +37,11 @@ class ScontrinoService {
 
         $oggi = new \DateTime('today');
 
-        // FIX: limite massimo di prenotazione a 1 anno da oggi
         $limiteMax = (clone $oggi)->modify('+1 year');
 
         return $d >= $oggi && $d <= $limiteMax;
     }
 
-    // FIX: nuovo metodo che lancia eccezione, da usare quando il dato DEVE essere valido
     private function validaData(string $data): void
     {
         if (!$this->isDataValida($data)) {
@@ -78,10 +76,10 @@ class ScontrinoService {
     public function visualizzaIlTotDegliScontriniOggi(): array {
     
         try {
-            return $this->scontrinoRepo->visualizzaIlTotDegliScontriniOggi() ?? [];
+            return $this->scontrinoRepo->visualizzaIlTotDegliScontriniOggi() ;
         } catch (\Throwable $e) {
             $this->logger->error("Errore recupero dei tot degli scontrini per oggi: {$e->getMessage()}");
-            return []; 
+            return ['tot_incasso' => 0.0]; 
         }
     }
  //--------------------------------------INSERIMENTI--------------------------------------
@@ -89,11 +87,11 @@ class ScontrinoService {
   
  
     //inserire la prenotazione, nel js non dovrà andare da sola ma con il controllo
-    public function nuovoScontrino(int $id_ordine,int $numero_persone, array $piatti, array $bevande ,int $tot): ?int{
+    public function nuovoScontrino(int $id_ordine, float $totale, array $dettagli): ?int{
 
-        #salto l'autorizzazione in base al ruolo
+        
        try {
-             $id_scontrino = $this->scontrinoRepo->nuovoScontrino($id_ordine,$numero_persone,$piatti,$bevande,$tot);
+             $id_scontrino = $this->scontrinoRepo->nuovoScontrino($id_ordine, $totale, $dettagli);
              $this->logger->info("Nuovo scontrino inserito con successo! {$id_scontrino} rif. ordine {$id_ordine}, {$numero_persone}: {json_encode($piatti)} {json_encode($bevande)} {$tot}");
              $this->storicoOrdini->scontrino("Nuovo scontrino inserito con successo! {$id_scontrino} rif. ordine {$id_ordine}, {$numero_persone}: {json_encode($piatti)} {json_encode($bevande)} {$tot}");
              return $id_scontrino;
@@ -110,17 +108,23 @@ class ScontrinoService {
         #salto l'autorizzazione in base al ruolo
        try {
 
-             $this->scontrinoRepo->annullaScontrino($id_scontrino, $id_ordine);
-             $this->logger->info("Scontrino stornato con successo! {$id_scontrino} rif. ordine {$id_ordine}");
-             $this->storicoOrdini->scontrino("Scontrino stornato con successo! {$id_scontrino} rif. ordine {$id_ordine}");
-             return true;
-             
-        }catch (\Throwable $e) {
-             $this->logger->error("Scontrino non stornato {$id_scontrino} rif. ordine {$id_ordine}: {$e->getMessage()}");
-             throw new \RuntimeException("Errore storno scontrino : {$e->getMessage()}");
+             $esito = $this->scontrinoRepo->annullaScontrino($id_scontrino);
+             if (!$esito) {
+                // FIX: prima veniva ignorato l'esito e si ritornava sempre true
+                $this->logger->warning("Storno scontrino senza effetto (già annullato o inesistente) {$id_scontrino} rif. ordine {$id_ordine}");
+                return false;
+            }
+ 
+            $messaggio = "Scontrino stornato con successo! {$id_scontrino} rif. ordine {$id_ordine}";
+            $this->logger->info($messaggio);
+            $this->storicoOrdini->scontrino($messaggio);
+ 
+            return true;
+ 
+        } catch (\Throwable $e) {
+            $this->logger->error("Scontrino non stornato {$id_scontrino} rif. ordine {$id_ordine}: {$e->getMessage()}");
+            throw new \RuntimeException("Errore storno scontrino: {$e->getMessage()}");
         }
-        
-   
     }
 
 }

@@ -319,10 +319,10 @@ class OrdiniService {
      }       
     }
 
-     public function eliminaRelazioneOrdinePerMomento(int $id_ordine, int $id_momento):bool
+     public function eliminaRelazioneOrdinePerMomento(int $id_comanda_dettaglio, int $id_momento):bool
     {
      try {
-          $this->ordiniRepo->eliminaRelazioneOrdinePerMomento($id_ordine, $id_momento);
+          $this->ordiniRepo->eliminaRelazioneOrdinePerMomento($id_comanda_dettaglio, $id_momento);
          
           $this->logger->info("Relazione  Momento Pietanze{$id_momento} : eliminata con successo dal tavolo ");
           $this->storicoordini->cancellato("Relazione Momento stato per Pietanze {$id_momento} : eliminato con successo dal tavolo");
