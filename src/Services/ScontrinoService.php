@@ -140,4 +140,17 @@ class ScontrinoService {
         }
     }
 
+
+    //recuperaValoriIva
+
+    public function recuperaValoriIva(): array {
+    
+        try {
+            return $this->scontrinoRepo->recuperaValoriIva() ;
+        } catch (\Throwable $e) {
+            $this->logger->error("Errore recupero valori iva: {$e->getMessage()}");
+            return []; 
+        }
+    }
+
 }

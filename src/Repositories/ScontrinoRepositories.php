@@ -154,5 +154,12 @@ class ScontrinoRepositories extends BaseRepositories {
  
         return $stmt->rowCount() > 0;
     }
-}
+
      
+public function recuperaValoriIva():?array
+{
+    $stmt = $this->pdo->prepare('SELECT * FROM iva');
+    $stmt->execute([]);
+    return $stmt->fetchAll() ?:null;
+}
+}

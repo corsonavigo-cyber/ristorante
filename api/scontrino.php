@@ -40,6 +40,9 @@ try {
 
         ['GET', 'scontrini', false, false] =>  risposta($scontrinoService->visualizzaTuttiGliScontrini()),
 
+        ['GET', 'iva', false, false] =>  risposta($scontrinoService->recuperaValoriIva()),
+
+
         ['GET', 'scontrino', true, false] => risposta($scontrinoService->recuperaUnScontrino($id)),
 
         ['GET', 'scontrino_dettaglio', true, false] => risposta($scontrinoService->recuperaUnScontrinoConDettaglio($id)),

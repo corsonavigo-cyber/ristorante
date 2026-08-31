@@ -90,6 +90,8 @@ ORDER BY
         $stmt->execute();
         return $stmt->fetchAll() ?:null;
      }
+
+     
     
      public function visualizzaUnOrdine(int $id_ordine):?array
      {
