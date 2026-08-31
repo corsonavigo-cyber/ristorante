@@ -12,8 +12,41 @@ async function richiesta(url, options = {}) {
 }
 
 export function apiGet(urlApi, params = {}) {
-    const query = new URLSearchParams(params);
-    return richiesta(`${urlApi}?${query}`);
+
+    const query = new URLSearchParams();
+
+    for (const [key, value] of Object.entries(params)) {
+
+        if (value === undefined || value === null) {
+            continue;
+        }
+
+        if (Array.isArray(value)) {
+
+            value.forEach(elemento => {
+                query.append(`${key}[]`, elemento);
+            });
+
+        } else if (typeof value === 'object') {
+
+            query.append(
+                key,
+                JSON.stringify(value)
+            );
+
+        } else {
+
+            query.append(key, value);
+        }
+    }
+
+    const queryString = query.toString();
+
+    return richiesta(
+        queryString
+            ? `${urlApi}?${queryString}`
+            : urlApi
+    );
 }
 
 export function apiPost(urlApi, payload) {

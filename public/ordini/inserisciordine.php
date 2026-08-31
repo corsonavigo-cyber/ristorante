@@ -20,7 +20,6 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
    <div class="piatto">
      <form action="" id="form_inserisci_ordine" method="POST">
         <input type="hidden" id="per_ordine_id" name="nascosto" value="">
-        <button type="button"id="salva-ordine-stampa" > Salva&Stampa </button>
 
        <section id="primo-step"> 
         <label for="numero-persone">Numero Persone : </label>
@@ -40,10 +39,14 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
     </div>
 </section>
       <section id="secondo-step" class="piattir hider">
+
         <div id="contenitore">
+
           <div class="componi-comanda">
              <button type="button" id="btn-elimina-ordine-in-corso" class="btn-elimina-ordine-in-corso">Elimina</button>
-            <div id="momenti-servizio">
+             <button type="button"id="salva-ordine-stampa" > Salva&Stampa </button>
+
+             <div id="momenti-servizio">
             </div>
          
             <div class="schermo" class="1">
@@ -86,7 +89,12 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
     </div>
 
 </dialog>
-<button type="button"  class="btn-inserisci-ordine hider" data-id="#">Inserisci & Stampa Comanda</button>
+<button type="button"  class="salva-ordine-stampa" data-id="#">Inserisci & Stampa Comanda</button>
+<a href="../ordini/visualizzaordine.php?id=<?=$id?>"
+            class="btn"
+            data-id="<?=$id?>">
+            Vai allo Scontrino 
+        </a>
 </section>
    
       </form>

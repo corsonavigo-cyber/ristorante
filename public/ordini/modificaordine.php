@@ -94,8 +94,14 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
       </div>
 
     </dialog>
-    <button type="button"  class="btn-inserisci-ordine hider" data-id="#">Inserisci & Stampa Comanda</button>
-    </section>
+    <button type="button"  class="btn-inserisci-ordine hider" data-id="#">Modifica & Ristampa Comanda</button>
+    
+    <a href="../ordini/visualizzaordine.php?id=<?=$id?>"
+            class="btn"
+            data-id="<?=$id?>">
+            Vai allo Scontrino 
+        </a>
+  </section>
    
       </form>
   

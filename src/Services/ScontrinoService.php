@@ -25,6 +25,19 @@ class ScontrinoService {
             return []; 
         }
     }
+    
+
+     public function recuperaUnScontrinoConDettaglio(int $id_scontrino): array
+    {
+        $scontrino = $this->scontrinoRepo->recuperaUnScontrino($id_scontrino);
+
+        if ($scontrino === null) {
+            $this->logger->warning("Tentativo di accesso a scontrino inesistente o inattivo: {$id_scontrino}");
+            throw new \RuntimeException("Scontrino non trovato o non più disponibile.");
+        }
+
+        return $scontrino;
+    }
 
      //visualizza scontrini
     

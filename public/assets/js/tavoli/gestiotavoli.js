@@ -165,7 +165,7 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
            Modifica
         </a>
 
-        <a href="../ordini/visualizzaordine?id=${o.id_ordine}"
+        <a href="../ordini/visualizzaordine.php?id=${o.id_ordine}"
             class="btn"
             data-id="${o.id_ordine}">
             Conto 

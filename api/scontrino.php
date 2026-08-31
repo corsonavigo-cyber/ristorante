@@ -42,6 +42,9 @@ try {
 
         ['GET', 'scontrino', true, false] => risposta($scontrinoService->recuperaUnScontrino($id)),
 
+        ['GET', 'scontrino_dettaglio', true, false] => risposta($scontrinoService->recuperaUnScontrinoConDettaglio($id)),
+
+
         ['GET', 'scontrini_oggi', false, false] => risposta($scontrinoService->visualizzaTuttiGliScontriniOggi()),
 
         ['GET', 'incasso_giornata', false, false] =>  risposta($scontrinoService->visualizzaIlTotDegliScontriniOggi()),

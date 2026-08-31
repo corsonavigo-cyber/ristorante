@@ -1,7 +1,8 @@
 <?php
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
-$title = 'Gestione Comande';
+$title = 'Stampa Scontrino';
+$id = $_GET['id'] ?? null; 
 ?>
 
 <?php 
@@ -18,8 +19,33 @@ require_once __DIR__ . '/../bootstrap.php';
     </div>
 
     <div id="order-header"></div>
+    
     <div id="order-error" class="error-message"></div>
     <div id="order-board" class="order-board-container"></div>
+
+    <div id="order-total" class="order-board-container"></div>
+
+     <button
+        type="button"
+        id="btn-emetti-scontrino"
+    >
+        💶 Emetti scontrino
+    </button>
+
+    <a
+        class="btn"
+        href="../tavoli/gestionetavoli.php"
+    >
+        ← Torna agli ordini
+    </a>
+
+    <a 
+    class="btn"
+    href="./modificaordine.php?id=<?=$id?>"
+    > Modifica
+    </a>
+
+</div>
 
     <script type="module" src="/ristorante/public/assets/js/ordini/visualizzaordine.js" defer></script>
 </main>

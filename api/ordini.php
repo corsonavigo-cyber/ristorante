@@ -33,12 +33,20 @@ try {
     }
     $type = strtolower(trim($_GET['type'] ?? ''));
     //funzione per estrazione sicura id
-    $getId = fn($key) => filter_input(INPUT_GET, $key, FILTER_VALIDATE_INT) ?: throw new InvalidArgumentException("Parametro $key non valido");
+    $getId = fn($key) => filter_input(INPUT_GET, $key, FILTER_VALIDATE_INT) ;
     // Estrazione parametri sicura
     $id = $getId('id');
+    if (isset($_GET['id']) && $id === false) {
+        throw new InvalidArgumentException('ID non valido');
+    }
     $id_stato = $getId('id_stato');
+    if (isset($_GET['id_stato']) && $id_stato === false) {
+        throw new InvalidArgumentException('ID stato non valido');
+    }
     $id_momento = $getId('id_momento');
-
+    if (isset($_GET['id_momento']) && $id_momento === false) {
+        throw new InvalidArgumentException('ID momento non valido');
+    }
     $momento = isset($_GET['momento']) ? strtolower(trim($_GET['momento'])) : null ;
 
 
