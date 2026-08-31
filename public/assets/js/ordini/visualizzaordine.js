@@ -188,6 +188,7 @@ function renderItem(item) {
         
 function renderRiepilogo(items) { 
 totaleOrdine = calcolaTotale(items); 
+console.log('sono tot '+ totaleOrdine)
 const container = document.getElementById( 'order-total' ); 
 container.innerHTML = ` 
         <div class="riepilogo-ordine"> 
@@ -211,21 +212,36 @@ container.innerHTML = `
             </div>
             </div> `; 
         } 
-function calcolaTotale(items) { 
-    return items.reduce( (totale, item) => { return totale + Number(item.prezzo) * Number(item.quantita); }, 0 ); } /** * Registra gli eventi della pagina. */ function attachEventListeners() { const inputSconto = document.getElementById( 'sconto' ); inputSconto?.addEventListener( 'input', aggiornaSconto ); const btnScontrino = document.getElementById( 'btn-emetti-scontrino' ); btnScontrino?.addEventListener( 'click', emettiScontrino );
 
-        }
+function calcolaTotale(items) { 
+    
+    return items.reduce( (totale, item) => { return totale + Number(item.prezzo) * Number(item.quantita); 
+
+    }, 0 ); 
+} 
+function attachEventListeners() { 
+    const inputSconto = document.getElementById( 'sconto' ); 
+    inputSconto?.addEventListener( 'input', aggiornaSconto ); 
+    const btnScontrino = document.getElementById( 'btn-emetti-scontrino' ); 
+    btnScontrino?.addEventListener( 'click', emettiScontrino );
+    }
+
 function aggiornaSconto(event) { 
     let valore = Number(event.target.value); 
     if (!Number.isFinite(valore)) { valore = 0; } 
     valore = Math.min( 100, Math.max(0, valore) ); 
-    sconto = valore; const totaleScontato = calcolaTotaleScontato(); 
+    sconto = valore;
+    const totaleScontato = calcolaTotaleScontato(); 
     const ivaScontata =totaleIvaOrdine * (1 - sconto / 100);
-    document.getElementById( 'totale-finale' ).textContent = `${ivaScontata.toFixed(2)} €`;
-    } 
+    document.getElementById('totale-finale' ).textContent = `${totaleScontato.toFixed(2)} €`;
+    document.getElementById('totale-iva').textContent =  `${ivaScontata.toFixed(2)} €`;
+
+}
+
 function calcolaTotaleScontato() { 
-    return Number( ( totaleOrdine * (1 - sconto / 100) ).toFixed(2) );
+    return Number( ( totaleOrdine - (totaleOrdine*( sconto / 100)) ).toFixed(2) );
     } 
+    
 function preparaDettagliScontrino(items) { 
     return items.map(item => { const idIva = Number(item.id_iva); 
         const aliquota = aliquoteIva[idIva]; 
@@ -265,3 +281,86 @@ async function emettiScontrino() {
     }
 }
 
+async function emettiScontrino(e) {
+
+    e.preventDefault();
+
+    if (!ordineCorrente?.length) {
+        showError('Ordine non disponibile.');
+        return;
+    }
+
+
+    if (!confirm('Emettere lo scontrino fiscale per questo ordine?')) {
+        return;
+    }
+
+
+    const button = document.getElementById('btn-emetti-scontrino');
+
+
+    try {
+
+        button.disabled = true;
+
+
+        const ordine =ordineCorrente[0];
+        const totaleFinale = calcolaTotaleScontato();
+
+
+        if (!Number.isFinite(totaleFinale)) {
+            throw new Error(
+                'Totale finale non valido.'
+            );
+        }
+
+        const dettagli =
+            preparaDettagliScontrino(
+                ordineCorrente
+            );
+
+        const idScontrino =
+            await API_scontrino.generaScontrino(
+                Number(ordine.id_ordine),
+                totaleFinale,
+                dettagli
+            );
+
+        await API_scontrino.stampaScontrino(
+            idScontrino
+        );
+
+
+        alert('Scontrino emesso e stampato con successo!' );
+
+
+        window.location.href = '../tavoli/gestionetavoli.php';
+
+
+    } catch (error) {
+
+        console.error( 'Errore emissione scontrino:',error);
+        showError(error.message ||'Errore durante l\'emissione dello scontrino.');
+        button.disabled = false;
+    }
+}
+
+function preparaDettagliScontrino(items) {
+
+    return items.map(item => {
+
+        const idIva =Number(item.id_iva);
+        const aliquota =aliquoteIva[idIva];
+        if (!Number.isFinite(aliquota)) {
+            throw new Error(
+                `Aliquota IVA non trovata per id_iva ${idIva}.`
+            );
+        }
+        return {
+            id_item:Number(item.id_item),
+            quantita:Number(item.quantita),
+            prezzo_unitario_storico:Number(item.prezzo),
+            aliquota_iva_storica:aliquota
+            };
+    });
+}

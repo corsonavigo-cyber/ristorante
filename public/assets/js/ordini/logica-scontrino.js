@@ -1,71 +1,55 @@
-async function emettiScontrino(e) {
-
-    e.preventDefault();
-
-    if(!(confirm('Emettere lo scontrino fiscale per questo ordine?'))) return;
-
-    try {
-
-        const totale =
-            state.comanda.reduce(
-                (sum, item) =>
-                    sum +
-                    Number(item.quantita) *
-                    Number(item.prezzo),
-                0
-            );
-
-
-        const dettagli =
-            state.comanda.map(item => ({
-
-                id_item:
-                    Number(item.id_item),
-
-                quantita:
-                    Number(item.quantita),
-
-                prezzo_unitario_storico:
-                    Number(item.prezzo),
-
-                aliquota_iva_storica:
-                    Number(item.aliquota_iva)
-
-            }));
-
-
-        const idScontrino =
-            await API_scontrino.generaScontrino(
-                state.idOrdineInserito,
-                totale,
-                dettagli
-            );
-
-
-        await API_scontrino.stampaScontrino(
-            idScontrino
-        );
-
-
-        alert(
-            'Scontrino emesso e stampato con successo!'
-        );
-
-
-        window.location.href =
-            '../tavoli/gestionetavoli.php';
-
-
-    } catch (error) {
-
-        console.error(
-            'Errore emissione scontrino:',
-            error
-        );
-
-        alert(
-            'Errore scontrino: ' +
-            error.message
-        );
+export async function generaScontrino( idOrdine, totale, dettagli ) { 
+    if (!Number.isInteger(Number(idOrdine)) || Number(idOrdine) <= 0) { 
+        throw new Error('ID ordine non valido.'); 
+    } 
+    if (!Number.isFinite(Number(totale)) || Number(totale) < 0) { 
+        throw new Error('Totale scontrino non valido.');
+     }
+    if (!Array.isArray(dettagli) || dettagli.length === 0) { 
+        throw new Error('Dettagli scontrino mancanti.'); 
+    } 
+    const response = await fetch( `${API_SCONTRINO}?type=nuovo_scontrino`,
+         { method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+         body: JSON.stringify({ id_ordine: Number(idOrdine), 
+            totale: Number(totale), dettagli: dettagli }) 
+        
+        } ); 
+        let result; 
+        try { 
+            result = await response.json();
+         } catch {
+             throw new Error( 'Risposta non valida dal server.' );
+             } 
+     if (!response.ok || !result.success) { 
+        throw new Error( result.data || 'Errore nella creazione dello scontrino.' ); 
+    } 
+    const idScontrino = Number(result.data);
+    if (!Number.isInteger(idScontrino) || idScontrino <= 0) { 
+        throw new Error( 'Il server non ha restituito un ID scontrino valido.' );
+     } 
+    return idScontrino; 
     }
+
+
+export async function stampaScontrino(idScontrino) { 
+    if ( !Number.isInteger(Number(idScontrino)) || Number(idScontrino) <= 0 ) { 
+        throw new Error('ID scontrino non valido.'); 
+    } 
+    const response = await fetch( `${API_SCONTRINO}?type=stampa_scontrino`,
+         {
+         method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+         body: JSON.stringify({ id_scontrino: Number(idScontrino) }) 
+        } ); 
+        let result;
+        try { 
+            result = await response.json(); 
+        } catch { 
+            throw new Error( 'Risposta non valida dal server.' ); 
+        } 
+        if (!response.ok || !result.success) {
+             throw new Error( result.data || 'Errore durante la stampa dello scontrino.' );
+             } 
+
+return result.data;
+
 }
