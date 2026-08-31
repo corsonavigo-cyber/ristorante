@@ -62,11 +62,11 @@ class ScontrinoRepositories {
     }
 
  
-    public function annullaScontrino(int $id_scontrino,int $id_ordine):bool{
+    public function annullaScontrino(int $id_scontrino):bool{
 
-        $stmt = $this->pdo->prepare('INSERT INTO  scontrino_emesso (id_ordine, attivo) VALUES (:id_ordine, 0)');
+        $stmt = $this->pdo->prepare('UPDATE  scontrino_emesso SET attivo = :0  WHERE id_scontrino =:id_scontrino ');
         $stmt->execute([
-            'id_ordine'=>$id_ordine         
+            'id_scontrino'=>$id_scontrino         
         ]);
         return $stmt->rowCount()===1;
      }

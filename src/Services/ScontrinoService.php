@@ -111,13 +111,13 @@ class ScontrinoService {
        try {
 
              $this->scontrinoRepo->annullaScontrino($id_scontrino, $id_ordine);
-             $this->logger->info("Scontrino annullato con successo! {$id_scontrino} rif. ordine {$id_ordine}");
-             $this->storicoOrdini->scontrino("Scontrino annullato con successo! {$id_scontrino} rif. ordine {$id_ordine}");
+             $this->logger->info("Scontrino stornato con successo! {$id_scontrino} rif. ordine {$id_ordine}");
+             $this->storicoOrdini->scontrino("Scontrino stornato con successo! {$id_scontrino} rif. ordine {$id_ordine}");
              return true;
              
         }catch (\Throwable $e) {
-             $this->logger->error("Scontrino non annullato {$id_scontrino} rif. ordine {$id_ordine}: {$e->getMessage()}");
-             throw new \RuntimeException("Errore annullamento scontrino : {$e->getMessage()}");
+             $this->logger->error("Scontrino non stornato {$id_scontrino} rif. ordine {$id_ordine}: {$e->getMessage()}");
+             throw new \RuntimeException("Errore storno scontrino : {$e->getMessage()}");
         }
         
    

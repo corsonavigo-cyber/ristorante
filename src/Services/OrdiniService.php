@@ -546,6 +546,20 @@ class OrdiniService {
 
     }
 
+    public function chiudiOrdine(int $id_ordine, float $totale, array $dettagli): int
+{
+    $this->pdo->beginTransaction();
+    try {
+        $id_scontrino = $this->scontrinoRepo->nuovoScontrino($id_ordine, $totale, $dettagli);
+        $this->ordiniRepo->aggiornaRelazioneOrdineStato($id_ordine, 2);
+        $this->pdo->commit();
+        return $id_scontrino;
+    } catch (\Throwable $e) {
+        $this->pdo->rollBack();
+        throw $e;
+    }
+}
+
    
 
 }

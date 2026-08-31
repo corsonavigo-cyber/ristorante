@@ -119,7 +119,7 @@ ORDER BY
 
      public function visualizzaTuttiGliOrdiniDiIeri():?array
      {
-        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE()'));
+        $stmt =$this->pdo->prepare($this->buildOrdiniQuery('DATE(ordine.data_e_ora) = CURDATE() - INTERVAL 1 DAY'));
         $stmt->execute();
         return $stmt->fetchAll() ?:null;
      }
@@ -337,7 +337,7 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
         
      }
 
-     public function eliminaRelazioneOrdinePerMomento(int $id_comanda_dettaglio): bool
+     public function eliminaRelazioneOrdinePerMomento(int $id_ordine, int $id_momento): bool
      {
         $stmt = $this->pdo->prepare('DELETE FROM relazione_ordine_item WHERE  $id_comanda_dettaglio = : $id_comanda_dettaglio');
         return $stmt->execute([
@@ -428,10 +428,10 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
 
     public function aggiornaQuantitaRelazioneOrdineItem(int $id_ordine, int $id_comanda_dettaglio, int $id_momento, int $quantita, string $note): bool
     {
-        $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item SET quantita = :quantita WHERE id_ordine = :id_ordine AND id_comanda_dettaglio = :id_comanda_dettaglio AND id_momento = :id_momento');
+        $stmt = $this->pdo->prepare('UPDATE relazione_ordine_item, note SET quantita = :quantita, note=:note WHERE  id_comanda_dettaglio = :id_comanda_dettaglio AND  id_ordine = :id_ordine AND id_momento = :id_momento');
         $stmt->execute([
-            'id_ordine' => $id_ordine,
             'id_comanda_dettaglio' => $id_comanda_dettaglio,
+            'id_ordine' => $id_ordine,
             'id_momento' => $id_momento,
             'quantita' => $quantita,
             'note'=>$note
@@ -443,11 +443,3 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
 
 }
 
-/* 
-
- Chiudere un ordine
-
-Io farei proprio una funzione dedicata.
-
-
-*/
