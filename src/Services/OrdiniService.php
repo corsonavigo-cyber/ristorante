@@ -529,7 +529,7 @@ class OrdiniService {
         }
 
     }
-    public fuction sostituisciComanda(int $id_ordine, int $numero_persone, array $id_tavoli, array $comanda): bool
+    public function sostituisciComanda(int $id_ordine, int $numero_persone, array $id_tavoli, array $comanda): bool
     {
         try {
             $this->ordiniRepo->iniziaTransazione();

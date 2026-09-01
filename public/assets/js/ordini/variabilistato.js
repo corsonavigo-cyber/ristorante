@@ -10,7 +10,8 @@ export const state = {
     momentoAttivo: 1,          // 1=antipasto,2=primo,3=secondo,4=dolci,5=da evadere subito
     idOrdineInserito: null,     // valorizzato solo dopo POST riuscita su ordinecompleto
     confirmGiaChiesto: false ,    // evita di richiedere più volte la conferma "riprendi bozza?"
-    comandaOriginale: []
+    comandaOriginale: [],
+    numeroPersone: 0
 };
 
 // reset esplicito dopo l'invio definitivo della comanda al server
@@ -24,7 +25,9 @@ export function resetState() {
         tavoliInUso: [],
         momentoAttivo: 1,
         idOrdineInserito: null,
-        confirmGiaChiesto: false
+        confirmGiaChiesto: false,
+        comandaOriginale: [],
+        numeroPersone: 0
     });
 
     localStorage.removeItem(CHIAVE_ORDINE);

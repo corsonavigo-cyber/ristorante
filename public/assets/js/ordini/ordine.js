@@ -48,29 +48,38 @@ export async function aggiornaQuantitaItem(idOrdine, idComandaDettaglio, idMomen
     );
 }
 
-export async function aggiornaComandaNelDb(idOrdine, comanda) {
+export async function aggiornaComandaNelDb(idOrdine, state) {
     if (!Number.isInteger(Number(idOrdine)) || Number(idOrdine) <= 0) {
         throw new Error('ID ordine non valido.');
     }
 
-    if (!Array.isArray(comanda)) {
-        throw new Error('La comanda deve essere un array.');
+    // normalizza: se è un oggetto con chiavi numeriche, lo converte in array
+    const comanda = Array.isArray(state.comanda)
+        ? state.comanda
+        : Object.values(state.comanda ?? {});
+    console.log('aggiornaComandaNelDb chiamato con idOrdine:', idOrdine, 'comanda:', comanda);
+    if (!Array.isArray(state.comanda) || state.comanda.length === 0) {
+        throw new Error('La comanda deve essere un array non vuoto.');
     }
-    const  response = await apiPut(
-        `${API_ORDINI}?type=comanda`,
-        {},
-        {
-            id_ordine: Number(idOrdine),
-            comanda
-        }
-    );
-    if (!response.ok) {throw new Error(`Errore HTTP ${response.status}`);
-    }
+
+    const response = await apiPut(
+    API_ORDINI,        
+    {},                
+    {
+        id_ordine: Number(idOrdine),
+        numero_persone: state.numeroPersone,
+        tavoli: state.tavoliInUso.map(Number),
+        comanda: state.comanda
+    },
+    'comanda'          
+);
+
+    if (!response.ok) throw new Error(`Errore HTTP ${response.status}`);
+
     const data = await response.json();
-    if (!data.success) {
-        throw new Error(data.message || 'Errore durante l\'aggiornamento della comanda.');
-    }
-return data;
+    if (!data.success) throw new Error(data.message || 'Errore durante l\'aggiornamento della comanda.');
+
+    return data;
 }
 
 export function leggiTavoliSelezionati() {

@@ -8,9 +8,10 @@ const NOMI_MOMENTI = {
     1: "ANTIPASTO",
     2: "PRIMO",
     3: "SECONDO",
+    4: "ALTRO",
     4: "DOLCI",
     5: "DA EVADERE SUBITO",
-    6: "ALTRO"
+    6: "EXTRA"
 };
 
 export function initDragAndDropComanda() {

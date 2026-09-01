@@ -317,7 +317,7 @@ async function globalClick(e) {
         const idItem = btnModifica.dataset.id;
         
         // Trova la voce nello stato
-        const voce = state.comanda.find(v => v.id_comanda_dettaglio === idRelazione);
+        const voce = state.comanda.find(v => String(v.id_comanda_dettaglio) === String(idRelazione));
         if (voce) {
             // Riusiamo la funzione mostraDettaglioItem, ma dobbiamo dirle che è una modifica
             mostraDettaglioItem(idItem, voce); 

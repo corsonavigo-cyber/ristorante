@@ -31,6 +31,15 @@ async function initPaginaModificaOrdine() {
             state.comanda = ordineLocale.comanda;
             state.tavoliInUso = ordineLocale.tavoliInUso;
             state.idOrdineInserito = ordineLocale.idOrdineInserito;
+            state.momentoAttivo = ordineLocale.momentoAttivo;   
+            state.comandaOriginale = JSON.parse(JSON.stringify(ordineLocale.comanda)); // Copia profonda
+            state.numeroPersone = ordineLocale.numeroPersone;
+            state.confirmGiaChiesto = ordineLocale.confirmGiaChiesto;
+            state.momenti = ordineLocale.momenti;
+            state.piatti = ordineLocale.piatti;
+            state.bevande = ordineLocale.bevande;
+            document.getElementById('per_ordine_id').value = ordineLocale.idOrdineInserito;
+            document.getElementById('numero-persone').value = ordineLocale.numeroPersone;
             
         } else {
             console.log("Primo caricamento dal DB");
@@ -106,6 +115,9 @@ export function popolaStateDaOrdine(rispostaApi) {
     state.tavoliInUso = String(prima.id_tavoli)
         .split(',')
         .map(Number);
+    state.numeroPersone = prima.numero_persone;
+    
+    
 
     // Ricostruiamo la comanda
     state.comanda = righe.map(riga => ({
@@ -212,7 +224,7 @@ async function globalClick(e) {
                 return;
             }
             try {
-                await aggiornaComandaNelDb(idSalvato,state.comanda);
+                await aggiornaComandaNelDb(idSalvato,state);
             } catch (error) {
                 console.error('Errore durante il salvataggio dell’ordine:',error);
                 alert(error.message ||'Impossibile salvare la comanda.');
@@ -348,11 +360,12 @@ async function globalClick(e) {
         const idRelazione = btnModifica.dataset.relazione;
         const idItem = btnModifica.dataset.id;
         // Trova la voce nello stato
-        const voce = state.comanda.find(v => v.id_comanda_dettaglio === Number(idRelazione));
+        const voce = state.comanda.find(v => String(v.id_comanda_dettaglio) === String(idRelazione));
         if (voce) {
             // Riusiamo la funzione mostraDettaglioItem, ma dobbiamo dirle che è una modifica
             mostraDettaglioItem(idItem, voce); 
         }   
+        aggiornaVoceComanda(idItem , {idRelazioneItem : idRelazione, variazione: 0});
         return;
     }
 
