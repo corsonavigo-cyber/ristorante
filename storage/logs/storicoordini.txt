@@ -18,3 +18,10 @@
 [2026-08-27 12:58:04] [APERTO] Ordine inserito correttamente id_ordine 22 sul tavolo: inserito con successo
 [2026-08-27 13:22:42] [CANCELLATO] ordine id 20 ( del 2026-08-27 12:29:42 id tavolo  piatti  bevande  )
 [2026-08-28 12:48:32] [APERTO] Ordine inserito correttamente id_ordine 23 sul tavolo: inserito con successo
+[2026-08-31 16:05:26] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 1 rif. ordine 2, : {json_encode()} {json_encode()} 
+[2026-09-01 10:04:23] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 2 rif. ordine 1
+[2026-09-01 10:09:49] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 3 rif. ordine 1
+[2026-09-01 10:10:46] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 4 rif. ordine 1
+[2026-09-01 10:20:07] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 5 rif. ordine 1
+[2026-09-01 10:23:06] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 6 rif. ordine 1
+[2026-09-01 10:50:18] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 9 rif. ordine 1

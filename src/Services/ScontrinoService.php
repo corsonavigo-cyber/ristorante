@@ -2,10 +2,12 @@
 declare(strict_types=1);
 namespace App\Services;
 use App\Repositories\ScontrinoRepositories;
+use App\Repositories\OrdiniRepositories;
+
 
 
 class ScontrinoService {
-    public function __construct(private ScontrinoRepositories $scontrinoRepo, private LoggerService $logger,private StoricoOrdiniService $storicoOrdini){} 
+    public function __construct(private ScontrinoRepositories $scontrinoRepo, private OrdiniRepositories $ordiniRepo,private LoggerService $logger,private StoricoOrdiniService $storicoOrdini){} 
 //------------------------------LETTURA---------------------------------------
 
     public function visualizzaTuttiGliScontrini(): array {
@@ -105,8 +107,11 @@ class ScontrinoService {
         
        try {
              $id_scontrino = $this->scontrinoRepo->nuovoScontrino($id_ordine, $totale, $dettagli);
-             $this->logger->info("Nuovo scontrino inserito con successo! {$id_scontrino} rif. ordine {$id_ordine}, {$numero_persone}: {json_encode($piatti)} {json_encode($bevande)} {$tot}");
-             $this->storicoOrdini->scontrino("Nuovo scontrino inserito con successo! {$id_scontrino} rif. ordine {$id_ordine}, {$numero_persone}: {json_encode($piatti)} {json_encode($bevande)} {$tot}");
+             if($id_scontrino){
+                $this->ordiniRepo->aggiornaRelazioneOrdineStato($id_ordine, 2);
+             }
+             $this->logger->info("Nuovo scontrino inserito con successo! {$id_scontrino} rif. ordine {$id_ordine}");
+             $this->storicoOrdini->scontrino("Nuovo scontrino inserito con successo! {$id_scontrino} rif. ordine {$id_ordine}");
              return $id_scontrino;
              
         }catch (\Throwable $e) {

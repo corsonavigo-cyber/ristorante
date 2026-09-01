@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace App\Services;
-
+use App\Repositories\ScontrinoRepositories;
 use App\Repositories\OrdiniRepositories;
 
 class StampaService
@@ -9,12 +9,12 @@ class StampaService
     public function __construct(
         private OrdiniRepositories $ordiniRepo,
         private LoggerService $logger,
+        private ScontrinoRepositories $scontrinoRepo,
         private string $dirStampe // path assoluta, iniettata da bootstrap.php (es. storage/logs/stampe)
     ) {}
 
     /**
      * Genera un file .txt separato per cucina (piatti) e bar (bevande).
-     * Ritorna i percorsi dei file effettivamente creati (uno o due, mai zero se l'ordine esiste).
      */
     public function generaComandaTxt(int $id_ordine, bool $isModifica = false): array
 {
@@ -40,52 +40,70 @@ class StampaService
     return $percorsi;
 }
 
-public function generaScontrinoTxt(int $id_scontrino): string
+public function generaScontrinoTxt(int $id_scontrino ,bool $ristampa = false, bool $storno = false ): string
 {
-    // 1. Recupero dati scontrino e dettagli tramite il tuo ScontrinoService o Repo
-    // Assumiamo che tu abbia un metodo nel repo che fa il JOIN tra scontrino_emesso e scontrino_dettaglio
-    $dati = $this->ordiniRepo->getDettagliScontrinoCompleto($id_scontrino); 
-    
+    // 1. Recupero dati scontrino tramite il serviceScontrino nella stessa cartella
+    $dati = $this->scontrinoRepo->recuperaUnScontrinoConDettaglio($id_scontrino);    
     if (empty($dati)) {
         throw new \RuntimeException("Scontrino {$id_scontrino} non trovato");
     }
 
     $testo = $this->formattaScontrino($dati);
-    return $this->salvaSuFile($id_scontrino, $testo, 'scontrino');
+    
+    return $this->salvaSuFile($id_scontrino, $testo, 'scontrino',true);
 }
 
-private function formattaScontrino(array $dati): string
+private function formattaScontrino(array $dati, bool $ristampa = false, bool $storno = false): string
 {
     $righe = [];
-    $righe[] = "        RICEVUTA FISCALE";
+    if ($storno) {
+        $righe[] = "  *** STORNO ***"; // riga in più solo se è una modifica
+    }
+    if ($ristampa) {
+        $righe[] = "  *** RICEVUTA NON FISCALE - RISTAMPA ***"; // riga in più solo se è una modifica
+    }else{
+        $righe[] = "        RICEVUTA FISCALE";    
+    }
+    $righe[] = "Scontrino #: " . $dati['id_scontrino'];
     $righe[] = str_repeat('-', 32);
     $righe[] = "Data: " . $dati['data_e_ora_pagamento'];
-    $righe[] = "Scontrino #: " . $dati['id_scontrino'];
     $righe[] = str_repeat('-', 32);
 
     $totaleImposta = 0;
 
     foreach ($dati['items'] as $item) {
-        $subtotale = $item['quantita'] * $item['prezzo_unitario_storico'];
-        // Calcolo IVA sul rigo
-        $iva = $subtotale * ($item['aliquota_iva_storica'] / 100);
-        $totaleImposta += $iva;
-
-        $righe[] = sprintf("%d x %-15s %8.2f", 
-            $item['quantita'], 
-            substr($item['nome'], 0, 15), 
-            $subtotale
+            $quantita =(int) $item['quantita'];
+            $prezzo =(float) $item['prezzo_unitario_storico'];
+            $aliquota =(float) $item['aliquota_iva_storica'];
+            $subtotale =$quantita * $prezzo;
+            /*
+             * Se prezzo_unitario_storico è IVA inclusa,
+             * l'IVA va scorporata.
+             */
+            $iva =$subtotale *$aliquota /(100 + $aliquota);
+            $totaleImposta += $iva;
+            $righe[] = sprintf("%d x %-15s %8.2f",$quantita,substr((string) $item['nome'],0,15),$subtotale);
+            $righe[] = sprintf(
+                "   IVA %.2f%% %15.2f",
+                $aliquota,
+                $iva
+            );
+        }
+        $righe[] =str_repeat('-', 32);
+        $righe[] = sprintf(
+            "TOTALE IVA: %18.2f",
+            $totaleImposta
         );
-        $righe[] = "   (IVA {$item['aliquota_iva_storica']}%)";
+        $righe[] = sprintf(
+            "TOTALE: %24.2f",
+            (float) $dati['totale']
+        );
+        $righe[] =
+            str_repeat('=', 32);
+        return implode("\n", $righe) . "\n";
     }
 
-    $righe[] = str_repeat('-', 32);
-    $righe[] = sprintf("TOTALE IVA: %18.2f", $totaleImposta);
-    $righe[] = sprintf("TOTALE: %24.2f", $dati['totale']);
-    $righe[] = str_repeat('=', 32);
 
-    return implode("\n", $righe) . "\n";
-}
 
 private function formattaComanda(array $testata, array $voci, string $destinazione, bool $isModifica = false): string
 {
@@ -117,16 +135,24 @@ private function formattaComanda(array $testata, array $voci, string $destinazio
     return implode("\n", $righe) . "\n";
 }
 
-    private function salvaSuFile(int $id_ordine, string $testo, string $suffisso): string
+    private function salvaSuFile(int $idDocumento, string $testo, string $suffisso, bool $scontrino= false): string
     {
-        $percorso = rtrim($this->dirStampe, '/') . "/ordine_{$id_ordine}_{$suffisso}_" . date('Ymd_His') . '.txt';
-
-        if (file_put_contents($percorso, $testo) === false) {
-            $this->logger->error("Scrittura file stampa fallita per ordine {$id_ordine} ({$suffisso}) in {$percorso}");
-            throw new \Exception("Impossibile salvare il file di stampa ({$suffisso})."); // → 500
+        $prefisso =$scontrino? 'scontrino': 'ordine';
+        $nomeFile ="{$prefisso}_{$idDocumento}_{$suffisso}_" .date('Ymd_His') .'.txt';
+        $percorso =rtrim(
+                $this->dirStampe,DIRECTORY_SEPARATOR) .DIRECTORY_SEPARATOR .$nomeFile;
+        if (file_put_contents($percorso,$testo,LOCK_EX) === false) {
+            $this->logger->error(
+                "Scrittura file stampa fallita: {$percorso}"
+            );
+            throw new \RuntimeException(
+                "Impossibile salvare il file di stampa {$nomeFile}"
+            );
         }
-
-        $this->logger->info("Comanda TXT [{$suffisso}] generata per ordine {$id_ordine}: {$percorso}");
+        $this->logger->info(
+            "File stampa generato: {$percorso}"
+        );
         return $percorso;
     }
 }
+

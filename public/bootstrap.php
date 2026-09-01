@@ -62,10 +62,12 @@ $leggistoricoordiniRepository = new LeggiStoricoRepositories(
 $ordiniRepository= new OrdiniRepositories($pdo);
 $scontrinoRepository= new ScontrinoRepositories($pdo);
 $storicoOrdini = new StoricoOrdiniService();
+$scontrinoService = new ScontrinoService($scontrinoRepository,$ordiniRepository,$logger,$storicoOrdini);
 
 $stampaService = new StampaService(
     $ordiniRepository,
     $logger,
+    $scontrinoRepository,
     dirname(__DIR__) . '/storage/logs/stampe'   // stesso pattern di storicoprenotazioni.txt/storicoordini.txt
 );
 
@@ -81,7 +83,6 @@ $prenotazioniService= new PrenotazioniService($prenotazioniRepository, $logger,$
 $leggiStoricoService = new LeggiStoricoService($leggistoricoRepository); 
 $leggiStoricoOrdiniService = new LeggiStoricoService($leggistoricoordiniRepository);
 $ordiniService = new OrdiniService($ordiniRepository,$logger,$storicoOrdini);
-$scontrinoService = new ScontrinoService($scontrinoRepository,$logger,$storicoOrdini);
 /*
 $paginePubbliche = ['/login.php'];
 //serve a non includere login.php nelle pagine da autorizzare ed ad evitare il loop

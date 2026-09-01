@@ -2,8 +2,7 @@ import { apiGet } from '../apigeneric.js';
 import * as API_scontrino from './logica-scontrino.js';
 import { showError } from './variabilistato.js';
 import { caricaOrdine } from './ordine.js';
-const API_IVA = '/ristorante/api/scontrino.php';
-const API_ORDINI = '/ristorante/api/ordini.php';
+
 let totaleIvaOrdine = 0;
 
 const NOMI_MOMENTI = {
@@ -47,7 +46,7 @@ try
 }
 
 async function caricaAliquoteIva() { 
-return apiGet( API_IVA, { type: 'iva' } ); 
+return apiGet( API_SCONTRINO, { type: 'iva' } ); 
 } 
 
 function creaMappaAliquoteIva(iva) { 
@@ -242,44 +241,7 @@ function calcolaTotaleScontato() {
     return Number( ( totaleOrdine - (totaleOrdine*( sconto / 100)) ).toFixed(2) );
     } 
     
-function preparaDettagliScontrino(items) { 
-    return items.map(item => { const idIva = Number(item.id_iva); 
-        const aliquota = aliquoteIva[idIva]; 
-        if (!Number.isFinite(aliquota)) { 
-            throw new Error( `Aliquota IVA non trovata ` + `per id_iva ${idIva}.` ); 
-        } 
-        return { 
-            id_item: Number(item.id_item), 
-            quantita: Number(item.quantita), 
-            prezzo_unitario_storico: Number(item.prezzo), 
-            aliquota_iva_storica: aliquota 
-        }; }); 
-    } 
-async function emettiScontrino() { 
-    if (!ordineCorrente?.length) { 
-        showError( 'Ordine non disponibile.' ); 
-        return; 
-    } 
-    const ordine = ordineCorrente[0]; 
-    const totaleFinale = calcolaTotaleScontato(); 
-    if (!Number.isFinite(totaleFinale)) { 
-        showError( 'Totale finale non valido.' ); 
-        return; 
-    } 
-    const conferma = confirm( `Emettere lo scontrino di ` + `${totaleFinale.toFixed(2)} €?` ); if (!conferma) { return; } const button = document.getElementById( 'btn-emetti-scontrino' ); 
-    try { 
-        button.disabled = true; 
-        const dettagli = preparaDettagliScontrino( ordineCorrente ); 
-        const idScontrino = await API_scontrino.generaScontrino( ordine.id_ordine, totaleFinale, dettagli ); 
-        await API_scontrino.stampaScontrino( idScontrino ); 
-        alert( 'Scontrino emesso e stampato con successo.' ); 
-        window.location.href = '../tavoli/gestionetavoli.php'; 
-    } catch (error) { 
-        console.error( 'Errore emissione scontrino:', error ); 
-        showError( error.message || 'Errore durante l\'emissione dello scontrino' ); 
-        button.disabled = false;
-    }
-}
+
 
 async function emettiScontrino(e) {
 
@@ -289,36 +251,26 @@ async function emettiScontrino(e) {
         showError('Ordine non disponibile.');
         return;
     }
-
-
     if (!confirm('Emettere lo scontrino fiscale per questo ordine?')) {
         return;
     }
-
-
     const button = document.getElementById('btn-emetti-scontrino');
-
-
     try {
 
         button.disabled = true;
-
-
         const ordine =ordineCorrente[0];
         const totaleFinale = calcolaTotaleScontato();
-
-
         if (!Number.isFinite(totaleFinale)) {
             throw new Error(
                 'Totale finale non valido.'
             );
         }
-
-        const dettagli =
-            preparaDettagliScontrino(
+        const dettagli = preparaDettagliScontrino(
                 ordineCorrente
             );
-
+        // sarebbe opportuno un controllo lato server per verficare che l'ordine non sia gi
+        //stato inserito nel caso in cui viene creato l'ordine e la prima volta
+        //fallisce la stampa .
         const idScontrino =
             await API_scontrino.generaScontrino(
                 Number(ordine.id_ordine),

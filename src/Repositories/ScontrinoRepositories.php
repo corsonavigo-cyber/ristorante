@@ -16,7 +16,7 @@ class ScontrinoRepositories extends BaseRepositories {
     
      public function recuperaUnScontrino(int $id_scontrino):?array
      {
-        $stmt =$this->pdo->prepare('SELECT * FROM scontrino_emesso WHERE $id_scontrino = :id_scontrino AND attivo = 1');
+        $stmt =$this->pdo->prepare('SELECT * FROM scontrino_emesso WHERE id_scontrino = :id_scontrino AND attivo = 1');
         $stmt->execute(['id_scontrino' => $id_scontrino]);
         return $stmt->fetchAll() ?:null;
      }

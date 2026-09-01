@@ -47,6 +47,11 @@ require_once __DIR__ . '/../bootstrap.php';
 
 </div>
 
+<script>
+    const API_SCONTRINO = '/ristorante/api/scontrino.php';
+    const API_ORDINI = '/ristorante/api/ordini.php';
+
+</script>
     <script type="module" src="/ristorante/public/assets/js/ordini/visualizzaordine.js" defer></script>
 </main>
 

@@ -54,35 +54,46 @@ try {
 
         ['GET', 'scontrini_data', false, true] =>  risposta($scontrinoService->visualizzaTuttiGliScontriniData($data_e_ora_pagamento)),
 
+        
+        ['POST', 'stampa_scontrino', false, false] => (function () use ($stampaService, $body) {
+
+            scontrinoValidaCampi(
+                $body,
+                ['id_scontrino']
+            );
+
+            $file = $stampaService->generaScontrinoTxt(
+                (int) $body['id_scontrino']
+            );
+
+            risposta([
+                'id_scontrino' => (int) $body['id_scontrino'],
+                'file' => $file
+            ], 201);
+
+        })(),
         ['POST', 'nuovo_scontrino', false, false] => (function () use ($scontrinoService, $body) {
- 
-            scontrinoValidaCampi($body, ['id_ordine', 'totale', 'dettagli']);
- 
+
+            scontrinoValidaCampi(
+                $body,
+                ['id_ordine', 'totale', 'dettagli']
+            );
+
             $id_scontrino = $scontrinoService->nuovoScontrino(
                 (int) $body['id_ordine'],
                 (float) $body['totale'],
                 $body['dettagli']
             );
- 
-            if ($id_scontrino === null) {
-                risposta('Nessun dettaglio fornito, scontrino non generato', 400);
-            }
- 
-            risposta($id_scontrino, 201);
-        })(),
 
-        ['POST', 'stampa', false, false] => (function () use ($stampaService, $body) {
-        // Validazione dei campi necessari
-            if (!isset($body['id_ordine'])) {
-                throw new InvalidArgumentException('id_ordine mancante nel body');
+            if ($id_scontrino === null) {
+                risposta(
+                    'Nessun dettaglio fornito, scontrino non generato',
+                    400
+                );
             }
-            
-            $isModifica = filter_var($body['modifica'] ?? false, FILTER_VALIDATE_BOOLEAN);
-            
-            // Chiamata al servizio
-            $percorsi = $stampaService->generaComandaTxt((int)$body['id_ordine'], $isModifica);
-            
-            risposta(['id_ordine' => $body['id_ordine'], 'files' => $percorsi], 201);
+
+            risposta($id_scontrino, 201);
+
         })(),
 
         ['PATCH', 'storno', false, false] => (function () use ($scontrinoService, $body) {
