@@ -529,38 +529,39 @@ class OrdiniService {
         }
 
     }
-    public function sostituisciComanda(int $id_ordine, int $numero_persone, array $id_tavoli, array $comanda): bool
-    {
-        try {
-            $this->ordiniRepo->iniziaTransazione();
 
-            // Aggiorna il numero di persone e i tavoli
-            $this->ordiniRepo->aggiornaOrdine($id_ordine, $numero_persone);
-            $this->ordiniRepo->aggiornaTavoloOrdine($id_ordine, $id_tavoli);
 
-            // Elimina le voci esistenti della comanda
-            $this->ordiniRepo->eliminaRelazioneOrdineItemPerOrdine($id_ordine);
+    public function sostituisciComanda(int $id_ordine, int $numero_persone, array $id_tavoli, array $comanda): array
+{
+    try {
+        $this->ordiniRepo->iniziaTransazione();
 
-            // Inserisce le nuove voci della comanda
-            foreach ($comanda as $voce) {
-                $this->ordiniRepo->inserisciRelazioneOrdineItem(
-                    $id_ordine,
-                    (int) $voce['id_item'],
-                    (int) $voce['id_momento'],
-                    (int) $voce['quantita'],
-                    $voce['note'] ?? null
-                );
-            }
+        $this->ordiniRepo->aggiornaOrdine($id_ordine, $numero_persone);
+        $this->ordiniRepo->aggiornaTavoloOrdine($id_ordine, $id_tavoli);
+        $this->ordiniRepo->eliminaRelazioneOrdineItemPerOrdine($id_ordine);
 
-            $this->ordiniRepo->confermaTransazione();
-            return true;
-        } catch (\Throwable $e) {
-            if ($this->ordiniRepo->inTransaction()) {
-                $this->ordiniRepo->annullaTransazione();
-            }
-            throw new \RuntimeException("Errore sostituzione comanda: {$e->getMessage()}");
+        // normalizza la comanda in un array di voci pulite, coerenti col Repository
+        $voci = array_map(fn(array $voce) => [
+            'id_item'    => (int) $voce['id_item'],
+            'id_momento' => (int) $voce['id_momento'],
+            'quantita'   => (int) $voce['quantita'],
+            'note'       => $voce['note'] ?? null,
+        ], $comanda);
+
+        // una sola chiamata: il Repository fa il loop e gestisce righeInserite/rollback
+        $id_inseriti = $this->ordiniRepo->inserisciRelazioneOrdineItem($id_ordine, $voci);
+
+        $this->ordiniRepo->confermaTransazione();
+        $this->logger->info("Comanda sostituita per l'ordine {$id_ordine}: {$numero_persone} persone, tavoli [" . implode(', ', $id_tavoli) . "], " . count($voci) . " voci");
+        return $id_inseriti;
+    } catch (\Throwable $e) {
+        if ($this->ordiniRepo->inTransaction()) {
+            $this->ordiniRepo->annullaTransazione();
         }
+        $this->logger->error("Errore sostituzione comanda per l'ordine {$id_ordine}: {$e->getMessage()}");
+        throw new \RuntimeException("Errore sostituzione comanda: {$e->getMessage()}");
     }
+}
 
     
 

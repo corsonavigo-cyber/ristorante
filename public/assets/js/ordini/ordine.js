@@ -62,7 +62,7 @@ export async function aggiornaComandaNelDb(idOrdine, state) {
         throw new Error('La comanda deve essere un array non vuoto.');
     }
 
-    const response = await apiPut(
+    const data = await apiPut(
     API_ORDINI,        
     {},                
     {
@@ -74,10 +74,9 @@ export async function aggiornaComandaNelDb(idOrdine, state) {
     'comanda'          
 );
 
-    if (!response.ok) throw new Error(`Errore HTTP ${response.status}`);
-
-    const data = await response.json();
-    if (!data.success) throw new Error(data.message || 'Errore durante l\'aggiornamento della comanda.');
+    if (!data.success) {
+        throw new Error(data.data || data.message || 'Errore durante l\'aggiornamento della comanda.');
+    }
 
     return data;
 }

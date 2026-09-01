@@ -183,7 +183,7 @@ try {
                         $body['comanda']
                             ?? throw new \InvalidArgumentException('comanda mancante.')
                     )
-                ], 200),
+                ], 201),
             
             default => throw new \InvalidArgumentException('Tipo  non valido')
             };
