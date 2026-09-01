@@ -398,6 +398,8 @@ public function relazioneOrdineTavolo(int $id_ordine, array $tavoli): bool
 
       return true;
    }
+
+   
      
 // PATCH  Ordini
 

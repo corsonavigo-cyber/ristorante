@@ -48,30 +48,31 @@ export async function aggiornaQuantitaItem(idOrdine, idComandaDettaglio, idMomen
     );
 }
 
-// Applica al DB le differenze calcolate da preparaAggiornamentoDb().
-export async function aggiornaComandaNelDb(idOrdine, { daEliminare, daAggiornare, daInserire }) {
-    // 1. Eliminazioni
-    for (const [i, voce] of daEliminare.entries()) {
-        if (!Number.isInteger(Number(voce.id_comanda_dettaglio))) {
-            throw new Error(`Voce da eliminare ${i + 1} non valida.`);
-        }
-        await eliminaItemComanda(voce.id_comanda_dettaglio);
+export async function aggiornaComandaNelDb(idOrdine, comanda) {
+    if (!Number.isInteger(Number(idOrdine)) || Number(idOrdine) <= 0) {
+        throw new Error('ID ordine non valido.');
     }
 
-    // 2. Aggiornamenti (quantità + momento + note)
-    for (const [i, voce] of daAggiornare.entries()) {
-        if (!Number.isInteger(Number(voce.id_momento))) {
-            throw new Error(`Voce da aggiornare ${i + 1} senza momento valido.`);
+    if (!Array.isArray(comanda)) {
+        throw new Error('La comanda deve essere un array.');
+    }
+    const  response = await apiPut(
+        `${API_ORDINI}?type=comanda`,
+        {},
+        {
+            id_ordine: Number(idOrdine),
+            comanda
         }
-        await aggiornaQuantitaItem(idOrdine, voce.id_comanda_dettaglio, voce.id_momento, voce.quantita, voce.note);
+    );
+    if (!response.ok) {throw new Error(`Errore HTTP ${response.status}`);
     }
-
-    // 3. Inserimenti — restano un'unica chiamata atomica (transazione lato server),
-    // coerente con inserisciItemOrdine già esistente
-    if (daInserire.length > 0) {
-        await inserisciItemOrdine(idOrdine, daInserire);
+    const data = await response.json();
+    if (!data.success) {
+        throw new Error(data.message || 'Errore durante l\'aggiornamento della comanda.');
     }
+return data;
 }
+
 export function leggiTavoliSelezionati() {
     const tavoli = [
         ...document.querySelectorAll(

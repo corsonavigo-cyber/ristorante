@@ -245,7 +245,7 @@ class OrdiniService {
             $this->logger->info("Ordine inserito correttamente id_ordine {$id_ordine} sul tavolo {$tavoliStr} con stato {$id_stato}");
             $this->storicoordini->aperto("Ordine inserito correttamente id_ordine {$id_ordine} sul tavolo {$tavoliStr}");
 
-            return $relazioni_inserite;
+            return true;
         } catch (\Throwable $e) {
             if ($this->ordiniRepo->inTransaction()) {
                 $this->ordiniRepo->annullaTransazione();
@@ -528,6 +528,38 @@ class OrdiniService {
              return false;
         }
 
+    }
+    public fuction sostituisciComanda(int $id_ordine, int $numero_persone, array $id_tavoli, array $comanda): bool
+    {
+        try {
+            $this->ordiniRepo->iniziaTransazione();
+
+            // Aggiorna il numero di persone e i tavoli
+            $this->ordiniRepo->aggiornaOrdine($id_ordine, $numero_persone);
+            $this->ordiniRepo->aggiornaTavoloOrdine($id_ordine, $id_tavoli);
+
+            // Elimina le voci esistenti della comanda
+            $this->ordiniRepo->eliminaRelazioneOrdineItemPerOrdine($id_ordine);
+
+            // Inserisce le nuove voci della comanda
+            foreach ($comanda as $voce) {
+                $this->ordiniRepo->inserisciRelazioneOrdineItem(
+                    $id_ordine,
+                    (int) $voce['id_item'],
+                    (int) $voce['id_momento'],
+                    (int) $voce['quantita'],
+                    $voce['note'] ?? null
+                );
+            }
+
+            $this->ordiniRepo->confermaTransazione();
+            return true;
+        } catch (\Throwable $e) {
+            if ($this->ordiniRepo->inTransaction()) {
+                $this->ordiniRepo->annullaTransazione();
+            }
+            throw new \RuntimeException("Errore sostituzione comanda: {$e->getMessage()}");
+        }
     }
 
     

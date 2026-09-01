@@ -84,53 +84,6 @@ async function initPaginaModificaOrdine() {
         initDragAndDropComanda();
     }
 
-async function preparaAggiornamentoDb(comandaAttuale, comandaOriginale) {
-    
-    // Helper per identificare ID temporanei
-    const isTempId = (id) => typeof id === 'string' && id.includes('-');
-
-    // 1. Creiamo una mappa veloce per trovare gli elementi originali per ID
-    const mappaOriginale = new Map(
-        comandaOriginale.map(item => [String(item.id_comanda_dettaglio), item])
-    );
-
-    // 2. Elementi da INSERIRE (tutti quelli con ID temporaneo o mancante)
-    const daInserire = comandaAttuale.filter(att => 
-        !att.id_comanda_dettaglio || isTempId(att.id_comanda_dettaglio)
-    );
-
-    // 3. Elementi da AGGIORNARE o ELIMINARE (quelli con ID numerico)
-    const attualiConId = comandaAttuale.filter(att => att.id_comanda_dettaglio && !isTempId(att.id_comanda_dettaglio));
-    
-    const daAggiornare = [];
-    
-    // Cicliamo su quelli attuali per vedere cosa è cambiato
-    attualiConId.forEach(att => {
-        const orig = mappaOriginale.get(String(att.id_comanda_dettaglio));
-        if (orig) {
-            // Se esiste l'originale, confrontiamo i campi
-            const cambiato = 
-                String(orig.quantita) !== String(att.quantita) || 
-                String(orig.note) !== String(att.note) || 
-                String(orig.id_momento) !== String(att.id_momento);
-            
-            if (cambiato) {
-                daAggiornare.push(att);
-            }
-        }
-    });
-
-    // 4. Elementi da ELIMINARE (quelli in originale che non sono nell'attuale)
-    // Creiamo un set di ID presenti nell'attuale
-    const idAttuali = new Set(attualiConId.map(att => String(att.id_comanda_dettaglio)));
-    
-    const daEliminare = comandaOriginale.filter(orig => 
-        !idAttuali.has(String(orig.id_comanda_dettaglio))
-    );
-
-
-    return { daEliminare, daAggiornare, daInserire };
-}
 
 export function popolaStateDaOrdine(rispostaApi) {
     // Se rispostaApi è direttamente l'array, usalo direttamente
@@ -147,7 +100,8 @@ export function popolaStateDaOrdine(rispostaApi) {
     // Dati comuni a tutte le righe
     const prima = righe[0];
     state.idOrdineInserito = prima.id_ordine;
-
+    document.getElementById('per_ordine_id').value = prima.id_ordine;
+    document.getElementById('numero-persone').value = prima.numero_persone;
     // id_tavoli può essere "1" o "1,2,3"
     state.tavoliInUso = String(prima.id_tavoli)
         .split(',')
@@ -257,26 +211,24 @@ async function globalClick(e) {
             if (!confirm('L\u2019ordine verrà salvato e inviato alla cucina/bar')) {
                 return;
             }
-            const operazioni = await preparaAggiornamentoDb(state.comanda, state.comandaOriginale);
-            console.log(operazioni)
             try {
-                //await aggiornaComandaNelDb(idSalvato, diff);
+                await aggiornaComandaNelDb(idSalvato,state.comanda);
             } catch (error) {
-                console.error('Errore durante il salvataggio dell\u2019ordine:', error);
-                alert(error.message || 'Impossibile salvare la comanda.');
-                return; // fermati qui: niente stampa se l'ordine non è stato salvato
+                console.error('Errore durante il salvataggio dell’ordine:',error);
+                alert(error.message ||'Impossibile salvare la comanda.');
+                return;
             }
-    
             try {
-               //await stampaOrdine(idSalvato, true);
+                await stampaOrdine(idSalvato, true);
             } catch (error) {
-                console.error('Errore durante la stampa dell\u2019ordine:', error);
-                alert('Ordine salvato, ma la stampa è fallita: ' + (error.message || 'errore sconosciuto'));
-                svuotaOrdineSalvato(); // l'ordine ESISTE comunque a DB, ha senso svuotare lo stato locale
+                console.error('Errore durante la stampa dell’ordine:',error);
+                alert('Ordine salvato, ma la stampa è fallita: ' +(error.message || 'errore sconosciuto'));
                 return;
             }
 
-    
+            svuotaOrdineSalvato();
+
+            alert('Ordine salvato e inviato alla cucina/bar con successo.');
             //svuotaOrdineSalvato();
             alert('Ordine salvato e inviato alla cucina/bar con successo.');
             //window.location.href = '../tavoli/gestionetavoli.php';
