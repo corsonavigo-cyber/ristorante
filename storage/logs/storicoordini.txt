@@ -26,3 +26,4 @@
 [2026-09-01 10:23:06] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 6 rif. ordine 1
 [2026-09-01 10:50:18] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 9 rif. ordine 1
 [2026-09-01 12:08:51] [APERTO] Ordine inserito correttamente id_ordine 24 sul tavolo: inserito con successo
+[2026-09-02 09:33:10] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 10 rif. ordine 3

@@ -242,7 +242,6 @@ async function globalClick(e) {
 
             alert('Ordine salvato e inviato alla cucina/bar con successo.');
             //svuotaOrdineSalvato();
-            alert('Ordine salvato e inviato alla cucina/bar con successo.');
             //window.location.href = '../tavoli/gestionetavoli.php';
             return;
         }

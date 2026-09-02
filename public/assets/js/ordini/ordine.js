@@ -57,7 +57,16 @@ export async function aggiornaComandaNelDb(idOrdine, state) {
     const comanda = Array.isArray(state.comanda)
         ? state.comanda
         : Object.values(state.comanda ?? {});
-    console.log('aggiornaComandaNelDb chiamato con idOrdine:', idOrdine, 'comanda:', comanda);
+
+    console.log('aggiornaComandaNelDb:', {
+        idOrdine,
+        numeroPersone: state.numeroPersone,
+        tavoli: state.tavoliInUso,
+        comanda
+    });
+
+
+
     if (!Array.isArray(state.comanda) || state.comanda.length === 0) {
         throw new Error('La comanda deve essere un array non vuoto.');
     }
@@ -69,7 +78,7 @@ export async function aggiornaComandaNelDb(idOrdine, state) {
         id_ordine: Number(idOrdine),
         numero_persone: state.numeroPersone,
         tavoli: state.tavoliInUso.map(Number),
-        comanda: state.comanda
+        comanda
     },
     'comanda'          
 );

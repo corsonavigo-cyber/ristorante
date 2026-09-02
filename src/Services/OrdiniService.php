@@ -531,7 +531,7 @@ class OrdiniService {
     }
 
 
-    public function sostituisciComanda(int $id_ordine, int $numero_persone, array $id_tavoli, array $comanda): array
+    public function sostituisciComanda(int $id_ordine, int $numero_persone, array $id_tavoli, array $comanda): bool
 {
     try {
         $this->ordiniRepo->iniziaTransazione();
@@ -549,11 +549,11 @@ class OrdiniService {
         ], $comanda);
 
         // una sola chiamata: il Repository fa il loop e gestisce righeInserite/rollback
-        $id_inseriti = $this->ordiniRepo->inserisciRelazioneOrdineItem($id_ordine, $voci);
+        $this->ordiniRepo->inserisciRelazioneOrdineItem($id_ordine, $voci);
 
         $this->ordiniRepo->confermaTransazione();
         $this->logger->info("Comanda sostituita per l'ordine {$id_ordine}: {$numero_persone} persone, tavoli [" . implode(', ', $id_tavoli) . "], " . count($voci) . " voci");
-        return $id_inseriti;
+        return true;
     } catch (\Throwable $e) {
         if ($this->ordiniRepo->inTransaction()) {
             $this->ordiniRepo->annullaTransazione();

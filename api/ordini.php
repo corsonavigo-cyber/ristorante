@@ -169,21 +169,30 @@ try {
                 'item_quantita_momento' => risposta($ordiniService->aggiornaQuantitaRelazioneOrdineItem(
                     $body['id_ordine'], $body['id_comanda_dettaglio'], $body['id_momento'], $body['quantita'], $body['note']
                 ) ?? []),
-                'comanda' => risposta([
-                        'id_ordine' => $ordiniService->sostituisciComanda(
-                        (int) ($body['id_ordine']
-                            ?? throw new \InvalidArgumentException('id_ordine mancante.')),
+                'comanda' => (function () use ($body, $ordiniService) {
 
-                        (int) ($body['numero_persone']
-                            ?? throw new \InvalidArgumentException('numero_persone mancante.')),
+                    $idOrdine = (int) (
+                        $body['id_ordine']
+                        ?? throw new \InvalidArgumentException('id_ordine mancante.')
+                    );
 
+                    $ordiniService->sostituisciComanda(
+                        $idOrdine,
+                        (int) (
+                            $body['numero_persone']
+                            ?? throw new \InvalidArgumentException('numero_persone mancante.')
+                        ),
                         $body['tavoli']
                             ?? throw new \InvalidArgumentException('tavoli mancanti.'),
-
                         $body['comanda']
                             ?? throw new \InvalidArgumentException('comanda mancante.')
-                    )
-                ], 201),
+                    );
+
+                    return risposta([
+                        'id_ordine' => $idOrdine
+                    ], 200);
+                })(),
+
             
             default => throw new \InvalidArgumentException('Tipo  non valido')
             };
