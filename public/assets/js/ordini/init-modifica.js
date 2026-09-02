@@ -117,7 +117,11 @@ export function popolaStateDaOrdine(rispostaApi) {
         .map(Number);
     state.numeroPersone = prima.numero_persone;
     
-    
+    if(!prima.id_item){
+        salvaOrdine(state.idOrdineInserito, true);
+        state.comandaOriginale = [];
+        return;
+    }
 
     // Ricostruiamo la comanda
     state.comanda = righe.map(riga => ({
@@ -224,12 +228,22 @@ async function globalClick(e) {
                 return;
             }
             try {
-                await aggiornaComandaNelDb(idSalvato,state);
+                console.log('1 - prima di aggiornaComandaNelDb');
+
+                const risultato = await aggiornaComandaNelDb(idSalvato, state);
+
+                console.log('2 - aggiornaComandaNelDb terminata:', risultato);
+
             } catch (error) {
-                console.error('Errore durante il salvataggio dell’ordine:',error);
-                alert(error.message ||'Impossibile salvare la comanda.');
+                console.error('3 - ERRORE:', error);
+                console.error('message:', error?.message);
+                console.error('stack:', error?.stack);
+
+                alert(error.message || 'Impossibile salvare la comanda.');
                 return;
             }
+
+            console.log('4 - prima di stampaOrdine');
             try {
                 await stampaOrdine(idSalvato, true);
             } catch (error) {
@@ -238,11 +252,9 @@ async function globalClick(e) {
                 return;
             }
 
-            svuotaOrdineSalvato();
-
             alert('Ordine salvato e inviato alla cucina/bar con successo.');
-            //svuotaOrdineSalvato();
-            //window.location.href = '../tavoli/gestionetavoli.php';
+            svuotaOrdineSalvato();
+            window.location.href = '../tavoli/gestionetavoli.php';
             return;
         }
         // 3. Elimina singola voce

@@ -13,6 +13,17 @@ class StampaService
         private string $dirStampe // path assoluta, iniettata da bootstrap.php (es. storage/logs/stampe)
     ) {}
 
+
+    //capisce se è una stampa o una ristampa
+    public function stampaScontrino(int $idScontrino): string
+{
+    $ristampa = $this->esisteStampaScontrino($idScontrino);
+
+    return $this->generaScontrinoTxt(
+        $idScontrino,
+        $ristampa
+    );
+}
     /**
      * Genera un file .txt separato per cucina (piatti) e bar (bevande).
      */
@@ -48,9 +59,13 @@ public function generaScontrinoTxt(int $id_scontrino ,bool $ristampa = false, bo
         throw new \RuntimeException("Scontrino {$id_scontrino} non trovato");
     }
 
-    $testo = $this->formattaScontrino($dati);
+    $testo = $this->formattaScontrino($dati,$ristampa,$storno);
+
+    $suffisso = $storno
+        ? 'storno'
+        : ($ristampa ? 'ristampa' : 'emesso');
     
-    return $this->salvaSuFile($id_scontrino, $testo, 'scontrino',true);
+    return $this->salvaSuFile($id_scontrino, $testo, $suffisso ,true);
 }
 
 private function formattaScontrino(array $dati, bool $ristampa = false, bool $storno = false): string
@@ -133,9 +148,22 @@ private function formattaComanda(array $testata, array $voci, string $destinazio
 
     $righe[] = str_repeat('=', 32);
     return implode("\n", $righe) . "\n";
+
 }
 
-    private function salvaSuFile(int $idDocumento, string $testo, string $suffisso, bool $scontrino= false): string
+    //verifica se il file esiste già.
+    public function esisteStampaScontrino(int $idScontrino): bool
+    {
+        $pattern = rtrim($this->dirStampe, DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . "scontrino_{$idScontrino}_emesso_*.txt";
+
+        $files = glob($pattern);
+
+        return $files !== false && !empty($files);
+    }
+
+    private function salvaSuFile(int $idDocumento, string $testo, string $suffisso , bool $scontrino= false): string
     {
         $prefisso =$scontrino? 'scontrino': 'ordine';
         $nomeFile ="{$prefisso}_{$idDocumento}_{$suffisso}_" .date('Ymd_His') .'.txt';

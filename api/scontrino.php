@@ -62,7 +62,7 @@ try {
                 ['id_scontrino']
             );
 
-            $file = $stampaService->generaScontrinoTxt(
+            $file = $stampaService->stampaScontrino(
                 (int) $body['id_scontrino']
             );
 

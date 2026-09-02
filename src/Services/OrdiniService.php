@@ -539,7 +539,7 @@ class OrdiniService {
         $this->ordiniRepo->aggiornaOrdine($id_ordine, $numero_persone);
         $this->ordiniRepo->aggiornaTavoloOrdine($id_ordine, $id_tavoli);
         $this->ordiniRepo->eliminaRelazioneOrdineItemPerOrdine($id_ordine);
-
+       
         // normalizza la comanda in un array di voci pulite, coerenti col Repository
         $voci = array_map(fn(array $voce) => [
             'id_item'    => (int) $voce['id_item'],
@@ -547,7 +547,7 @@ class OrdiniService {
             'quantita'   => (int) $voce['quantita'],
             'note'       => $voce['note'] ?? null,
         ], $comanda);
-
+        
         // una sola chiamata: il Repository fa il loop e gestisce righeInserite/rollback
         $this->ordiniRepo->inserisciRelazioneOrdineItem($id_ordine, $voci);
 

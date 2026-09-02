@@ -7,7 +7,7 @@ require_once __DIR__ . '/../head.php';
 require_once __DIR__ . '/../navbar.php';
 
 //si occupa di mostrare al gestore quello che vedranno i clienti
-$title = 'Storico Ordini';
+$title = 'Scontrini storico';
 ?>
 
 
@@ -18,8 +18,8 @@ $title = 'Storico Ordini';
     </div>
     
     <div>
-      <label for="ricerca-storico"> Ricerca: </label>
-      <input type="text" id="ricerca-storico" nome="ricerca-storico">
+      <label for="scontrini-storico"> Ricerca: </label>
+      <input type="text" id="scontrini-storico" nome="ricerca-storico">
     </div>
     <div class="menu" id="storico">
        

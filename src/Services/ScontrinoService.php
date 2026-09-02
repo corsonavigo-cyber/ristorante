@@ -19,23 +19,23 @@ class ScontrinoService {
         }
     }
     //visualizza scontrini sul tavolo
-    public function recuperaUnScontrino(int $id_ordine): array {
+    public function recuperaUnScontrinoBool(int $id_ordine): bool {
         try {
-            return $this->scontrinoRepo->recuperaUnScontrino($id_ordine) ?? [];
+            return $this->scontrinoRepo->recuperaUnScontrino($id_ordine) ?? false;
         } catch (\Throwable $e) {
             $this->logger->error("Errore recupero scontrino: {$e->getMessage()}");
-            return []; 
+            return false; 
         }
     }
     
 
-     public function recuperaUnScontrinoConDettaglio(int $id_scontrino): array
+     public function recuperaUnScontrinoConDettaglio(int $id_ordine): array
     {
-        $scontrino = $this->scontrinoRepo->recuperaUnScontrino($id_scontrino);
+        $scontrino = $this->scontrinoRepo->recuperaUnScontrinoConDettaglio($id_ordine);
 
         if ($scontrino === null) {
-            $this->logger->warning("Tentativo di accesso a scontrino inesistente o inattivo: {$id_scontrino}");
-            throw new \RuntimeException("Scontrino non trovato o non più disponibile.");
+        $this->logger->warning("Tentativo di accesso a scontrino inesistente o inattivo per ordine: {$id_ordine}");
+        throw new \RuntimeException("Scontrino non trovato o non più disponibile.");
         }
 
         return $scontrino;
@@ -104,8 +104,12 @@ class ScontrinoService {
     //inserire la prenotazione, nel js non dovrà andare da sola ma con il controllo
     public function nuovoScontrino(int $id_ordine, float $totale, array $dettagli): ?int{
 
-        
-       try {
+        //da sviluopppare il controllo se l'ordine è già stato scontrinato, in tal caso non si può fare un nuovo scontrino
+       if($this->scontrinoRepo->recuperaUnScontrinoBool($id_ordine)) {
+            $this->logger->warning("Tentativo di generare un nuovo scontrino per un ordine già scontrinato: {$id_ordine}");
+            return 0; // Indica che lo scontrino esiste già
+        }
+        try {
              $id_scontrino = $this->scontrinoRepo->nuovoScontrino($id_ordine, $totale, $dettagli);
              if($id_scontrino){
                 $this->ordiniRepo->aggiornaRelazioneOrdineStato($id_ordine, 2);

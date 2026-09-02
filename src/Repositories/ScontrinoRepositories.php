@@ -14,27 +14,29 @@ class ScontrinoRepositories extends BaseRepositories {
         return $stmt->fetchAll() ?:null;
      }
     
-     public function recuperaUnScontrino(int $id_scontrino):?array
+     public function recuperaUnScontrino(int $id_ordine):?bool
      {
-        $stmt =$this->pdo->prepare('SELECT * FROM scontrino_emesso WHERE id_scontrino = :id_scontrino AND attivo = 1');
-        $stmt->execute(['id_scontrino' => $id_scontrino]);
-        return $stmt->fetchAll() ?:null;
+        $stmt =$this->pdo->prepare('SELECT * FROM scontrino_emesso WHERE id_ordine = :id_ordine AND attivo = 1 LIMIT 1');
+        $stmt->execute(['id_ordine' => $id_ordine]);
+        return (bool)$stmt->fetch();
      }
     
-    public function recuperaUnScontrinoConDettaglio(int $id_scontrino): ?array
+    
+    public function recuperaUnScontrinoConDettaglio(int $id_ordine): ?array
     {
     // 1. Query principale: cerchiamo lo scontrino
     $stmt = $this->pdo->prepare('
         SELECT * FROM scontrino_emesso 
-        WHERE id_scontrino = :id_scontrino AND attivo = 1
+        WHERE id_ordine = :id_ordine AND attivo = 1 LIMIT 1
     ');
-    $stmt->execute(['id_scontrino' => $id_scontrino]);
+    $stmt->execute(['id_ordine' => $id_ordine]);
     $scontrino = $stmt->fetch(\PDO::FETCH_ASSOC);
-
+   
     if (!$scontrino) {
         return null;
     }
-
+    // Recupero l'id dello scontrino appena trovato
+    $id_scontrino = (int) $scontrino['id_scontrino'];
     // 2. Query dettagli: prendiamo tutti gli item collegati
     $stmtDettagli = $this->pdo->prepare('
         SELECT 

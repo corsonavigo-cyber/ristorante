@@ -54,9 +54,16 @@ export async function aggiornaComandaNelDb(idOrdine, state) {
     }
 
     // normalizza: se è un oggetto con chiavi numeriche, lo converte in array
-    const comanda = Array.isArray(state.comanda)
+    //id_relazione inoltre il db non la vuole perché è autoincrement e non corrisponde con il crypto.randomUUID() che usiamo lato client per identificare le voci
+    const comanda = (Array.isArray(state.comanda)
         ? state.comanda
-        : Object.values(state.comanda ?? {});
+        : Object.values(state.comanda ?? {})
+    ).map(voce => ({
+        id_item: Number(voce.id_item),
+        id_momento: Number(voce.id_momento),
+        quantita: Number(voce.quantita),
+        note: voce.note ?? null
+    }));
 
     console.log('aggiornaComandaNelDb:', {
         idOrdine,
@@ -67,24 +74,24 @@ export async function aggiornaComandaNelDb(idOrdine, state) {
 
 
 
-    if (!Array.isArray(state.comanda) || state.comanda.length === 0) {
+    if (!Array.isArray(comanda) || comanda.length === 0) {
         throw new Error('La comanda deve essere un array non vuoto.');
     }
 
-    const data = await apiPut(
-    API_ORDINI,        
-    {},                
-    {
-        id_ordine: Number(idOrdine),
-        numero_persone: state.numeroPersone,
-        tavoli: state.tavoliInUso.map(Number),
-        comanda
-    },
-    'comanda'          
-);
+   const data = await apiPut(
+        API_ORDINI,
+        {},
+        {
+            id_ordine: Number(idOrdine),
+            numero_persone: state.numeroPersone,
+            tavoli: state.tavoliInUso.map(Number),
+            comanda
+        },
+        'comanda'
+    );
 
-    if (!data.success) {
-        throw new Error(data.data || data.message || 'Errore durante l\'aggiornamento della comanda.');
+    if (!data || !data.id_ordine) {
+        throw new Error('Errore durante l\'aggiornamento della comanda.');
     }
 
     return data;
@@ -163,7 +170,7 @@ export async function inserisciItemOrdine(
             id_item: Number(voce.id_item),
             id_momento: Number(voce.id_momento),
             quantita: Number(voce.quantita),
-            note: (voce.note ?? '').toString().trim() // ?? evita "null"/"undefined" come stringa
+            note: (voce.note ?? '').toString().trim() 
         };
     });
 
@@ -172,7 +179,7 @@ export async function inserisciItemOrdine(
 }
 
 async function insersciRelazioneOrdineItem(idOrdine, voci) {
-    return apiPost(`${API_ORDINI}?type=item`, {   // <-- manca "return"
+    return apiPost(`${API_ORDINI}?type=item`, {   
         id_ordine: Number(idOrdine),
         voci
     });

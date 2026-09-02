@@ -268,15 +268,33 @@ async function emettiScontrino(e) {
         const dettagli = preparaDettagliScontrino(
                 ordineCorrente
             );
-        // sarebbe opportuno un controllo lato server per verficare che l'ordine non sia gi
-        //stato inserito nel caso in cui viene creato l'ordine e la prima volta
-        //fallisce la stampa .
+        
         const idScontrino =
             await API_scontrino.generaScontrino(
                 Number(ordine.id_ordine),
                 totaleFinale,
                 dettagli
             );
+
+        if (idScontrino === 0) {
+
+            // Qui devi recuperare l'ID dello scontrino
+            // già presente e verificare se esiste la stampa.
+
+            const scontrino =  await API_scontrino.recuperaScontrinoAttivo(
+                    Number(ordine.id_ordine)
+                );
+
+            if (!scontrino) {
+                throw new Error(
+                    'Scontrino attivo non trovato.'
+                );
+            }
+            const idScontrinoEsistente = Number(scontrino.id_scontrino);
+
+            idScontrino = idScontrinoEsistente;
+
+        }
 
         await API_scontrino.stampaScontrino(
             idScontrino
