@@ -1,0 +1,15 @@
+  *** RICEVUTA NON FISCALE - RISTAMPA ***
+Scontrino #: 1
+--------------------------------
+Data: 2026-08-31 16:05:26
+--------------------------------
+2 x Acqua naturale      4.00
+   IVA 10.00%            0.36
+4 x Succo di frutta     8.00
+   IVA 10.00%            0.73
+2 x Birra artigiana     9.00
+   IVA 10.00%            0.82
+--------------------------------
+TOTALE IVA:               1.91
+TOTALE:                    21.00
+================================

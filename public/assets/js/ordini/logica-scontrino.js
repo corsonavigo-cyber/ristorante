@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from '../apigeneric.js';
+import { apiGet, apiPost, apiPatch } from '../apigeneric.js';
 
 
 export async function generaScontrino(idOrdine, totale, dettagli) {
@@ -19,9 +19,42 @@ export async function generaScontrino(idOrdine, totale, dettagli) {
     );
 }
 export async function recuperaScontrini(){
-    
+
     return apiGet(`${API_SCONTRINO}?type=scontrini`);
 
+}
+export async function stornaScontrino(idScontrino) {
+
+    const id = Number(idScontrino);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        throw new Error('ID scontrino non valido.');
+    }
+
+    return apiPatch(
+        `${API_SCONTRINO}?type=storno`,
+        {},
+        {
+            id_scontrino: id
+        }
+    );
+    stampaStornoScontrino(idScontrino);
+}
+
+export async function stampaStornoScontrino(idScontrino) {
+
+    const id = Number(idScontrino);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        throw new Error('ID scontrino non valido.');
+    }
+
+    return apiPost(
+        `${API_SCONTRINO}?type=stampa_storno`,
+        {
+            id_scontrino: id
+        }
+    );
 }
 
 export async function stampaScontrino(idScontrino) {

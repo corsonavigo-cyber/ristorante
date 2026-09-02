@@ -73,6 +73,24 @@ try {
             ], 201);
 
         })(),
+        
+        ['POST', 'stampa_storno', false, false] => (function () use ($stampaService, $body) {
+
+            scontrinoValidaCampi(
+                $body,
+                ['id_scontrino']
+            );
+
+            $file = $stampaService->stampaScontrino(
+                (int) $body['id_scontrino'], true
+            );
+
+            risposta([
+                'id_scontrino' => (int) $body['id_scontrino'],
+                'file' => $file
+            ], 201);
+
+        })(),
         ['POST', 'nuovo_scontrino', false, false] => (function () use ($scontrinoService, $body) {
 
             scontrinoValidaCampi(
@@ -98,11 +116,10 @@ try {
         })(),
 
         ['PATCH', 'storno', false, false] => (function () use ($scontrinoService, $body) {
-            scontrinoValidaCampi($body, ['id_scontrino', 'id_ordine']);
+            scontrinoValidaCampi($body, ['id_scontrino']);
  
             $esito = $scontrinoService->annullaScontrino(
-                (int) $body['id_scontrino'],
-                (int) $body['id_ordine']
+                (int) $body['id_scontrino']
             );
  
             risposta($esito, $esito ? 200 : 404);

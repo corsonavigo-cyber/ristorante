@@ -138,7 +138,7 @@ class ScontrinoService {
     }
 
     //inserimento della prenotazione sul tavolo
-    public function annullaScontrino(int $id_scontrino,int $id_ordine):bool{
+    public function annullaScontrino(int $id_scontrino):bool{
 
         #salto l'autorizzazione in base al ruolo
        try {
@@ -146,18 +146,18 @@ class ScontrinoService {
              $esito = $this->scontrinoRepo->annullaScontrino($id_scontrino);
              if (!$esito) {
                 // FIX: prima veniva ignorato l'esito e si ritornava sempre true
-                $this->logger->warning("Storno scontrino senza effetto (già annullato o inesistente) {$id_scontrino} rif. ordine {$id_ordine}");
+                $this->logger->warning("Storno scontrino senza effetto (già annullato o inesistente) {$id_scontrino} ");
                 return false;
             }
  
-            $messaggio = "Scontrino stornato con successo! {$id_scontrino} rif. ordine {$id_ordine}";
+            $messaggio = "Scontrino stornato con successo! {$id_scontrino} ";
             $this->logger->info($messaggio);
             $this->storicoOrdini->scontrino($messaggio);
  
             return true;
  
         } catch (\Throwable $e) {
-            $this->logger->error("Scontrino non stornato {$id_scontrino} rif. ordine {$id_ordine}: {$e->getMessage()}");
+            $this->logger->error("Scontrino non stornato {$id_scontrino} : {$e->getMessage()}");
             throw new \RuntimeException("Errore storno scontrino: {$e->getMessage()}");
         }
     }

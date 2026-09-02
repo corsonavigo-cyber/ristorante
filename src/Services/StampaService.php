@@ -15,8 +15,14 @@ class StampaService
 
 
     //capisce se è una stampa o una ristampa
-    public function stampaScontrino(int $idScontrino): string
+    public function stampaScontrino(int $idScontrino, bool $storno = false): string
 {
+    if ($storno) {
+        $this->logger->info("Generazione scontrino di storno per scontrino #{$idScontrino}");
+        return $this->generaScontrinoTxt($idScontrino, false, true);
+    } else {
+        $this->logger->info("Generazione scontrino per scontrino #{$idScontrino}");
+    }
     $ristampa = $this->esisteStampaScontrino($idScontrino);
 
     return $this->generaScontrinoTxt(

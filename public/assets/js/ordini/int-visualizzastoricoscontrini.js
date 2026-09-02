@@ -1,5 +1,6 @@
-import {recuperaScontrini} from './logica-scontrino.js';
+import {recuperaScontrini, stornaScontrino, stampaStornoScontrino, stampaScontrino} from './logica-scontrino.js';
 document.addEventListener('DOMContentLoaded', inizializzaStoricoScontrini);
+document.addEventListener('click', catturaclicK);
 
 const inputRicerca = document.getElementById('scontrini-storico');
 const contenitoreStorico = document.getElementById('storico');
@@ -148,6 +149,76 @@ function mostraDettaglioScontrino(idScontrino) {
     //mostra il file creato nella cartella stampa per lo scontrino in una nuova finestra
    //da sviluppare.   
 }
-function stornaScontrino(idScontrino) {
+function stornaScontrinoClick(idScontrino) {
     //chiamata api
+    try{
+        const conferma = confirm('Sei sicuro di voler stornare questo scontrino?');
+        if (!conferma) {
+            return;
+        }   
+        stornaScontrino(idScontrino);
+        
+    }catch (error) {
+        console.error('Errore nello storno dello scontrino:', error);
+        mostraErrore('Impossibile stornare lo scontrino.');
+    }
+
+    try {
+        stampaStornoScontrino(idScontrino);
+    } catch (error) {
+        console.error('Errore nella stampa dello storno dello scontrino:', error);
+        mostraErrore('Impossibile stampare lo storno dello scontrino.');
+    }
+
+    return true;
+
+}
+
+function ristampaScontrinoClick(idScontrino) {
+    //chiamata api
+    try{
+        stampaScontrino(idScontrino);
+    }catch (error) {
+        console.error('Errore nella ristampa dello scontrino:', error);
+        mostraErrore('Impossibile ristampare lo scontrino.');
+    }
+
+    return true;
+}
+
+function catturaclicK(e){
+    console.log('Evento click catturato:', e.target);
+    if(e.target.classList.contains('btn-dettaglio')){
+        const idScontrino = parseInt(e.target.dataset.id);
+        if (!idScontrino) {
+            console.error('ID scontrino non trovato nel dataset del pulsante.');
+            mostraErrore('Impossibile visualizzare il dettaglio dello scontrino.');
+            return;
+        }
+        mostraDettaglioScontrino(idScontrino);
+        
+    }
+
+    if(e.target.classList.contains('btn-storna')){
+        if (!e.target.dataset.id) {
+            console.error('ID scontrino non trovato nel dataset del pulsante.');
+            mostraErrore('Impossibile stornare lo scontrino.');
+            return;
+        }
+        const idScontrino =parseInt(e.target.dataset.id);
+        stornaScontrinoClick(idScontrino);
+        window.location.reload();
+    }
+
+    if(e.target.classList.contains('btn-ristampa')){
+        
+        const idScontrino = parseInt(e.target.dataset.id);
+        if (!idScontrino) {
+            console.error('ID scontrino non trovato nel dataset del pulsante.');
+            mostraErrore('Impossibile ristampare lo scontrino.');
+            return;
+        }
+        ristampaScontrinoClick(idScontrino);
+        alert('Scontrino ristampato correttamente.');
+    }
 }
