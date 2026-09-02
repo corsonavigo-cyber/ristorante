@@ -18,6 +18,11 @@ export async function generaScontrino(idOrdine, totale, dettagli) {
         }
     );
 }
+export async function recuperaScontrini(){
+    
+    return apiGet(`${API_SCONTRINO}?type=scontrini`);
+
+}
 
 export async function stampaScontrino(idScontrino) {
 

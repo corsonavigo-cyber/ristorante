@@ -509,3 +509,43 @@ td,th{
 .quantita-stepper .quantita,
 .quantita-stepper .quantita-bev { width: 3em; text-align: center; }
 .btn-quantita { width: 2em; height: 2em; }
+.elemento-storico {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.info-storico {
+    flex: 1;
+}
+
+.azioni-storico {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-dettaglio {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+}
+
+.btn-dettaglio h3 {
+    margin: 0;
+}
+
+.btn-dettaglio p {
+    margin: 3px 0 10px;
+}
+
+.scontrino-annullato {
+    font-weight: bold;
+}

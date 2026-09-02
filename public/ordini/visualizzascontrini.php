@@ -19,16 +19,16 @@ $title = 'Scontrini storico';
     
     <div>
       <label for="scontrini-storico"> Ricerca: </label>
-      <input type="text" id="scontrini-storico" nome="ricerca-storico">
+      <input type="text" id="scontrini-storico" name="ricerca-storico">
     </div>
     <div class="menu" id="storico">
        
    
     </div>
 <script>
-    const API = '/ristorante/api/storicoordini.php';
+      const API_SCONTRINO = '/ristorante/api/scontrino.php';
 </script>
-<script src="/ristorante/public/assets/js/ordinistorico.js" defer></script>    
+<script type="module" src="/ristorante/public/assets/js/ordini/int-visualizzastoricoscontrini.js" defer></script>    
 
 </main>
 
