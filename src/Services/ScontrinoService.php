@@ -27,14 +27,27 @@ class ScontrinoService {
             return false; 
         }
     }
-    
+    //recuperaUnScontrinoAttivo
+    public function recuperaUnScontrinoAttivo(int $id_ordine): ?array {
+        try {
+        $scontrino= $this->scontrinoRepo->recuperaUnScontrinoAttivo($id_ordine) ?? null;
+        $this->logger->info('Recupero scontrino', [
+            $scontrino
+        ]);
+        return $scontrino;
+        } catch (\Throwable $e) {
+            $this->logger->error("Errore recupero scontrino attivo: {$e->getMessage()}");
+            return null; 
+        }
+    }
 
-     public function recuperaUnScontrinoConDettaglio(int $id_ordine): array
+     public function recuperaUnScontrinoConDettaglio(int $id_scontrino): array
     {
-        $scontrino = $this->scontrinoRepo->recuperaUnScontrinoConDettaglio($id_ordine);
+        
+        $scontrino = $this->scontrinoRepo->recuperaUnScontrinoConDettaglio($id_scontrino);
 
         if ($scontrino === null) {
-        $this->logger->warning("Tentativo di accesso a scontrino inesistente o inattivo per ordine: {$id_ordine}");
+        $this->logger->warning("Tentativo di accesso a scontrino inesistente o inattivo per ordine: {$id_scontrino}");
         throw new \RuntimeException("Scontrino non trovato o non più disponibile.");
         }
 
@@ -105,7 +118,7 @@ class ScontrinoService {
     public function nuovoScontrino(int $id_ordine, float $totale, array $dettagli): ?int{
 
         //da sviluopppare il controllo se l'ordine è già stato scontrinato, in tal caso non si può fare un nuovo scontrino
-       if($this->scontrinoRepo->recuperaUnScontrinoBool($id_ordine)) {
+       if($this->scontrinoRepo->recuperaUnScontrino($id_ordine)) {
             $this->logger->warning("Tentativo di generare un nuovo scontrino per un ordine già scontrinato: {$id_ordine}");
             return 0; // Indica che lo scontrino esiste già
         }

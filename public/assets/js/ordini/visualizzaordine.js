@@ -275,29 +275,22 @@ async function emettiScontrino(e) {
                 totaleFinale,
                 dettagli
             );
+        let idScontrinoParsed = Number(idScontrino);
 
         if (idScontrino === 0) {
+            console.log('Scontrino già esistente per questo ordine. Recupero ID scontrino esistente...');
 
-            // Qui devi recuperare l'ID dello scontrino
-            // già presente e verificare se esiste la stampa.
+            const scontrino = await API_scontrino.recuperaScontrinoAttivo(ordine.id_ordine);
+            console.log('Scontrino esistente:', scontrino);
+            const idScontrinoEsistente = parseInt(scontrino.id_scontrino);
+            console.log('ID scontrino esistente:', idScontrinoEsistente);
 
-            const scontrino =  await API_scontrino.recuperaScontrinoAttivo(
-                    Number(ordine.id_ordine)
-                );
-
-            if (!scontrino) {
-                throw new Error(
-                    'Scontrino attivo non trovato.'
-                );
-            }
-            const idScontrinoEsistente = Number(scontrino.id_scontrino);
-
-            idScontrino = idScontrinoEsistente;
+            idScontrinoParsed = idScontrinoEsistente;
 
         }
-
+        console.log('ID scontrino generato:',idScontrinoParsed);
         await API_scontrino.stampaScontrino(
-            idScontrino
+           idScontrinoParsed
         );
 
 

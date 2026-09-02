@@ -1,4 +1,4 @@
-import { apiGet } from '../apigeneric.js';
+import { apiGet, apiPost } from '../apigeneric.js';
 
 
 export async function generaScontrino(idOrdine, totale, dettagli) {
@@ -41,7 +41,7 @@ export async function recuperaScontrinoAttivo(idOrdine) {
     }
 
     return apiGet(API_SCONTRINO, {
-        type: 'scontrino_dettaglio',
+        type: 'scontrino_attivo',
         id: parseInt(idOrdine)
     });
 }

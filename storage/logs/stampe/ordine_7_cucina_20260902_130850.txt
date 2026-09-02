@@ -1,0 +1,14 @@
+================================
+  CUCINA
+  *** ORDINE MODIFICATO ***
+  ORDINE #7
+  Tavolo/i: 6
+  2026-09-02 15:58:19
+================================
+
+[prima portata]
+  1x insalata
+
+[quarta portata]
+  2x Tiramisù
+================================

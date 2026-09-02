@@ -47,7 +47,8 @@ try {
 
         ['GET', 'scontrino_dettaglio', true, false] => risposta($scontrinoService->recuperaUnScontrinoConDettaglio($id)),
 
-
+        ['GET', 'scontrino_attivo', true, false] => risposta($scontrinoService->recuperaUnScontrinoAttivo($id)),
+        
         ['GET', 'scontrini_oggi', false, false] => risposta($scontrinoService->visualizzaTuttiGliScontriniOggi()),
 
         ['GET', 'incasso_giornata', false, false] =>  risposta($scontrinoService->visualizzaIlTotDegliScontriniOggi()),
