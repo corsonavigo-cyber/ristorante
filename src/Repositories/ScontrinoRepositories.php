@@ -34,7 +34,7 @@ class ScontrinoRepositories extends BaseRepositories {
     // 1. Query principale: cerchiamo lo scontrino
     $stmt = $this->pdo->prepare('
         SELECT * FROM scontrino_emesso 
-        WHERE id_scontrino = :id_scontrino AND attivo = 1 LIMIT 1
+        WHERE id_scontrino = :id_scontrino  LIMIT 1
     ');
     $stmt->execute(['id_scontrino' => $id_scontrino]);
     $scontrino = $stmt->fetch(\PDO::FETCH_ASSOC);

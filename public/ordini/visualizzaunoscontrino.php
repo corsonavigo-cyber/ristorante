@@ -7,7 +7,7 @@ require_once __DIR__ . '/../head.php';
 require_once __DIR__ . '/../navbar.php';
 
 //si occupa di mostrare al gestore quello che vedranno i clienti
-$title = 'Scontrini storico';
+$title = 'Visualizza uno scontrino';
 ?>
 
 
@@ -18,17 +18,13 @@ $title = 'Scontrini storico';
     </div>
 
     <button class="btn" id="btn-aggiorna">Aggiorna</button>
-    <a class="btn" href="../tavoli/gestionetavoli.php">Torna alla gestione tavoli</a>
+    <a class="btn" href="../ordini/visualizzascontrini.php">Indietro</a>
     
     
     <div>
-      <label for="scontrini-storico"> Ricerca: </label>
-      <input type="text" id="scontrini-storico" name="ricerca-storico">
-    </div>
-    <div class="menu" id="storico">
-       
-   
-    </div>
+      <div id="scontrino-dettaglio">  </div>
+     </div>
+  
 <script>
       const API_SCONTRINO = '/ristorante/api/scontrino.php';
 </script>

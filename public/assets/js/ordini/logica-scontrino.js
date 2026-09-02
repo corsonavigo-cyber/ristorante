@@ -18,11 +18,29 @@ export async function generaScontrino(idOrdine, totale, dettagli) {
         }
     );
 }
-export async function recuperaScontrini(){
-
-    return apiGet(`${API_SCONTRINO}?type=scontrini`);
-
+export async function recuperaScontrini() {
+    return apiGet(API_SCONTRINO, {
+        type: 'scontrini'
+    });
 }
+
+
+export async function recuperaDettaglioScontrino(idScontrino) {
+    const id = Number(idScontrino);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        throw new Error('ID scontrino non valido.');
+    }
+
+    return apiGet(
+        API_SCONTRINO,
+        {
+            type: 'scontrino_dettaglio',
+            id: id
+        }
+    );
+}  
+
 export async function stornaScontrino(idScontrino) {
 
     const id = Number(idScontrino);
@@ -38,7 +56,7 @@ export async function stornaScontrino(idScontrino) {
             id_scontrino: id
         }
     );
-    stampaStornoScontrino(idScontrino);
+    
 }
 
 export async function stampaStornoScontrino(idScontrino) {
