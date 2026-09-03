@@ -33,8 +33,19 @@ class StampaService
     /**
      * Genera un file .txt separato per cucina (piatti) e bar (bevande).
      */
-    public function generaComandaTxt(int $id_ordine, bool $isModifica = false): array
+    public function generaComandaTxt(
+        int $id_ordine,
+        bool $isModifica = false,
+        ?string $tipo = null
+    ): array
 {
+    if ($tipo !== null) {
+        $tipo = strtolower(trim($tipo));
+        if (!in_array($tipo, ['piatto', 'bevanda'], true)) {
+            throw new \InvalidArgumentException('Tipo comanda non valido.');
+        }
+    }
+
     $righe = $this->ordiniRepo->visualizzaUnOrdine($id_ordine);
     if (count($righe) === 0) {
         throw new \RuntimeException("Ordine {$id_ordine} non trovato o senza voci comanda");
@@ -42,15 +53,19 @@ class StampaService
     $testata = $righe[0];
     $perTipo = ['piatto' => [], 'bevanda' => []];
     foreach ($righe as $riga) {
-        $tipo = $riga['tipo'] ?? 'piatto';
-        $perTipo[$tipo][] = $riga;
+        $tipoRiga = $riga['tipo'] ?? 'piatto';
+        if (isset($perTipo[$tipoRiga])) {
+            $perTipo[$tipoRiga][] = $riga;
+        }
     }
     $percorsi = [];
-    foreach ($perTipo as $tipo => $voci) {
+    $tipiDaStampare = $tipo === null ? array_keys($perTipo) : [$tipo];
+    foreach ($tipiDaStampare as $tipoDaStampare) {
+        $voci = $perTipo[$tipoDaStampare];
         if (count($voci) === 0) {
             continue;
         }
-        $destinazione = $tipo === 'piatto' ? 'CUCINA' : 'BAR';
+        $destinazione = $tipoDaStampare === 'piatto' ? 'CUCINA' : 'BAR';
         $testo = $this->formattaComanda($testata, $voci, $destinazione, $isModifica);
         $percorsi[] = $this->salvaSuFile($id_ordine, $testo, strtolower($destinazione));
     }

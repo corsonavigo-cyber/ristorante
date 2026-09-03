@@ -125,8 +125,16 @@ try {
              'stampa' => (function () use ($body, $stampaService) {
                     $idOrdine = (int) ($body['id_ordine'] ?? throw new \InvalidArgumentException('id_ordine mancante.'));
                     $isModifica = filter_var($body['modifica'] ?? false, FILTER_VALIDATE_BOOLEAN);
-                    $stampaService->generaComandaTxt($idOrdine, $isModifica);
-                    return risposta(['id_ordine' => $idOrdine, 'stampa' => 'accodata'], 201);
+                    $tipo = $body['tipo'] ?? null;
+                    if ($tipo !== null && !is_string($tipo)) {
+                        throw new \InvalidArgumentException('tipo non valido.');
+                    }
+                    $percorsi = $stampaService->generaComandaTxt($idOrdine, $isModifica, $tipo);
+                    return risposta([
+                        'id_ordine' => $idOrdine,
+                        'stampa' => 'accodata',
+                        'percorsi' => $percorsi
+                    ], 201);
                 })(),
                 
                'ordinecompleto' => risposta([

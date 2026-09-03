@@ -1,0 +1,15 @@
+================================
+  CUCINA
+  *** ORDINE MODIFICATO ***
+  ORDINE #21
+  Tavolo/i: 1
+  2026-09-03 12:43:03
+================================
+
+[prima portata]
+  1x patatine fritte
+     nota: fritte fritte
+
+[quarta portata]
+  1x Tiramisù
+================================

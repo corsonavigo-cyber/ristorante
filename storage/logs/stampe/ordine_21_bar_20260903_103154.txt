@@ -1,0 +1,14 @@
+================================
+  BAR
+  *** ORDINE MODIFICATO ***
+  ORDINE #21
+  Tavolo/i: 1
+  2026-09-03 12:43:03
+================================
+
+[prima portata]
+  1x Birra artigianale
+
+[quarta portata]
+  1x Succo di frutta
+================================

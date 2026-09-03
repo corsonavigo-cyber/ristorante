@@ -15,7 +15,10 @@ const primo_step = document.getElementById('primo-step');
 const secondo_step = document.getElementById('secondo-step');
 const hid = document.getElementById('per_ordine_id');
 const id_ordine_arrivato = new URLSearchParams(window.location.search).get('id_ordine');
-
+const idSalvato = Number(id_ordine_arrivato);
+if (!idSalvato) {
+            throw new Error('ID  in URL non letto.');
+        }
 async function initPaginaModificaOrdine() {
   
         try {
@@ -48,10 +51,7 @@ async function initPaginaModificaOrdine() {
         }
       
         
-        const idSalvato = Number(id_ordine_arrivato);
-        if (!(idSalvato > 0)) {
-            throw new Error('ID ordine mancante o non valido in URL.');
-        }
+       
         hid.value = idSalvato;
         state.idOrdineInserito = idSalvato;
 

@@ -12,7 +12,14 @@ require_once __DIR__ . '/bootstrap.php';
 ?>
 <body>
     <h1>Dashboard sei loggatto!!</h1>
-    <a href="menu/gestionemenuchevedonoiclienti.php">Gestione Menu Per I Clienti</a>
+    <a class="btn" href="menu/gestionemenuchevedonoiclienti.php">Gestione Menu Per I Clienti</a>
+    <a class="btn" href="tavoli/gestionetavoli.php">Gestione Menu Per I Clienti</a>
+    <a class="btn" href="prenotazioni/inserisciprenotazioni.php">+ Prenotazione</a>
+    <a class="btn" href="ordini/inserisciordine.php">+ Comanda</a>
+    <a class="btn" href="tavoli/inseriscitavolo.php">+ Nuovo Tavolo</a>
+    <a class="btn" href="ordini/visualizzascontrini.php">Storico Scontrini</a>
+    <a class="btn" href="ordini/visualizzacomandebevande.php">Elenco Comande Bar</a>
+    <a class="btn" href="ordini/visualizzacomandepiatti.php">Elenco Comande Cucina</a>
     
     <div id="lista_prenotazioni_non_attive"></div>
     <div id="lista_prenotazioni_oggi"></div>

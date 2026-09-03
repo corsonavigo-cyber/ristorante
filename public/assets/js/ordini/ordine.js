@@ -178,6 +178,12 @@ export async function inserisciItemOrdine(
     return insersciRelazioneOrdineItem(idOrdine, voci);
 }
 
+export async function recuperaComandeOggi(){
+    return apiGet(API_ORDINI, {
+        type: 'oggi'
+    });
+}
+
 async function insersciRelazioneOrdineItem(idOrdine, voci) {
     return apiPost(`${API_ORDINI}?type=item`, {   
         id_ordine: Number(idOrdine),
@@ -246,13 +252,17 @@ export async function caricaOrdine(idOrdine) {
 }
 
 
-export async function stampaOrdine(idOrdine, isModifica = false) {
+export async function stampaOrdine(idOrdine, isModifica = false, tipo = null) {
     if (!Number.isInteger(Number(idOrdine))) {
         throw new Error('ID ordine non valido.');
     }
+    if (tipo !== null && !['piatto', 'bevanda'].includes(tipo)) {
+        throw new Error('Tipo comanda non valido.');
+    }
     return apiPost(`${API_ORDINI}?type=stampa`, {
-        id_ordine: idOrdine,
-        modifica: isModifica
+        id_ordine: Number(idOrdine),
+        modifica: isModifica,
+        ...(tipo ? { tipo } : {})
     });
 }
 

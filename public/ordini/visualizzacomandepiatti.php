@@ -37,10 +37,8 @@ require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
     const API_ORDINI = '/ristorante/api/ordini.php';
 
 </script>
-<script src="/ristorante/public/assets/js/tavoli.js" defer></script>    
-<script src="/ristorante/public/assets/js/ordiniprima.js" defer></script> 
 
-
+<script type="module" src="/ristorante/public/assets/js/ordini/init-visualizzacomande.js" defer></script>
 </main>
 <?php 
 require_once __DIR__ . '/../footer.php';
