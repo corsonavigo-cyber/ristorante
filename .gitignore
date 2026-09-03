@@ -12,7 +12,7 @@
 config/      
 # Log e cache
 /logs/
-/logs/stampe/
+
 /cache/
 /tmp/
 *.log
