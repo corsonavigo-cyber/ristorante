@@ -1,0 +1,21 @@
+body{
+    font-family: var(--font-main);
+    color:var(--color-text);
+    background-color:var(--color-background);
+    line-height: 1.5;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+h1,h2,h3,h4{
+   margin-bottom: var(--space-md);
+   color: var(--color-text);
+
+}
+.title{
+    font-size: var(--text-xl);
+    font-weight: bold;
+    margin: var(--space-md);
+    color: var(--color-text);
+}

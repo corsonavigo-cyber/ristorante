@@ -10,6 +10,7 @@ Web app per la gestione operativa di un ristorante, dalla configurazione del men
 - [Flussi Operativi](#flussi-operativi)
 - [Manutenzione e Debugging](#manutenzione-e-debugging)
 - [Convenzioni](#convenzioni)
+- [Installazione](#-installazione)
 
 ---
 

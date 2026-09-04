@@ -1,0 +1,46 @@
+:root {
+    /* Colori */
+    --color-primary: #044929;
+    --color-primary-hover: #069e40;
+
+    --color-success: #25d365;
+    --color-warning: #d97706;
+    --color-danger: #dc2626;
+
+    --color-background: #f5f6f8;
+    --color-surface: #ffffff;
+
+    --color-text: #1f2937;
+    --color-text-muted: #6b7280;
+
+    --color-border: #e5e7eb;
+
+    /* Spaziature */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+
+    /* Bordi */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    /* Ombre */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+
+    /* Layout */
+    --sidebar-width: 240px;
+    --header-height: 64px;
+
+     /* Font */
+    --font-main: 'Arial', 'Helvetica', sans-serif;
+    
+    /* Dimensioni font */
+    --text-sm: 0.85rem;
+    --text-base: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 2rem; /* Usata per .title */
+}
