@@ -1,0 +1,36 @@
+/* Se usi una classe specifica sul body della pagina login */
+.bodylogin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Occupa tutta l'altezza dello schermo */
+    background-color: var(--color-background);
+}
+
+/* Container principale del form di login */
+.login-container {
+    background-color: var(--color-surface);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Stile per il titolo dentro il login */
+.login-container h1 {
+    margin-bottom: var(--space-lg);
+    color: var(--color-text);
+}
+
+/* Spaziatura per gli input se sono dentro il login */
+.login-container input {
+    width: 100%;
+    margin-bottom: var(--space-md);
+}
+
+/* Pulsante specifico per il login */
+.login-container .btn {
+    width: 100%;
+}

@@ -1,0 +1,97 @@
+/* css/pages/ordini.css */
+
+/* --- Layout Board Ordini --- */
+.order-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+.momento-colonna {
+    flex: 1 1 220px;
+    min-width: 220px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.momento-colonna h3 {
+    margin: 0 0 var(--space-sm);
+    font-size: 1rem;
+    color: var(--color-text);
+}
+
+/* --- Dropzone per il Drag & Drop --- */
+.momento-dropzone {
+    flex: 1 1 auto;
+    min-height: 50px;
+    max-height: 400px;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    background: var(--color-surface);
+}
+
+.momento-dropzone.drop-target {
+    outline: 2px dashed var(--color-primary);
+    background: rgba(4, 73, 41, 0.1);
+}
+
+/* --- Dettaglio Comanda --- */
+#comanda-dettaglio {
+    width: min(900px, 92%);
+    margin: var(--space-lg) auto;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+#comanda-dettaglio > h3 {
+    margin-top: 0;
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid var(--color-text);
+}
+
+.comanda-momento {
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-background);
+}
+
+.comanda-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-sm);
+    border-left: 3px solid var(--color-primary);
+    background: var(--color-surface);
+}
+
+.comanda-item small {
+    color: var(--color-danger);
+    font-style: italic;
+}
+
+/* --- Stili di trascinamento --- */
+.drag-ghost {
+    opacity: 0.85;
+    box-shadow: var(--shadow-md);
+    transform: scale(1.02);
+}
+
+.voce-trascinabile.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+}
