@@ -10,10 +10,15 @@
 
 @import url("./components/buttons.css");
 @import url("./components/forms.css");
-@import url("./components/tables.css");
 @import url("./components/cards.css");
 @import url("./components/modals.css");
 @import url("./components/alerts.css");
 @import url("./components/badges.css");
 
 @import url("./utilities/utilities.css");
+
+/*<?php 
+    $title = "Gestione Tavoli";
+    $extra_css = "tavoli.css"; // Qui dichiari il CSS specifico
+    include('head.php'); 
+?>*/
