@@ -1,0 +1,31 @@
+/* css/layout/navigation.css */
+
+nav {
+    padding: 10px;
+}
+
+nav ul li {
+    display: inline-block;
+    list-style-type: none;
+}
+
+nav a {
+    text-decoration: none;
+    margin-right: 15px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+
+
+/* Gestione generale delle liste se serve */
+li {
+    list-style-type: none;
+}
+
+/* Footer (visto che è correlato alla navigazione a fondo pagina) */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

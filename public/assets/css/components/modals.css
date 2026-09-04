@@ -1,0 +1,46 @@
+/* Il contenitore principale del modal */
+#dettaglioModal {
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--shadow-md);
+}
+
+/* L'overlay scuro dietro il modal */
+#dettaglioModal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Pulsante di chiusura interno */
+#chiudiModal {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-text);
+}
+
+/* Operazioni all'interno della modale (es. calcolatrici o bottoni) */
+.operazioni-aritmetiche {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.operazioni-aritmetiche p {
+    margin: var(--space-sm);
+}
+
+.operazioni-aritmetiche button {
+    margin: var(--space-sm);
+}
+
+/* Stato hover specifico citato nel tuo codice */
+.dettaglioModal_bevande:hover {
+    background-color: #b345bd; /* Puoi sostituirlo con una variabile se preferisci */
+}

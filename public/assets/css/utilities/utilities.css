@@ -1,2 +1,44 @@
 /*Da insserire una volta completo <link rel="stylesheet" href="/css/app.css"> e per ogni pagina <link rel="stylesheet" href="/css/pages/tavoli.css">*/
 
+/* css/utilities/utilities.css */
+
+/* --- Visualizzazione --- */
+.hider {
+    display: none !important;
+}
+
+.controllopositivo {
+    display: none;
+}
+
+/* --- Margini e Spaziature --- */
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+.mb-lg { margin-bottom: var(--space-lg); }
+
+/* --- Testo e Allineamento --- */
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+.text-right  { text-align: right; }
+.text-bold   { font-weight: bold; }
+.text-muted  { color: var(--color-text-muted); }
+
+/* --- Flex Utility (per allineamenti rapidi) --- */
+.d-flex { display: flex; }
+.justify-center { justify-content: center; }
+.align-center   { align-items: center; }
+.flex-column    { flex-direction: column; }
+
+/* --- Stato Dropzone (drag & drop) --- */
+.drop-target {
+    outline: 2px dashed var(--color-primary);
+    background: rgba(4, 73, 41, 0.1); /* Variabile primary con opacità */
+}
+
+/* --- Altro --- */
+.cursor-pointer { cursor: pointer; }
+.full-width     { width: 100%; }

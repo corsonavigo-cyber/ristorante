@@ -1,0 +1,27 @@
+/* css/components/buttons.css */
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-weight: bold;
+    margin-bottom: 25px;
+    transition: background-color 0.2s;
+}
+
+.btn:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.btn-mini {
+    padding: 0.35rem 0.65rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-mini:hover {
+    background: #555;
+}

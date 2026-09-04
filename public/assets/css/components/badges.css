@@ -1,0 +1,24 @@
+/* css/components/badges.css */
+
+/* Stile base del badge */
+.qta {
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem; /* 14px convertito in rem */
+    display: inline-block;
+}
+
+/* Varianti di stato */
+.esaurito {
+    background-color: var(--color-danger);
+}
+
+.scarso {
+    background-color: var(--color-warning);
+}
+
+.buono {
+    background-color: var(--color-success);
+}

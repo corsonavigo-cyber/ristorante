@@ -1,0 +1,63 @@
+/* --- Layout Pagina e Contenitori --- */
+
+.schermata-divisa {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+#contenitore {
+    display: flex;
+    flex-direction: row;
+}
+
+/* --- Layout Lavagne (piatti/bevande) --- */
+#lavagna_piatti_attivo,
+#lavagna_bevande_attivo {
+    border: 1px solid #ccc;
+    padding: 15px;
+}
+
+/* --- Layout Comande --- */
+.componi-comanda {
+    display: grid;
+    width: 70%;
+    margin: 20px auto;
+    box-sizing: border-box;
+}
+
+.riassunto1 {
+    display: flex;
+    width: 30%;
+}
+
+/* --- Layout Stats --- */
+.stats {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+    margin: 30px;
+}
+
+/* --- Layout Ordini / Momenti --- */
+.order-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.momenti-servizio {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* --- Layout Input Dinamici --- */
+#piatti_input, 
+#bevande_input {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}

@@ -1,0 +1,70 @@
+/* css/components/cards.css */
+
+/* Stile base per le card */
+.card, 
+.cards, 
+.ins-bev {
+    background-color: var(--color-surface);
+    padding: 30px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    color: var(--color-text);
+    text-align: center;
+}
+
+/* Specifiche per .card (la singola card) */
+.card {
+    width: 60%;
+    margin-left: 15px;
+}
+
+/* Specifiche per .cards (griglia di card o container) */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    width: 250px;
+    justify-content: center;
+}
+
+.cards .title {
+    padding: 30px;
+}
+
+/* Specifiche per .ins-bev */
+
+
+/* Card interne alle liste o gestione tavoli */
+.tavolo-card {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: left;
+}
+
+.tavolo-card:active,
+.tavolo-card.dragging {
+    opacity: 0.6;
+}
+
+/* Card degli elementi */
+.item-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    cursor: grab;
+    min-width: 0;
+}
+
+.item-card.dragging {
+    opacity: 0.5;
+}
