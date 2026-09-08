@@ -98,8 +98,9 @@ async function globalClick(e) {
         return;
     }
         //bottone Salva&Stampa
-    const btnSalvaStampa = e.target.closest('#salva-ordine-stampa');
+    const btnSalvaStampa = e.target.closest('.salva-ordine-stampa');
     if (btnSalvaStampa) {
+        console.log('hai pigiato stampa')
         e.preventDefault();
 
         const idSalvato = parseInt(state.idOrdineInserito || hid.value);
