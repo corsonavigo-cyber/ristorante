@@ -2,8 +2,8 @@
 
 
 nav {
-    background: #333; /* Considera di sostituire con una variabile, es: var(--color-primary) */
-    color: white;
+    background: var(--color-menu); /* Considera di sostituire con una variabile, es: var(--color-primary) */
+    color: var(--color-text-menu);
     padding: var(--space-sm);
     width: 100%;
     align-items: center;
@@ -25,7 +25,7 @@ nav ul li {
 }
 
 nav a {
-    color: white;
+    color: var(--color-text-menu);
     text-decoration: none;
     margin-right: 15px;
     font-weight: bold;
@@ -48,4 +48,11 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+    background-color: var(--color-menu);
+    color: var(--color-text-menu);
+    display: flex;
+    text-align: center;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
 }

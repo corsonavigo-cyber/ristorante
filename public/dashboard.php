@@ -20,11 +20,12 @@ require_once __DIR__ . '/bootstrap.php';
     <a class="btn" href="ordini/visualizzascontrini.php">Storico Scontrini</a>
     <a class="btn" href="ordini/visualizzacomandebevande.php">Elenco Comande Bar</a>
     <a class="btn" href="ordini/visualizzacomandepiatti.php">Elenco Comande Cucina</a>
+    <div id="riassunto-dashboard" class="schermata-tre">   
+        <div id="lista_prenotazioni_non_attive"></div>
+        <div id="lista_prenotazioni_oggi"></div>
     
-    <div id="lista_prenotazioni_non_attive"></div>
-    <div id="lista_prenotazioni_oggi"></div>
-   
-    <div id="lista_prenotazioni_future_attive"></div>
+        <div id="lista_prenotazioni_future_attive">
+    </div>
 </body>
 <script>
    var API_PRENOTAZIONI = '/ristorante/api/prenotazioni.php';

@@ -2,7 +2,6 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 $title = 'Gestione Tavoli';
-$extra_css='tavoli.css';
 
 ?>
 

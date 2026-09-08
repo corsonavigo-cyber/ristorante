@@ -2,18 +2,14 @@ body{
     font-family: var(--font-main);
     color:var(--color-text);
     background-color:var(--color-background);
-    line-height: 1.5;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
 }
 /* Titoli e supporti grafici */
 .supporto-titolo {
     background-color: var(--color-surface);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: var(--space-lg) 0;
+    display: inline-block;
+    width: fit-content;
+    text-align: center;
+    margin: var(--space-lg) auto;
     padding: var(--space-md);
     color: var(--color-text);
     font-weight: bold;
@@ -31,9 +27,14 @@ h1,h3,h4{
     margin: var(--space-md);
     color: var(--color-text);
 }
-
-/* css/layout/grid.css */
-
+main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 70px;
+    line-height: 1.5;
+}
 /* Contenitore principale per layout a due colonne */
 .grid-2-col {
     display: grid;

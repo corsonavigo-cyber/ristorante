@@ -1,12 +1,13 @@
 /* css/components/buttons.css */
 
-.btn, .btn-elimina {
+.btn, .btn-elimina, .btn-avanti,
+.btn-ristampa,.btn-storna, .salva-ordine-stampa {
     display: inline-block;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: var(--radius-sm);
     font-weight: bold;
-    margin-bottom: 25px ;
+    margin-bottom: 15px ;
     transition: background-color 0.2s;
     
 }

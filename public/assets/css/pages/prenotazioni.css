@@ -16,31 +16,8 @@
     color: var(--color-text);
 }
 
-/* Titoli e supporti grafici */
-.supporto-titolo {
-    background-color: var(--color-surface);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: var(--space-lg) 0;
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-    width: 100%;
-    box-shadow: var(--shadow-md);
-    color: var(--color-text);
-    font-weight: bold;
-    font-size: 1.5rem; /* Corrisponde ai 25px originali */
-}
 
-/* Avvisi o warning */
-.warning {
-    width: 100%;
-    text-align: center;
-    padding: var(--space-sm);
-    box-shadow: var(--shadow-sm);
-    color: var(--color-danger);
-    font-weight: bold;
-}
+
 
 /* Liste di prenotazioni */
 .elenco_prenotazioni {
@@ -50,7 +27,3 @@
     width: 100%;
 }
 
-/* Classe di controllo per nascondere elementi */
-.controllopositivo {
-    display: none;
-}

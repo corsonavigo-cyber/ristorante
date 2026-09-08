@@ -5,6 +5,11 @@
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
+.schermata-tre {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
 
 #contenitore {
     display: flex;
@@ -12,7 +17,7 @@
 }
 
 /* --- Layout Lavagne (piatti/bevande) --- */
-#lavagna_piatti_attivo,
+#lavagna_piatti_attive,
 #lavagna_bevande_attivo {
     border: 1px solid #ccc;
     padding: 15px;
