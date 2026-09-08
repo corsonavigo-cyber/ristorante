@@ -1,16 +1,17 @@
 /* css/components/buttons.css */
 
-.btn {
+.btn, .btn-elimina {
     display: inline-block;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: var(--radius-sm);
     font-weight: bold;
-    margin-bottom: 25px;
+    margin-bottom: 25px ;
     transition: background-color 0.2s;
+    
 }
 
-.btn:hover {
+.btn:hover,.btn-elimina:hover {
     background-color: var(--color-primary-hover);
 }
 

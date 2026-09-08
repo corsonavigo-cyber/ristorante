@@ -3,6 +3,8 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 $id=$_GET['id'];
 $title = 'Modifica Tavolo '.$id;
+$extra_css='tavoli.css';
+
 ?>
 <?php 
 require_once __DIR__ . '/../head.php';

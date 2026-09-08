@@ -7,8 +7,20 @@ body{
     justify-content: center;
     align-content: center;
 }
+/* Titoli e supporti grafici */
+.supporto-titolo {
+    background-color: var(--color-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: var(--space-lg) 0;
+    padding: var(--space-md);
+    color: var(--color-text);
+    font-weight: bold;
+    font-size: 1.8rem; 
+}
 
-h1,h2,h3,h4{
+h1,h3,h4{
    margin-bottom: var(--space-md);
    color: var(--color-text);
 

@@ -2,6 +2,8 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 $title = 'Inserisci Tavolo';
+$extra_css='tavoli.css';
+
 ?>
 <?php 
 require_once __DIR__ . '/../head.php';

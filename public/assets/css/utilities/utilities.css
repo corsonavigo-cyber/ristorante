@@ -7,6 +7,17 @@
     display: none !important;
 }
 
+
+/* Avvisi o warning */
+.warning {
+    width: 100%;
+    text-align: center;
+    padding: var(--space-sm);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-danger);
+    font-weight: bold;
+}
+
 .controllopositivo {
     display: none;
 }
@@ -42,3 +53,8 @@
 /* --- Altro --- */
 .cursor-pointer { cursor: pointer; }
 .full-width     { width: 100%; }
+
+/* Classe di controllo per nascondere elementi */
+.controllopositivo {
+    display: none;
+}

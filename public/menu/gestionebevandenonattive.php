@@ -6,6 +6,8 @@ $title = 'Gestione Bevande Che Non Sono Visibili ai Clienti';
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../head.php';
 require_once __DIR__ . '/../navbar.php';
+$extra_css='menu.css';
+
 ?>
 
 <main>

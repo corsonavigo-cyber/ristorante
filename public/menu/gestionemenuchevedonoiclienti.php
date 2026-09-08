@@ -8,6 +8,8 @@ require_once __DIR__ . '/../navbar.php';
 
 //si occupa di mostrare al gestore quello che vedranno i clienti
 $title = 'Gestione Menu Attivo';
+$extra_css='menu.css';
+
 ?>
 
 

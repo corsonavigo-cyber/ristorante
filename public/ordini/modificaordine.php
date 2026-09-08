@@ -8,6 +8,7 @@ $id = $_GET['id'] ?? null; //per preselezionare il tavolo
 require_once __DIR__ . '/../bootstrap.php'; // prima le dipendenze
 require_once __DIR__ . '/../head.php';
 require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
+$extra_css='ordini.css';
 
 ?>
 <main>

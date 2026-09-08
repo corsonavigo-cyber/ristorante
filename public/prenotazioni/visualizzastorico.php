@@ -8,6 +8,8 @@ require_once __DIR__ . '/../navbar.php';
 
 //si occupa di mostrare al gestore quello che vedranno i clienti
 $title = 'Storico Prenotazioni';
+$extra_css='prenotazioni.css';
+
 ?>
 
 

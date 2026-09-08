@@ -44,7 +44,7 @@ async function caricaTavoli (){
        <button type="button" class="btn-elimina" data-id="${tavolo.id_tavolo}">🗑️</button>
        <p class="comment">Posti max ${tavolo.posti_max} </p>
        <!--per visualizzazione in caso di tavolo prenotato-->
-       <div class="tavolo" id="prenotato" data-id_tavolo="${tavolo.id_tavolo}" style="">  </div> 
+       <div class="tavolo prenotato" id="prenotato${tavolo.id_tavolo}" data-id_tavolo="${tavolo.id_tavolo}" style="">  </div> 
        <!--link AJAX per inviare la modifica tavolo-->
        
     </div>`).join('');
@@ -209,7 +209,7 @@ async function caricaElementiTavolo(id_tavolo) {
     const ordini = await recuperaOrdiniTavolo(id_tavolo);
 
     const contenitore = document.querySelector(
-        `#prenotato[data-id_tavolo="${id_tavolo}"]`
+        `.prenotato[data-id_tavolo="${id_tavolo}"]`
     );
 
     if (!contenitore) return;

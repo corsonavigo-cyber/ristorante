@@ -3,6 +3,7 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 $title = 'Visualizza Comande cucina';
 $id = $_GET['id'] ?? null; //per preselezionare il tavolo
+$extra_css='ordini.css';
 
 
 require_once __DIR__ . '/../bootstrap.php'; // prima le dipendenze

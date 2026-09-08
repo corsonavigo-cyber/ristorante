@@ -5,6 +5,8 @@ $title = 'Modifica Prodotto Nel Menu';
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../head.php';
 require_once __DIR__ . '/../navbar.php';
+$extra_css='menu.css';
+
 ?>
 <main>
   <div class="bevande">
