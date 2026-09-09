@@ -17,19 +17,13 @@ require_once __DIR__ . '/../navbar.php';
     <div class="supporto-titolo">
         <h2  class="title"><?= $title ?></h2>
     
-    </div>
+    
 
     <button class="btn" id="btn-aggiorna">Aggiorna</button>
     <a class="btn" href="../tavoli/gestionetavoli.php">Torna alla gestione tavoli</a>
-    
-    
-    <div>
-      <label for="scontrini-storico"> Ricerca: </label>
-      <input type="text" id="scontrini-storico" name="ricerca-storico">
     </div>
-    <div class="menu" id="storico">
-       
-   
+    
+    <div id="storico"></div>
     </div>
 <script>
       const API_SCONTRINO = '/ristorante/api/scontrino.php';

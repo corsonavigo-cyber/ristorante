@@ -18,3 +18,6 @@
 [2026-09-09 14:13:25] [SPOSTATA] Prenotazione 24: modificata con successo sia il tavolo che la prenotazione
 [2026-09-09 14:21:51] [INSERITA] Prenotazione 24 : confermata con successo 
 [2026-09-09 14:23:17] [SPOSTATA] Prenotazione 24: modificata con successo sia il tavolo che la prenotazione
+[2026-09-09 14:49:51] [SPOSTATA] Prenotazione 24: modificata con successo sia il tavolo che la prenotazione
+[2026-09-09 14:52:30] [NON PRESENTATI] Prenotazione 24 : annullata con successo 
+[2026-09-09 14:57:13] [NON PRESENTATI] Prenotazione 24 : annullata con successo 

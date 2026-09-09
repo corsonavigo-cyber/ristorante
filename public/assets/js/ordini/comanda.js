@@ -5,13 +5,13 @@ import { salvaOrdine } from "./localstorage.js";
 import { attachDragAndDrop } from "./drag.js";  
 
 const NOMI_MOMENTI = {
-    1: "ANTIPASTO",
-    2: "PRIMO",
-    3: "SECONDO",
-    4: "ALTRO",
-    4: "DOLCI",
-    5: "DA EVADERE SUBITO",
-    6: "EXTRA"
+    1: "ANTIPASTI",
+    2: "PRIMI",
+    3: "SECONDI",
+    4: "QUARTA PORTATA",
+    5: "DOLCI",
+    6: "PRIORITARIO",
+    7: "ALTRO"
 };
 
 export function initDragAndDropComanda() {

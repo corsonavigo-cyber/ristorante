@@ -116,7 +116,7 @@ function mostraPrenotazioni(contenitore, prenotazioni, id_tavolo) {
     
     contenitore.innerHTML = prenotazioni.map(p => `
         <div class="elemento" data-id_elemento_da_mettere_in_evidenza="${p.id_prenotazione}">
-        <h4 class="comment"><b>${p.nome_prenotazione}</b></h4>
+        <h4 class="comment"><b>${p.nome_prenotazione.toUpperCase()}</b></h4>
         <h5 class="comment">Tavolo ${p.numero_tavoli}</h5>
         <p class="comment">${p.numero_persone} persone</p>
         <p class="comment">Ora arrivo ${p.ora_prenotazione}</p>
@@ -124,20 +124,20 @@ function mostraPrenotazioni(contenitore, prenotazioni, id_tavolo) {
 
         <a class="btn"
            href="modificaprenotazione.php?id=${p.id_prenotazione}">
-           Modifica ✏️
+           ✏️
         </a>
 
         <button
-            class="btn-elimina-prenotazione"
+            class="btn-elimina-prenotazione btn"
             data-id="${p.id_prenotazione}">
-            Elimina Prenotazione🗑️
+            🗑️
         </button>
 
         <button
-            class="btn-disattiva-prenotazione"
+            class="btn-disattiva-prenotazione btn"
             data-id="${p.id_prenotazione}"
             data-tavolo="${p.numero_tavoli}">
-            Apri Ordine
+            Ordine
         </button>
     `).join('');
      const divEvidenza = contenitore.querySelector(`.elemento`);
@@ -159,8 +159,13 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
 
         <a class="btn"
            href="../ordini/modificaordine.php?id_ordine=${o.id_ordine}&id=${Number(o.id_tavoli)}">
-           Modifica
+           ✏️
         </a>
+         <button
+            class="btn-elimina-ordine btn"
+            data-id="${o.id_ordine}">
+            🗑️
+        </button>
 
         <a href="../ordini/visualizzaordine.php?id=${o.id_ordine}"
             class="btn"
@@ -168,11 +173,7 @@ function mostraOrdini(contenitore, ordini, id_tavolo) {
             Conto 
         </a>
         
-        <button
-            class="btn-elimina-ordine"
-            data-id="${o.id_ordine}">
-            Elimina 🗑️
-        </button>
+       
         </div>
     `).join('');
     const divEvidenza= contenitore.querySelector(`.elemento`)? contenitore.querySelector(`.elemento`): null;

@@ -105,17 +105,45 @@ function renderComande(comande) {
 
     contenitoreComande.innerHTML = '';
 
-    if (comande.length === 0) {
+    const tipo = contenitoreBar ? 'bevanda' : 'piatto';
+    const comandePerOrdine = comande
+        .filter(comanda => comanda.tipo === tipo)
+        .reduce((gruppi, riga) => {
+            const idComanda = Number(riga.id_ordine);
+
+            if (!gruppi.has(idComanda)) {
+                gruppi.set(idComanda, {
+                    ...riga,
+                    items: []
+                });
+            }
+
+            gruppi.get(idComanda).items.push(riga);
+            return gruppi;
+        }, new Map());
+
+    if (comandePerOrdine.size === 0) {
         contenitoreComande.innerHTML = '<p>Nessuno Comanda trovata.</p>';
         return;
     }
 
-    comande.forEach(comande => {
+    let comandeVisualizzate = 0;
+
+    comandePerOrdine.forEach(comanda => {
+        if (Number(comanda.id_stato) !== 1) {
+            return;
+        }
+
         contenitoreComande.insertAdjacentHTML(
             'beforeend',
-            renderComanda(comande)
+            renderComanda(comanda)
         );
+        comandeVisualizzate += 1;
     });
+
+    if (comandeVisualizzate === 0) {
+        contenitoreComande.innerHTML = '<p>Nessuno Comanda trovata.</p>';
+    }
 }
 
 function renderComanda(comanda) {
@@ -127,6 +155,33 @@ function renderComanda(comanda) {
         ? comanda.numeri_tavoli.join(', ')
         : comanda.numeri_tavoli?.trim() || '-';
     const nomeStato = comanda.nome_stato ;
+    const itemsPerMomento = comanda.items.reduce((gruppi, item) => {
+        const idMomento = item.id_momento ?? 0;
+
+        if (!gruppi.has(idMomento)) {
+            gruppi.set(idMomento, {
+                nome: item.nome_momento ?? `Momento ${idMomento}`,
+                items: []
+            });
+        }
+
+        gruppi.get(idMomento).items.push(item);
+        return gruppi;
+    }, new Map());
+
+    const prodotti = [...itemsPerMomento.values()].map(momento => `
+        <section class="comanda-momento">
+            <h4>${momento.nome}</h4>
+            <ul>
+                ${momento.items.map(item => `
+                    <li class="comanda-item">
+                        <strong>${item.quantita} x ${item.nome}</strong>
+                        ${item.note ? `<small>Nota: ${item.note}</small>` : ''}
+                    </li>
+                `).join('')}
+            </ul>
+        </section>
+    `).join('');
 
     return `
         <div class="elemento-storico" data-id="${idComanda}">
@@ -153,6 +208,8 @@ function renderComanda(comanda) {
                 </p>
 
                 ${nomeStato}
+
+                ${prodotti}
 
             </div>
 
