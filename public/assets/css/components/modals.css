@@ -1,16 +1,22 @@
-/* Il contenitore principale del modal */
-#dettaglioModal {
-    border: none;
+#dettaglioModal,
+#dettaglioModal_item {
+    width: min(100% - 2rem, 34rem);
+    max-width: 100%;
+    max-height: 90dvh;
+    overflow: auto;
+    margin: auto;
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: var(--space-lg);
-    width: 90%;
-    max-width: 500px;
+    padding: var(--space-md);
+    color: var(--color-text);
+    background: var(--color-surface);
     box-shadow: var(--shadow-md);
 }
 
 /* L'overlay scuro dietro il modal */
-#dettaglioModal::backdrop {
-    background: rgba(0, 0, 0, 0.5);
+#dettaglioModal::backdrop,
+#dettaglioModal_item::backdrop {
+    background: rgba(20, 37, 31, 0.68);
 }
 
 /* Pulsante di chiusura interno */
@@ -18,29 +24,92 @@
     position: absolute;
     top: var(--space-sm);
     right: var(--space-sm);
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: var(--space-xs);
     background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--color-text);
+    border-radius: var(--radius-sm);
+}
+
+#chiudiModal:focus-visible,
+.azioni-modal button:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
 }
 
 /* Operazioni all'interno della modale (es. calcolatrici o bottoni) */
 .operazioni-aritmetiche {
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
     justify-content: center;
     align-items: center;
 }
 
 .operazioni-aritmetiche p {
-    margin: var(--space-sm);
+    margin: 0;
 }
 
 .operazioni-aritmetiche button {
-    margin: var(--space-sm);
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+}
+
+.azioni-modal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+}
+
+.azioni-modal button {
+    min-height: 2.75rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    background: var(--color-background);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.azioni-modal button:hover,
+.azioni-modal button:focus-visible {
+    border-color: var(--color-primary);
+    background: #e4f2ec;
 }
 
 /* Stato hover specifico citato nel tuo codice */
 .dettaglioModal_bevande:hover {
-    background-color: #b345bd; /* Puoi sostituirlo con una variabile se preferisci */
+    background-color: var(--color-primary-hover);
+}
+
+@media (min-width: 769px) {
+    #dettaglioModal,
+    #dettaglioModal_item {
+        width: min(100% - 3rem, 42rem);
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .azioni-modal {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    .azioni-modal button {
+        min-width: 7rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    #dettaglioModal,
+    #dettaglioModal_item {
+        width: min(100% - 4rem, 50rem);
+        padding: var(--space-xl);
+    }
 }

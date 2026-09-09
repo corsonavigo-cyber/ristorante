@@ -3,14 +3,14 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 $title = 'Stampa Scontrino';
 $id = $_GET['id'] ?? null; 
+$extra_css = 'ordini.css';
 ?>
 
 <?php 
 require_once __DIR__ . '/../head.php';
 require_once __DIR__ . '/../navbar.php';
 require_once __DIR__ . '/../bootstrap.php';
-//pagina di esempio AJAX fetch 
-$extra_css='ordini.css';
+//pagina di esempio AJAX fetch
 
 ?>
 

@@ -1,9 +1,194 @@
 input, textarea, select {
     font: inherit;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #9aada4;
+    border-radius: var(--radius-sm);
+    background-color: #eef4f1;
+    color: var(--color-text);
+    box-shadow: inset 0 1px 2px rgba(15, 54, 35, 0.08);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+form label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+.bevande {
+    width: 100%;
+    padding: var(--space-sm);
+}
+
+.bevanda {
+    width: min(100%, 48rem);
+    margin: 0 auto;
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+#form_modifica_item,
+#form_inserisci_item {
+    display: grid;
+    gap: var(--space-sm);
+    width: 100%;
+}
+
+#form_modifica_item > label,
+#form_inserisci_item > label {
+    margin-top: var(--space-sm);
+}
+
+#form_modifica_item fieldset,
+#form_inserisci_item fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-sm) var(--space-md);
+    margin: var(--space-sm) 0;
     padding: var(--space-sm);
     border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: #eef4f1;
+}
+
+#form_modifica_item fieldset legend,
+#form_inserisci_item fieldset legend {
+    width: 100%;
+    margin-bottom: var(--space-xs);
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+#form_modifica_item fieldset label,
+#form_inserisci_item fieldset label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-height: 2.75rem;
+    margin: 0;
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+#form_modifica_item input[type="radio"],
+#form_modifica_item input[type="checkbox"],
+#form_inserisci_item input[type="radio"],
+#form_inserisci_item input[type="checkbox"] {
+    width: auto;
+    min-width: 1.1rem;
+    min-height: 1.1rem;
+    margin: 0;
+    accent-color: var(--color-primary);
+}
+
+#form_modifica_item textarea,
+#form_inserisci_item textarea {
+    min-height: 7rem;
+}
+
+#form_modifica_item .btn-modifica-item,
+#form_inserisci_item .btn-inserisci-item {
+    width: 100%;
+    min-height: 2.75rem;
+    margin-top: var(--space-sm);
+    padding: 0.65rem 1rem;
+    border: 0;
     border-radius: var(--radius-sm);
-    background-color: var(--color-surface);
+    color: #fff;
+    background: var(--color-primary);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#form_modifica_item .btn-modifica-item:hover,
+#form_modifica_item .btn-modifica-item:focus-visible,
+#form_inserisci_item .btn-inserisci-item:hover,
+#form_inserisci_item .btn-inserisci-item:focus-visible {
+    background: var(--color-primary-hover);
+}
+
+#form_inserisci_ordine {
+    display: grid;
+    gap: var(--space-md);
+    width: 100%;
+}
+
+#form_inserisci_ordine #primo-step {
+    display: grid;
+    gap: var(--space-sm);
+}
+
+#form_inserisci_ordine #primo-step > fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: var(--space-sm) 0;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: #eef4f1;
+}
+
+#form_inserisci_ordine #primo-step legend {
+    width: 100%;
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+#form_inserisci_ordine #tavoli_checkbox {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    margin: var(--space-xs) 0;
+    padding: var(--space-sm);
+    border: 1px dashed var(--color-border);
+    background: var(--color-surface);
+}
+
+#form_inserisci_ordine #tavoli_checkbox label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin: 0;
+}
+
+#form_inserisci_ordine input[type="radio"],
+#form_inserisci_ordine input[type="checkbox"] {
+    width: auto;
+    min-width: 1.1rem;
+    min-height: 1.1rem;
+    margin: 0 var(--space-xs) 0 0;
+    accent-color: var(--color-primary);
+}
+
+#form_inserisci_ordine #avanti,
+#form_inserisci_ordine #btn-elimina-ordine-in-corso,
+#form_inserisci_ordine #salva-ordine-stampa,
+#form_inserisci_ordine .salva-ordine-stampa {
+    min-height: 2.75rem;
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#form_inserisci_ordine #avanti:focus-visible,
+#form_inserisci_ordine button:focus-visible,
+#form_inserisci_ordine a:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
 }
 .tavoli_checkbox{
     display: flex;
@@ -36,55 +221,62 @@ input, textarea, select {
 #piatti_input, 
 #bevande_input {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: var(--space-md);
     margin: var(--space-lg) 0;
 }
 
 /* Focus per accessibilità */
 input:focus, textarea:focus, select:focus {
-    outline: 2px solid var(--color-primary);
-}
-input, textarea, select {
-    font: inherit;
-    padding: var(--space-sm);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background-color: var(--color-surface);
-}
-
-/* Gestione degli stepper di quantità (es. .quantita-stepper) */
-.quantita-stepper {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-}
-
-.quantita-stepper .quantita,
-.quantita-stepper .quantita-bev {
-    width: 3em;
-    text-align: center;
-}
-
-.btn-quantita {
-    width: 2em;
-    height: 2em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Gestione input specifici per piatti/bevande */
-#piatti_input, 
-#bevande_input {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--space-md);
-    margin: var(--space-lg) 0;
-}
-
-/* Focus per accessibilità */
-input:focus, textarea:focus, select:focus {
-    outline: 2px solid var(--color-primary);
     border-color: var(--color-primary);
+    background-color: var(--color-surface);
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(15, 202, 115, 0.18);
+}
+
+@media (min-width: 769px) {
+    input, textarea, select {
+        min-height: 2.75rem;
+        padding: 0.7rem 0.85rem;
+        font-size: 1rem;
+    }
+
+    .bevande {
+        padding: var(--space-lg);
+    }
+
+    .bevanda {
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-lg);
+    }
+
+    #form_modifica_item,
+    #form_inserisci_item {
+        gap: var(--space-md);
+    }
+
+    #form_modifica_item fieldset,
+    #form_inserisci_item fieldset {
+        gap: var(--space-md) var(--space-lg);
+        padding: var(--space-md);
+    }
+
+    #form_inserisci_ordine {
+        gap: var(--space-lg);
+    }
+
+    #form_inserisci_ordine #primo-step > fieldset {
+        gap: var(--space-md);
+        padding: var(--space-md);
+    }
+
+    #form_inserisci_ordine #tavoli_checkbox {
+        gap: var(--space-md);
+        padding: var(--space-md);
+    }
+
+    #piatti_input,
+    #bevande_input {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
 }

@@ -197,7 +197,7 @@ export function renderCardItem(item, { conAzioni = 'menu_si', target = null } = 
       ${allergeniHtml}
       <p class="comment">${item.categoria.toUpperCase()}</p>
       ${alcolLabel}
-      ${azioni}
+      <div class="item-actions">${azioni}</div>
     </div>
   `;
 

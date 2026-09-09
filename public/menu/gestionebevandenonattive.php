@@ -16,8 +16,10 @@ require_once __DIR__ . '/../navbar.php';
         <h2><?= $title ?></h2>
     </div>
     
-    <a class="btn" href="gestionemenuchevedonoiclienti.php">Torna Alle Bevande Visualizzabili Dai Clienti</a>
-    <a class="btn" href="inserisciitem.php">+ Inserisci Una Nuovo Prodotto</a>
+    <div class="menu-actions">
+        <a class="btn" href="gestionemenuchevedonoiclienti.php">Torna Alle Bevande Visualizzabili Dai Clienti</a>
+        <a class="btn" href="inserisciitem.php">+ Inserisci Una Nuovo Prodotto</a>
+    </div>
    
     <div class="menu" id="lavagna_bevande_non_attive">
        

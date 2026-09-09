@@ -1,20 +1,21 @@
 :root {
     /* Colori */
-    --color-primary: #0fca73;
-    --color-primary-hover: #069e40;
-    --color-menu: #333;
-    
-    --color-success: #25d365;
-    --color-warning: #d97706;
-    --color-danger: #dc2626;
+    --color-primary: #087f5b;
+    --color-primary-hover: #056b4d;
+    --color-menu: #243b36;
 
-    --color-background: #f5f6f8;
+    --color-success: #18794e;
+    --color-warning: #9a5b00;
+    --color-danger: #b42318;
+
+    --color-background: #f1f5f3;
     --color-surface: #ffffff;
 
-    --color-text: #1f2937;
-    --color-text-muted: #6b7280;
-    --color-text-menu: #e0e6ee;
-    --color-border: #091f10;
+    --color-text: #1b2b26;
+    --color-text-muted: #52635d;
+    --color-text-menu: #f2f7f5;
+    --color-border: #b7c8c0;
+    --color-focus: #005fcc;
 
     /* Spaziature */
     --space-xs: 4px;
@@ -31,10 +32,13 @@
     /* Ombre */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+    --shadow-lg: 0 12px 30px rgba(15, 54, 35, 0.14);
 
     /* Layout */
     --sidebar-width: 240px;
     --header-height: 64px;
+    --content-max-width: 1180px;
+    --form-max-width: 48rem;
 
      /* Font */
     --font-main: 'Arial', 'Helvetica', sans-serif;
@@ -44,4 +48,8 @@
     --text-base: 1rem;
     --text-lg: 1.25rem;
     --text-xl: 2rem; /* Usata per .title */
+    --text-page-title: 1.8rem;
+    --text-nav: 1rem;
+    --text-page-title-wide: 2.6rem;
+    --text-nav-wide: 1.25rem;
 }

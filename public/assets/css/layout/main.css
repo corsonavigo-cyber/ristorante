@@ -13,7 +13,7 @@ body{
     padding: var(--space-md);
     color: var(--color-text);
     font-weight: bold;
-    font-size: 1.8rem; 
+    font-size: var(--text-page-title);
 }
 
 h1,h3,h4{
@@ -27,6 +27,14 @@ h1,h3,h4{
     margin: var(--space-md);
     color: var(--color-text);
 }
+
+@media (min-width: 1200px) {
+    .supporto-titolo {
+        margin: var(--space-xl) auto;
+        padding: var(--space-lg) var(--space-xl);
+        font-size: var(--text-page-title-wide);
+    }
+}
 main {
     display: flex;
     flex-direction: column;
@@ -38,7 +46,7 @@ main {
 /* Contenitore principale per layout a due colonne */
 .grid-2-col {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: var(--space-md);
 }
 
@@ -61,7 +69,7 @@ main {
 /* Flexbox per righe o liste */
 .flex-row {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: var(--space-md);
     align-items: center;
 }
@@ -72,9 +80,12 @@ main {
     gap: var(--space-md);
 }
 
-/* Responsive: su mobile, le colonne diventano una sola */
-@media (max-width: 768px) {
+@media (min-width: 769px) {
     .grid-2-col {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .flex-row {
+        flex-direction: row;
     }
 }

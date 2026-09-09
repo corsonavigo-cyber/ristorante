@@ -1,36 +1,107 @@
-/* Se usi una classe specifica sul body della pagina login */
 .bodylogin {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* Occupa tutta l'altezza dello schermo */
+    min-height: 100vh;
+    padding: var(--space-md);
     background-color: var(--color-background);
 }
 
-/* Container principale del form di login */
+.bodylogin .cards,
 .login-container {
+    width: min(100%, 22rem);
+    max-width: 100%;
+    margin: 0;
+    padding: var(--space-md);
     background-color: var(--color-surface);
-    padding: var(--space-xl);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    width: 100%;
-    max-width: 400px;
     text-align: center;
 }
 
-/* Stile per il titolo dentro il login */
+.bodylogin .title,
 .login-container h1 {
-    margin-bottom: var(--space-lg);
+    margin: 0 0 var(--space-md);
     color: var(--color-text);
 }
 
-/* Spaziatura per gli input se sono dentro il login */
+.bodylogin form,
+.login-container form {
+    width: 100%;
+}
+
+.bodylogin .card,
+.login-container form {
+    width: 100%;
+    margin: 0;
+    padding: var(--space-md);
+    background-color: #eef4f1;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.bodylogin label,
+.login-container label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    color: var(--color-text);
+    font-weight: 700;
+    text-align: left;
+}
+
+.bodylogin input,
 .login-container input {
     width: 100%;
     margin-bottom: var(--space-md);
 }
 
-/* Pulsante specifico per il login */
-.login-container .btn {
+.bodylogin button[type="submit"],
+.login-container .btn,
+.login-container button[type="submit"] {
+    display: block;
     width: 100%;
+    min-height: 2.75rem;
+    padding: 0.65rem 1rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    background-color: var(--color-primary);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bodylogin button[type="submit"]:hover,
+.bodylogin button[type="submit"]:focus-visible,
+.login-container .btn:hover,
+.login-container .btn:focus-visible,
+.login-container button[type="submit"]:hover,
+.login-container button[type="submit"]:focus-visible {
+    background-color: var(--color-primary-hover);
+}
+
+.bodylogin input:focus-visible,
+.login-container input:focus-visible,
+.bodylogin button[type="submit"]:focus-visible,
+.login-container .btn:focus-visible,
+.login-container button[type="submit"]:focus-visible {
+    outline: 3px solid rgba(15, 202, 115, 0.4);
+    outline-offset: 2px;
+}
+
+@media (min-width: 769px) {
+    .bodylogin {
+        padding: var(--space-xl);
+    }
+
+    .bodylogin .cards,
+    .login-container {
+        width: min(100%, 25rem);
+        padding: var(--space-xl);
+    }
+
+    .bodylogin .card,
+    .login-container form {
+        padding: var(--space-lg);
+    }
 }

@@ -2,18 +2,18 @@
 
 .schermata-divisa {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 .schermata-tre {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
 #contenitore {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 /* --- Layout Lavagne (piatti/bevande) --- */
@@ -26,20 +26,20 @@
 /* --- Layout Comande --- */
 .componi-comanda {
     display: grid;
-    width: 70%;
+    width: 100%;
     margin: 20px auto;
     box-sizing: border-box;
 }
 
 .riassunto1 {
     display: flex;
-    width: 30%;
+    width: 100%;
 }
 
 /* --- Layout Stats --- */
 .stats {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 20px;
     justify-content: center;
     margin: 30px;
@@ -65,4 +65,30 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 25px;
     margin: 30px 0;
+}
+
+@media (min-width: 769px) {
+    .schermata-divisa {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .schermata-tre {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    #contenitore {
+        flex-direction: row;
+    }
+
+    .componi-comanda {
+        width: 70%;
+    }
+
+    .riassunto1 {
+        width: 30%;
+    }
+
+    .stats {
+        flex-direction: row;
+    }
 }

@@ -5,7 +5,7 @@
 .cards, 
 .ins-bev {
     background-color: var(--color-surface);
-    padding: 30px;
+    padding: 1rem;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
     color: var(--color-text);
@@ -14,20 +14,42 @@
 
 /* Specifiche per .card (la singola card) */
 .card {
-    width: 60%;
-    margin-left: 15px;
+    width: 100%;
+    margin-left: 0;
 }
 
 /* Specifiche per .cards (griglia di card o container) */
 .cards {
     display: flex;
     flex-wrap: wrap;
-    width: 250px;
+    width: calc(100% - 2rem);
+    max-width: 100%;
     justify-content: center;
 }
 
 .cards .title {
-    padding: 30px;
+    padding: 1rem;
+}
+
+@media (min-width: 769px) {
+    .card,
+    .cards,
+    .ins-bev {
+        padding: 30px;
+    }
+
+    .card {
+        width: 60%;
+        margin-left: 15px;
+    }
+
+    .cards {
+        width: 250px;
+    }
+
+    .cards .title {
+        padding: 30px;
+    }
 }
 
 /* Specifiche per .ins-bev */

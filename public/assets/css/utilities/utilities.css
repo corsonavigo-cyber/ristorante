@@ -10,12 +10,18 @@
 
 /* Avvisi o warning */
 .warning {
-    width: 100%;
+    width: calc(100% - 2rem);
+    max-width: var(--content-max-width);
+    margin: var(--space-sm) auto;
     text-align: center;
     padding: var(--space-sm);
+    border: 1px solid currentColor;
+    border-radius: var(--radius-sm);
+    background: rgba(220, 38, 38, 0.08);
     box-shadow: var(--shadow-sm);
     color: var(--color-danger);
     font-weight: bold;
+    line-height: 1.4;
 }
 
 .controllopositivo {
@@ -39,20 +45,73 @@
 .text-muted  { color: var(--color-text-muted); }
 
 /* --- Flex Utility (per allineamenti rapidi) --- */
-.d-flex { display: flex; }
+.d-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
 .justify-center { justify-content: center; }
 .align-center   { align-items: center; }
 .flex-column    { flex-direction: column; }
 
 /* --- Stato Dropzone (drag & drop) --- */
 .drop-target {
-    outline: 2px dashed var(--color-primary);
+    outline: 3px dashed var(--color-primary);
+    outline-offset: 2px;
     background: rgba(4, 73, 41, 0.1); /* Variabile primary con opacità */
 }
 
 /* --- Altro --- */
 .cursor-pointer { cursor: pointer; }
-.full-width     { width: 100%; }
+.full-width     { width: 100%; max-width: 100%; }
+
+.container {
+    width: calc(100% - 2rem);
+    max-width: var(--content-max-width);
+    margin-inline: auto;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+@media (min-width: 769px) {
+    .warning {
+        padding: var(--space-md);
+    }
+
+    .d-flex {
+        gap: var(--space-md);
+    }
+
+    .container {
+        width: calc(100% - 3rem);
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        width: calc(100% - 4rem);
+    }
+}
 
 /* Classe di controllo per nascondere elementi */
 .controllopositivo {

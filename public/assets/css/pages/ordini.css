@@ -8,12 +8,12 @@
 }
 
 .momento-colonna {
-    flex: 1 1 220px;
-    min-width: 220px;
+    flex: 1 1 100%;
+    min-width: 0;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-background);
-    padding: var(--space-md);
+    padding: var(--space-sm);
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
@@ -46,9 +46,9 @@
 
 /* --- Dettaglio Comanda --- */
 #comanda-dettaglio {
-    width: min(900px, 92%);
+    width: min(100% - 2rem, 900px);
     margin: var(--space-lg) auto;
-    padding: var(--space-lg);
+    padding: var(--space-md);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
@@ -63,7 +63,7 @@
 
 .comanda-momento {
     margin-top: var(--space-md);
-    padding: var(--space-md);
+    padding: var(--space-sm);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     background: var(--color-background);
@@ -93,4 +93,35 @@
 .voce-trascinabile.dragging {
     opacity: 0.4;
     cursor: grabbing;
+}
+
+#order-board,
+#order-total {
+    width: min(100% - 2rem, 1200px);
+    margin-inline: auto;
+}
+
+#order-board button:focus-visible,
+#order-total button:focus-visible,
+#comanda-dettaglio button:focus-visible,
+#comanda-dettaglio a:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+@media (min-width: 769px) {
+    .momento-colonna {
+        flex: 1 1 220px;
+        min-width: 220px;
+        padding: var(--space-md);
+    }
+
+    #comanda-dettaglio {
+        width: min(900px, 92%);
+        padding: var(--space-lg);
+    }
+
+    .comanda-momento {
+        padding: var(--space-md);
+    }
 }

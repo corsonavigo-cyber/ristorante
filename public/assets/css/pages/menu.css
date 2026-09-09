@@ -22,22 +22,66 @@ main > .supporto-titolo > div {
     width: 100%;
 }
 
+main > .supporto-titolo h2 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: var(--text-page-title);
+    line-height: 1.2;
+}
+
+.menu-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+    width: min(100% - 2rem, var(--content-max-width));
+    margin: 0 auto var(--space-md);
+}
+
+.menu-actions .btn {
+    margin: 0;
+    text-align: center;
+}
+
+#lavagna_bevande_non_attive,
+#lavagna_piatti_non_attivi {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-sm);
+    width: min(100% - 2rem, var(--content-max-width));
+    margin: 0 auto;
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
 .schermata-divisa {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-lg);
     width: 100%;
+    margin: 0 auto;
+    padding: var(--space-sm);
+    background: var(--color-surface);
+    border: 1px solid #d5e0da;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
     align-items: start;
 }
 
 #lavagna_piatti_attivo,
 #lavagna_bevande_attive {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-sm);
     min-width: 0;
     min-height: 220px;
-    padding: var(--space-lg);
-    background: #f8faf9;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid #d5e0da;
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
 }
 
@@ -51,6 +95,7 @@ main > .supporto-titolo > div {
 
 #lavagna_piatti_attivo > h3,
 #lavagna_bevande_attive > h3 {
+    grid-column: 1 / -1;
     margin: 0 0 var(--space-md);
     padding-bottom: var(--space-sm);
     border-bottom: 1px solid var(--color-border);
@@ -65,7 +110,7 @@ main > .supporto-titolo > div {
     flex-direction: column;
     gap: var(--space-sm);
     margin-top: var(--space-md);
-    padding: var(--space-md);
+    padding: var(--space-sm);
     background: var(--color-surface);
     border: 2px solid var(--color-border);
     border-left: 4px solid var(--color-primary);
@@ -95,7 +140,8 @@ main > .supporto-titolo > div {
 
 .item .comment {
     color: var(--color-text-muted);
-    font-size: var(--text-sm);
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
 
 .item p:nth-of-type(2) {
@@ -106,7 +152,12 @@ main > .supporto-titolo > div {
 .item .elenco_allergeni {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     gap: var(--space-xs);
+    width: 100%;
+    padding: 0;
+    text-align: center;
 }
 
 .item .elenco_allergeni li {
@@ -117,18 +168,29 @@ main > .supporto-titolo > div {
     font-size: 0.75rem;
 }
 
+.item-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    margin-top: var(--space-sm);
+}
+
 .item .btn,
 .item .btn-stato-item,
 .item .btn-elimina-item {
     display: inline-block;
     width: fit-content;
-    margin: 0 var(--space-xs) 0 0;
-    padding: 7px 10px;
+    margin: 0;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     color: var(--color-text);
     background: var(--color-surface);
-    font-size: var(--text-sm);
+    font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -145,13 +207,102 @@ main > .supporto-titolo > div {
     background: var(--color-danger);
 }
 
-@media (max-width: 720px) {
+.item .btn:focus-visible,
+.item .btn-stato-item:focus-visible,
+.item .btn-elimina-item:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+@media (min-width: 721px) {
     main > .supporto-titolo {
-        width: calc(100% - 20px);
-        padding: var(--space-md);
+        width: min(1180px, calc(100% - 32px));
+        padding: var(--space-lg);
     }
 
     .schermata-divisa {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: var(--space-md);
+    }
+
+    .schermata-divisa > .btn {
+        justify-self: center;
+    }
+
+    .schermata-divisa > #lavagna_piatti_attivo,
+    .schermata-divisa > #lavagna_bevande_attive {
+        width: 100%;
+    }
+
+    #lavagna_piatti_attivo,
+    #lavagna_bevande_attive {
+        grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+        gap: var(--space-md);
+        padding: var(--space-lg);
+    }
+
+    .menu-actions {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .menu-actions .btn {
+        flex: 0 1 auto;
+    }
+
+    #lavagna_bevande_non_attive,
+    #lavagna_piatti_non_attivi {
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+        gap: var(--space-md);
+        padding: var(--space-lg);
+    }
+
+    .item {
+        padding: var(--space-md);
+    }
+}
+
+@media (min-width: 1200px) {
+    main > .supporto-titolo h2 {
+        font-size: var(--text-page-title-wide);
+    }
+
+    #lavagna_bevande_non_attive,
+    #lavagna_piatti_non_attivi {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        justify-content: center;
+        gap: var(--space-lg);
+        width: min(calc(100% - 4rem), var(--content-max-width));
+        padding: var(--space-lg);
+        border: 1px solid #d5e0da;
+        border-radius: var(--radius-lg);
+        background: var(--color-surface);
+        box-shadow: var(--shadow-md);
+        overflow-x: auto;
+    }
+
+    .schermata-divisa {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: min(100%, var(--content-max-width));
+        padding: var(--space-lg);
+        gap: var(--space-lg);
+        justify-items: center;
+    }
+
+    .schermata-divisa > .btn {
+        width: auto;
+        min-width: 18rem;
+        justify-self: center;
+    }
+
+    #lavagna_bevande_non_attive > .item,
+    #lavagna_piatti_non_attivi > .item {
+        flex: 1 1 18rem;
+        max-width: 24rem;
+        margin-top: 0;
     }
 }

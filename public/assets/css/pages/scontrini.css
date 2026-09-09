@@ -1,13 +1,11 @@
-/* css/pages/scontrini.css */
-
 /* --- Lista Storico Scontrini --- */
 .elemento-storico {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: var(--space-md);
     margin-bottom: var(--space-md);
-    padding: var(--space-md);
+    padding: var(--space-sm);
     border: 1px solid var(--color-border);
     border-left: 4px solid var(--color-primary);
     border-radius: var(--radius-md);
@@ -43,6 +41,7 @@
 
 .elemento-storico .azioni-storico {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-sm);
 }
 
@@ -55,23 +54,59 @@
 
 /* --- Dettaglio Scontrino (se visualizzato in pagina) --- */
 .dettaglio-scontrino-container {
-    padding: var(--space-lg);
+    width: min(100% - 2rem, 600px);
+    padding: var(--space-md);
     background: var(--color-surface);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    max-width: 600px;
     margin: 0 auto;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
+#storico,
+#scontrino-dettaglio {
+    width: min(100% - 2rem, var(--content-max-width));
+    margin-inline: auto;
+}
+
+#scontrini-storico {
+    width: min(100% - 2rem, 34rem);
+    display: block;
+    margin: 0 auto var(--space-md);
+}
+
+#btn-aggiorna:focus-visible,
+.elemento-storico button:focus-visible,
+.elemento-storico a:focus-visible,
+#scontrini-storico:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+@media (min-width: 769px) {
     .elemento-storico {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
+        padding: var(--space-md);
     }
 
     .elemento-storico .azioni-storico {
-        justify-content: flex-start;
-        margin-top: var(--space-sm);
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+    }
+
+    .dettaglio-scontrino-container {
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+@media (min-width: 1200px) {
+    .elemento-storico {
+        padding: var(--space-lg);
+    }
+
+    .dettaglio-scontrino-container {
+        width: min(100% - 2rem, 760px);
+        padding: var(--space-xl);
     }
 }

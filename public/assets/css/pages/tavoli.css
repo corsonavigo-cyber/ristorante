@@ -13,7 +13,8 @@
     width: 100%;
     box-shadow: var(--shadow-md);
     color: var(--color-text);
-    padding: var(--space-md);
+    padding: var(--space-sm);
+    gap: var(--space-sm);
 }
 
 /* Singolo tavolo */
@@ -22,20 +23,22 @@
     justify-content: center;
     align-items: center;
     background-color: var(--color-surface);
-    padding: var(--space-lg);
+    flex: 1 1 100%;
+    min-width: 0;
+    padding: var(--space-md);
     border-radius: var(--radius-md);
-    width: fit-content;
-    margin: var(--space-lg);
-    border: 2px solid;
+    margin: 0;
+    border: 2px solid var(--color-border);
     box-shadow: var(--shadow-md);
     color: var(--color-text);
 }
 
 /* Area interna al tavolo (dove si trascinano gli elementi) */
 .tavolo-items {
-    min-height: 120px;
+    width: 100%;
+    min-height: 96px;
     background: #f7f9fc; /* Puoi usare una variabile, es: var(--color-background) */
-    border: 1px dashed #bbb;
+    border: 1px dashed var(--color-border);
     border-radius: var(--radius-md);
     padding: var(--space-sm);
     margin-top: var(--space-md);
@@ -46,7 +49,8 @@
 
 /* Stato quando un elemento viene trascinato sopra */
 .tavolo-items.drop-target {
-    outline: 2px dashed var(--color-primary);
+    outline: 3px dashed var(--color-primary);
+    outline-offset: 2px;
     background: rgba(4, 73, 41, 0.1); /* Variabile primary con opacità */
 }
 
@@ -82,4 +86,47 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.tavolo button:focus-visible,
+.tavolo a:focus-visible,
+.tavolo input:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+@media (min-width: 600px) {
+    .tavolo {
+        flex: 1 1 calc(50% - var(--space-sm));
+    }
+}
+
+@media (min-width: 769px) {
+    .tavoli {
+        padding: var(--space-md);
+        gap: var(--space-md);
+    }
+
+    .tavolo {
+        flex: 1 1 240px;
+        max-width: 320px;
+        padding: var(--space-lg);
+    }
+
+    .tavolo-items {
+        min-height: 120px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .tavoli {
+        gap: var(--space-lg);
+        padding: var(--space-lg);
+    }
+
+    .tavolo {
+        flex-basis: 280px;
+        max-width: 360px;
+        padding: var(--space-xl);
+    }
 }
