@@ -1,0 +1,21 @@
+        RICEVUTA FISCALE
+Scontrino #: 13
+--------------------------------
+Data: 2026-09-09 12:53:35
+--------------------------------
+1 x Spaghetti alla     12.00
+   IVA 10.00%            1.09
+2 x Birra artigiana     9.00
+   IVA 10.00%            0.82
+1 x Birra artigiana     4.50
+   IVA 10.00%            0.41
+3 x Acqua naturale      6.00
+   IVA 10.00%            0.55
+1 x Coca-Cola 0.33L     2.50
+   IVA 10.00%            0.23
+1 x Vino rosso dell     4.00
+   IVA 10.00%            0.36
+--------------------------------
+TOTALE IVA:               3.45
+TOTALE:                    38.00
+================================

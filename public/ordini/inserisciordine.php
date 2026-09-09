@@ -3,12 +3,12 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 $title = 'Inserisci Comanda';
 $id = $_GET['id'] ?? null; //per preselezionare il tavolo
+$extra_css='ordini.css';
 
 
 require_once __DIR__ . '/../bootstrap.php'; // prima le dipendenze
 require_once __DIR__ . '/../head.php';
 require_once __DIR__ . '/../navbar.php';    // ora $authService è disponibile
-$extra_css='ordini.css';
 
 ?>
 <main>
@@ -45,7 +45,7 @@ $extra_css='ordini.css';
 
           <div class="componi-comanda">
              <button type="button" id="btn-elimina-ordine-in-corso" class="btn-elimina-ordine-in-corso">Elimina</button>
-             <button type="button"id="salva-ordine-stampa" > Salva&Stampa </button>
+             <button type="button"id="salva-ordine-stampa"  class="salva-ordine-stampa"> Salva&Stampa </button>
 
              <div id="momenti-servizio">
             </div>

@@ -59,6 +59,14 @@ function renderItemCard(item, tipo) {
     data-id="${item.id_item}"
     data-nome="${item.nome}"
     data-tipo="${tipo}">
+    <div class="controllo-quantita">
+
+
+    <button
+    type="button"
+    class="addizione"
+    data-id="${item.id_item}"
+    data-tipo="${tipo}">
 
     <h3 class="comment">
         <b>${item.nome}</b>
@@ -72,19 +80,13 @@ function renderItemCard(item, tipo) {
         Prezzo: ${item.prezzo} €
     </p>
 
-</div>
 
 
-<div class="controllo-quantita">
 
-
-<button
-    type="button"
-    class="addizione"
-    data-id="${item.id_item}"
-    data-tipo="${tipo}">
-    +
+<br>
+  <strong>+</strong>
 </button>
+</div>
 
 </div>
 

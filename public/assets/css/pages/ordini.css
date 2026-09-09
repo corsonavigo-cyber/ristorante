@@ -1,5 +1,12 @@
 
 /* --- Layout Board Ordini --- */
+main > .piatti > .piatto:has(> #form_inserisci_ordine),
+main > .piatti > .piatto:has(> #form_modifica_ordine) {
+    width: min(100% - 2rem, 110rem);
+    max-width: 110rem;
+    margin-inline: auto;
+}
+
 .order-board {
     display: flex;
     flex-wrap: wrap;
@@ -37,11 +44,184 @@
     flex-direction: column;
     gap: var(--space-sm);
     background: var(--color-surface);
+    list-style: none;
+    margin: 0;
 }
 
 .momento-dropzone.drop-target {
     outline: 2px dashed var(--color-primary);
     background: rgba(4, 73, 41, 0.1);
+}
+
+#form_inserisci_ordine #momenti-servizio {
+    width: 100%;
+    min-width: 0;
+}
+
+#form_inserisci_ordine .momenti-servizio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+}
+
+#form_inserisci_ordine .momenti {
+    flex: 0 1 auto;
+}
+
+#form_inserisci_ordine .btn-momento {
+    min-height: 2.75rem;
+    max-width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    background: var(--color-surface);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#form_inserisci_ordine .btn-momento.attivo,
+#form_inserisci_ordine .btn-momento:hover,
+#form_inserisci_ordine .btn-momento:focus-visible {
+    color: #fff;
+    background: var(--color-primary);
+}
+
+#form_inserisci_ordine #riassunto-ordine {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+#form_modifica_ordine #riassunto-ordine {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+#form_modifica_ordine .momento-dropzone {
+    width: 100%;
+    max-height: none;
+    padding: var(--space-md);
+    gap: var(--space-md);
+    line-height: 1.6;
+}
+
+#form_modifica_ordine .titolo-momento {
+    padding: var(--space-sm) 0;
+    color: var(--color-text);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+}
+
+#form_modifica_ordine .voce-trascinabile {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm) var(--space-md);
+    width: 100%;
+    min-width: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    overflow-wrap: anywhere;
+    font-size: 1.15rem;
+    line-height: 1.6;
+}
+
+#form_modifica_ordine .controllo-quantita {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    white-space: nowrap;
+}
+
+#form_inserisci_ordine .momento-dropzone {
+    width: 100%;
+    max-height: none;
+    padding: var(--space-md);
+    gap: var(--space-md);
+    line-height: 1.6;
+}
+
+#form_inserisci_ordine .titolo-momento {
+    padding: var(--space-sm) 0;
+    color: var(--color-text);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+}
+
+#form_inserisci_ordine .titolo-momento strong {
+    font-weight: 800;
+}
+
+#form_inserisci_ordine .voce-trascinabile {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm) var(--space-md);
+    width: 100%;
+    min-width: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    overflow-wrap: anywhere;
+    font-size: 1.15rem;
+    line-height: 1.6;
+}
+
+#form_inserisci_ordine .voce-trascinabile button,
+#form_inserisci_ordine .controllo-quantita button {
+    flex: 0 0 auto;
+    min-width: 3rem;
+    min-height: 3rem;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    background: var(--color-background);
+    cursor: pointer;
+}
+
+#form_inserisci_ordine .voce-trascinabile button:hover,
+#form_inserisci_ordine .voce-trascinabile button:focus-visible {
+    border-color: var(--color-primary);
+    background: #e4f2ec;
+}
+
+#form_inserisci_ordine .controllo-quantita {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    white-space: nowrap;
+}
+
+#form_inserisci_ordine .quantita-display {
+    min-width: 2.5rem;
+    text-align: center;
+    font-weight: 700;
 }
 
 /* --- Dettaglio Comanda --- */
@@ -101,6 +281,176 @@
     margin-inline: auto;
 }
 
+#order-header,
+#order-error {
+    width: min(100% - 2rem, 1200px);
+    margin-inline: auto;
+}
+
+.order-header,
+.precomanda,
+.riepilogo-ordine {
+    width: 100%;
+    margin: var(--space-md) 0;
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-text);
+}
+
+.order-header > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-lg);
+}
+
+.order-header p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.precomanda {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.precomanda-momento {
+    min-width: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+}
+
+.precomanda-momento h3 {
+    margin: 0 0 var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid var(--color-primary);
+    color: var(--color-text);
+    font-size: 1.15rem;
+    line-height: 1.4;
+}
+
+.precomanda-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.precomanda-item {
+    min-width: 0;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+}
+
+.precomanda-item-info {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-xs) var(--space-sm);
+    align-items: baseline;
+    line-height: 1.5;
+}
+
+.precomanda-quantita,
+.precomanda-nome,
+.precomanda-prezzo,
+.precomanda-iva,
+.precomanda-nota {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.precomanda-nome {
+    font-weight: 700;
+}
+
+.precomanda-prezzo {
+    grid-column: 2;
+    font-weight: 700;
+}
+
+.precomanda-iva {
+    grid-column: 2;
+    color: var(--color-text-muted);
+    font-size: 0.9em;
+}
+
+.precomanda-nota {
+    grid-column: 1 / -1;
+    color: var(--color-warning);
+    font-style: italic;
+}
+
+.riepilogo-ordine {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    font-size: 1.05rem;
+    line-height: 1.5;
+}
+
+.riga-totale,
+.riga-sconto {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+.riga-sconto > div {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.riga-sconto input {
+    width: 7rem;
+    min-height: 2.75rem;
+}
+
+.riga-totale.finale {
+    padding-top: var(--space-md);
+    border-top: 2px solid var(--color-primary);
+    font-size: 1.15rem;
+}
+
+#btn-emetti-scontrino {
+    display: block;
+    width: min(100% - 2rem, 1200px);
+    min-height: 2.75rem;
+    margin: var(--space-md) auto;
+    padding: 0.65rem 1rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    background: var(--color-primary);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#btn-emetti-scontrino:hover,
+#btn-emetti-scontrino:focus-visible {
+    background: var(--color-primary-hover);
+}
+
+#order-header ~ .btn {
+    display: inline-block;
+    margin: var(--space-xs) 0 var(--space-md);
+}
+
+#order-header ~ .btn:focus-visible,
+#btn-emetti-scontrino:focus-visible,
+#sconto:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
 #order-board button:focus-visible,
 #order-total button:focus-visible,
 #comanda-dettaglio button:focus-visible,
@@ -110,6 +460,11 @@
 }
 
 @media (min-width: 769px) {
+    main > .piatti > .piatto:has(> #form_inserisci_ordine),
+    main > .piatti > .piatto:has(> #form_modifica_ordine) {
+        padding: var(--space-xl);
+    }
+
     .momento-colonna {
         flex: 1 1 220px;
         min-width: 220px;
@@ -123,5 +478,123 @@
 
     .comanda-momento {
         padding: var(--space-md);
+    }
+
+    .order-header,
+    .precomanda,
+    .riepilogo-ordine {
+        padding: var(--space-lg);
+        box-shadow: var(--shadow-md);
+    }
+
+    .precomanda {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+        align-items: start;
+        gap: var(--space-lg);
+    }
+
+    .precomanda-momento {
+        padding: var(--space-lg);
+    }
+
+    .precomanda-momento h3 {
+        font-size: 1.3rem;
+    }
+
+    .precomanda-item {
+        padding: var(--space-md);
+        font-size: 1.05rem;
+    }
+
+    .riepilogo-ordine {
+        font-size: 1.15rem;
+    }
+
+
+@media (min-width: 1200px) {
+    .order-header,
+    .precomanda,
+    .riepilogo-ordine {
+        padding: var(--space-xl);
+    }
+
+    .precomanda {
+        grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+        gap: var(--space-xl);
+    }
+
+    .precomanda-item {
+        font-size: 1.15rem;
+        line-height: 1.6;
+    }
+}
+    #form_inserisci_ordine #riassunto-ordine {
+        font-size: 1.3rem;
+        line-height: 1.75;
+    }
+
+    #form_inserisci_ordine .momento-dropzone {
+        padding: var(--space-lg);
+        gap: var(--space-lg);
+    }
+
+    #form_inserisci_ordine .titolo-momento {
+        font-size: 1.6rem;
+    }
+
+    #form_inserisci_ordine .voce-trascinabile {
+        padding: var(--space-lg);
+        font-size: 1.3rem;
+    }
+
+    #form_inserisci_ordine .voce-trascinabile button,
+    #form_inserisci_ordine .controllo-quantita button {
+        font-size: 1.2rem;
+    }
+
+    #form_modifica_ordine #riassunto-ordine {
+        font-size: 1.3rem;
+        line-height: 1.75;
+    }
+
+    #form_modifica_ordine .momento-dropzone {
+        padding: var(--space-lg);
+        gap: var(--space-lg);
+    }
+
+    #form_modifica_ordine .titolo-momento {
+        font-size: 1rem;
+    }
+
+    #form_modifica_ordine .voce-trascinabile {
+        padding: var(--space-lg);
+        font-size: 1.3rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    #form_inserisci_ordine #riassunto-ordine {
+        font-size: 1.4rem;
+    }
+
+    #form_inserisci_ordine .titolo-momento {
+        font-size: 1.5rem;
+    }
+
+    #form_inserisci_ordine .voce-trascinabile {
+        font-size: 1.4rem;
+    }
+
+    #form_modifica_ordine #riassunto-ordine {
+        font-size: 1.4rem;
+    }
+
+    #form_modifica_ordine .titolo-momento {
+        font-size: 1.5rem;
+    }
+
+    #form_modifica_ordine .voce-trascinabile {
+        font-size: 1.4rem;
     }
 }

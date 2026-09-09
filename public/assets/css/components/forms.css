@@ -25,6 +25,7 @@ form label {
 
 .bevanda {
     width: min(100%, 48rem);
+    min-width: 0;
     margin: 0 auto;
     padding: var(--space-md);
     background: var(--color-surface);
@@ -190,6 +191,260 @@ form label {
     outline: 3px solid var(--color-focus);
     outline-offset: 3px;
 }
+
+#form_inserisci_ordine #secondo-step {
+    width: 100%;
+    min-width: 0;
+}
+
+#form_inserisci_ordine #contenitore {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    width: 100%;
+    min-width: 0;
+}
+
+#form_inserisci_ordine .componi-comanda {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+#form_inserisci_ordine #momenti-servizio,
+#form_inserisci_ordine .schermo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    width: 100%;
+    min-width: 0;
+}
+
+#form_inserisci_ordine #piatti,
+#form_inserisci_ordine #bevande {
+    flex: 1 1 100%;
+    min-width: 0;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+}
+
+#form_inserisci_ordine #piatti h3,
+#form_inserisci_ordine #bevande h3 {
+    margin: 0 0 var(--space-sm);
+    color: var(--color-text);
+}
+
+#form_inserisci_ordine #piatti_input,
+#form_inserisci_ordine #bevande_input,
+#form_modifica_ordine #piatti_input,
+#form_modifica_ordine #bevande_input {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-md);
+    width: 100%;
+    min-width: 0;
+    margin: var(--space-sm) 0 0;
+    align-items: stretch;
+}
+
+#form_inserisci_ordine #piatti_input > .piatto,
+#form_inserisci_ordine #bevande_input > .bevanda,
+#form_modifica_ordine #piatti_input > .piatto,
+#form_modifica_ordine #bevande_input > .bevanda {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    min-height: 0;
+    margin: 0;
+    box-sizing: border-box;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+    box-shadow: var(--shadow-sm);
+}
+
+#form_inserisci_ordine #piatti_input > .piatto > .btn-inserisci-piatto-ordine,
+#form_inserisci_ordine #bevande_input > .bevanda > .btn-inserisci-bevanda-ordine,
+#form_modifica_ordine #piatti_input > .piatto > .btn-inserisci-piatto-ordine,
+#form_modifica_ordine #bevande_input > .bevanda > .btn-inserisci-bevanda-ordine {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+#form_inserisci_ordine #piatti_input > .piatto > .btn-inserisci-piatto-ordine > .controllo-quantita,
+#form_inserisci_ordine #bevande_input > .bevanda > .btn-inserisci-bevanda-ordine > .controllo-quantita,
+#form_modifica_ordine #piatti_input > .piatto > .btn-inserisci-piatto-ordine > .controllo-quantita,
+#form_modifica_ordine #bevande_input > .bevanda > .btn-inserisci-bevanda-ordine > .controllo-quantita {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+#form_inserisci_ordine #piatti_input > .piatto > .btn-inserisci-piatto-ordine > .controllo-quantita > .addizione,
+#form_inserisci_ordine #bevande_input > .bevanda > .btn-inserisci-bevanda-ordine > .controllo-quantita > .addizione,
+#form_modifica_ordine #piatti_input > .piatto > .btn-inserisci-piatto-ordine > .controllo-quantita > .addizione,
+#form_modifica_ordine #bevande_input > .bevanda > .btn-inserisci-bevanda-ordine > .controllo-quantita > .addizione {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 12rem;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    overflow-wrap: anywhere;
+}
+
+#form_inserisci_ordine #piatti_input > .piatto .comment,
+#form_inserisci_ordine #bevande_input > .bevanda .comment,
+#form_modifica_ordine #piatti_input > .piatto .comment,
+#form_modifica_ordine #bevande_input > .bevanda .comment {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    text-align: center;
+}
+
+#form_inserisci_ordine #piatti_input > .piatto h3,
+#form_inserisci_ordine #bevande_input > .bevanda h3,
+#form_modifica_ordine #piatti_input > .piatto h3,
+#form_modifica_ordine #bevande_input > .bevanda h3 {
+    width: 100%;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    text-align: center;
+}
+
+#form_inserisci_ordine #piatti_input > .piatto > .controllo-quantita,
+#form_inserisci_ordine #bevande_input > .bevanda > .controllo-quantita,
+#form_modifica_ordine #piatti_input > .piatto > .controllo-quantita,
+#form_modifica_ordine #bevande_input > .bevanda > .controllo-quantita {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    width: 100%;
+    margin-top: var(--space-sm);
+}
+
+#form_inserisci_ordine .riassunto1 {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    order: -1;
+}
+
+#form_inserisci_ordine #riassunto-ordine {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-sm);
+    overflow-wrap: anywhere;
+}
+
+#form_inserisci_ordine .componi-comanda > button,
+#form_inserisci_ordine .componi-comanda > a,
+#form_inserisci_ordine > .salva-ordine-stampa {
+    align-self: center;
+    max-width: 100%;
+}
+
+.tavoli .tavolo {
+    width: min(100%, 32rem);
+    min-width: 0;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    padding: var(--space-md);
+}
+
+.tavoli .tavolo form,
+.bevanda form,
+.piatto form {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.tavoli .tavolo fieldset,
+.bevanda fieldset,
+.piatto fieldset {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+#form_inserisci,
+#form_modifica {
+    display: grid;
+    gap: var(--space-sm);
+    width: 100%;
+}
+
+#form_inserisci > label,
+#form_modifica > label {
+    margin-top: var(--space-sm);
+}
+
+#form_inserisci input[type="number"],
+#form_modifica input[type="number"] {
+    width: 100%;
+}
+
+#form_inserisci .btn-inserisci,
+#form_modifica .btn-modifica {
+    width: 100%;
+    min-height: 2.75rem;
+    margin-top: var(--space-md);
+    padding: 0.65rem 1rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    background: var(--color-primary);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#form_inserisci .btn-inserisci:hover,
+#form_inserisci .btn-inserisci:focus-visible,
+#form_modifica .btn-modifica:hover,
+#form_modifica .btn-modifica:focus-visible {
+    background: var(--color-primary-hover);
+}
+
+#form_inserisci input:focus-visible,
+#form_modifica input:focus-visible,
+#form_inserisci button:focus-visible,
+#form_modifica button:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
 .tavoli_checkbox{
     display: flex;
     align-items: center;
@@ -275,8 +530,225 @@ input:focus, textarea:focus, select:focus {
         padding: var(--space-md);
     }
 
-    #piatti_input,
-    #bevande_input {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    #form_inserisci_ordine #contenitore {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    #form_inserisci_ordine .componi-comanda {
+        flex: 1 1 65%;
+    }
+
+    #form_inserisci_ordine .riassunto1 {
+        flex: 1 1 35%;
+        width: auto;
+    }
+
+    #form_inserisci_ordine #piatti,
+    #form_inserisci_ordine #bevande {
+        flex: 1 1 calc(50% - var(--space-sm));
+        padding: var(--space-md);
+    }
+
+    #form_inserisci_ordine #piatti_input > .piatto,
+    #form_inserisci_ordine #bevande_input > .bevanda,
+    #form_modifica_ordine #piatti_input > .piatto,
+    #form_modifica_ordine #bevande_input > .bevanda {
+        padding: var(--space-md);
+    }
+
+    .tavoli .tavolo {
+        padding: var(--space-lg);
+    }
+
+    #form_inserisci,
+    #form_modifica {
+        gap: var(--space-md);
+    }
+
+    #form_inserisci_ordine #piatti_input,
+    #form_inserisci_ordine #bevande_input,
+    #form_modifica_ordine #piatti_input,
+    #form_modifica_ordine #bevande_input {
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+        gap: var(--space-lg);
+    }
+}
+
+/* --- Layout condiviso della comanda di inserimento e modifica --- */
+#form_modifica_ordine {
+    display: grid;
+    gap: var(--space-md);
+    width: 100%;
+    min-width: 0;
+}
+
+#form_modifica_ordine #primo-step {
+    display: grid;
+    gap: var(--space-sm);
+}
+
+#form_modifica_ordine #primo-step > fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: var(--space-sm) 0;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: #eef4f1;
+}
+
+#form_modifica_ordine #primo-step legend {
+    width: 100%;
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+#form_modifica_ordine #tavoli_checkbox {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    margin: var(--space-xs) 0;
+    padding: var(--space-sm);
+    border: 1px dashed var(--color-border);
+    background: var(--color-surface);
+}
+
+#form_modifica_ordine #tavoli_checkbox label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin: 0;
+}
+
+#form_modifica_ordine input[type="radio"],
+#form_modifica_ordine input[type="checkbox"] {
+    width: auto;
+    min-width: 1.1rem;
+    min-height: 1.1rem;
+    margin: 0 var(--space-xs) 0 0;
+    accent-color: var(--color-primary);
+}
+
+#form_modifica_ordine #avanti,
+#form_modifica_ordine #btn-elimina-ordine-in-corso,
+#form_modifica_ordine #salva-ordine-stampa,
+#form_modifica_ordine .btn-inserisci-ordine,
+#form_modifica_ordine .salva-ordine-stampa {
+    min-height: 2.75rem;
+    max-width: 100%;
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#form_modifica_ordine button:focus-visible,
+#form_modifica_ordine a:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+#form_modifica_ordine #secondo-step {
+    width: 100%;
+    min-width: 0;
+}
+
+#form_modifica_ordine #momenti-servizio,
+#form_modifica_ordine .schermo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    width: 100%;
+    min-width: 0;
+}
+
+#form_modifica_ordine #piatti,
+#form_modifica_ordine #bevande {
+    flex: 1 1 100%;
+    min-width: 0;
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+}
+
+#form_modifica_ordine #piatti h3,
+#form_modifica_ordine #bevande h3 {
+    margin: 0 0 var(--space-sm);
+    color: var(--color-text);
+}
+
+#form_modifica_ordine #secondo-step,
+#form_modifica_ordine #contenitore,
+#form_modifica_ordine .componi-comanda {
+    width: 100%;
+    min-width: 0;
+}
+
+#form_modifica_ordine #contenitore {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+#form_modifica_ordine .componi-comanda {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+#form_modifica_ordine .riassunto1 {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    order: -1;
+}
+
+#form_modifica_ordine #riassunto-ordine {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-sm);
+    overflow-wrap: anywhere;
+}
+
+@media (min-width: 769px) {
+    #form_inserisci_ordine #contenitore,
+    #form_modifica_ordine #contenitore {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: var(--space-lg);
+    }
+
+    #form_inserisci_ordine .componi-comanda,
+    #form_modifica_ordine .componi-comanda {
+        flex: 1 1 58%;
+        min-width: 0;
+    }
+
+    #form_inserisci_ordine .riassunto1,
+    #form_modifica_ordine .riassunto1 {
+        flex: 1 1 42%;
+        width: auto;
+        min-width: 22rem;
+        order: 0;
+    }
+
+    #form_modifica_ordine #primo-step > fieldset,
+    #form_modifica_ordine #tavoli_checkbox {
+        gap: var(--space-md);
+        padding: var(--space-md);
+    }
+
+    #form_modifica_ordine #piatti,
+    #form_modifica_ordine #bevande {
+        flex: 1 1 calc(50% - var(--space-sm));
+        padding: var(--space-md);
     }
 }

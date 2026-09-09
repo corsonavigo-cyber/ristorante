@@ -135,11 +135,9 @@ function renderVoce(voce) {
             draggable="true"
             class="voce-trascinabile">
 
-            <span class="badge-item badge-${voce.tipo}">
-                ${voce.tipo}
-            </span>
-
             ${voce.nome}
+            <br>
+            <div class="controllo-quantita">
             ×
             ${voce.quantita}
 
@@ -158,10 +156,10 @@ function renderVoce(voce) {
                 type="button"
                 class="btn-elimina-voce"
                 data-relazione="${voce.id_comanda_dettaglio}">
-                ✕
+                🗑️
             </button>
 
-            <div class="controllo-quantita">
+            &nbsp;
 
             <button
                 type="button"
@@ -212,7 +210,7 @@ export function disegnaPreComanda() {
             const voci = raggruppati[idMomento] || [];
             return `
                 <ul class="momento-dropzone" data-momento-id="${idMomento}">
-                    <li class="titolo-momento">${nomeMomento}</li>
+                    <li class="titolo-momento"><strong>${nomeMomento}</strong></li>
                     ${voci.map(renderVoce).join("")}
                 </ul>
             `;
