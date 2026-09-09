@@ -1,23 +1,24 @@
 <?php
 $title = 'Gestione Piatti Che Non Sono Visibili ai Clienti';
+$extra_css='menu.css';
 ?>
 
 <?php 
 require_once __DIR__ . '/../bootstrap.php';
 require_once __DIR__ . '/../head.php';
 require_once __DIR__ . '/../navbar.php';
-$extra_css='menu.css';
+
 
 ?>
 
 <main>
     <div class="supporto-titolo">
         <h2><?= $title ?></h2>
-    </div>
-    
+   
+    <br>
     <a class="btn" href="gestionemenuchevedonoiclienti.php">Torna Ai Piatti Visualizzabili Dai Clienti</a>
     <a class="btn" href="inserisciitem.php">+ Inserisci Una Nuovo Prodotto</a>
-   
+    </div>
     <div class="menu" id="lavagna_piatti_non_attivi">
        
     </div>
