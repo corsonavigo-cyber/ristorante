@@ -17,13 +17,6 @@ require_once __DIR__ . '/../bootstrap.php';
     <!--il bottone elimina viene gestito direttamente nel js per le prossime tabelle lo predisporro per sottrazione come avviene realente nei magazzini-->
     <div class="supporto-titolo">
         <h2><?= $title ?></h2>
-   
-    <a class="btn" href="../prenotazioni/inserisciprenotazioni.php">+ Prenotazione</a>
-    <a class="btn" href="../ordini/inserisciordine.php">+ Comanda</a>
-    <a class="btn" href="inseriscitavolo.php">+ Nuovo Tavolo</a>
-    <a class="btn" href="../ordini/visualizzascontrini.php">Storico Scontrini</a>
-    <a class="btn" href="../ordini/visualizzacomandebevande.php">Elenco Comande Bar</a>
-    <a class="btn" href="../ordini/visualizzacomandepiatti.php">Elenco Comande Cucina</a>
      </div>
 
 

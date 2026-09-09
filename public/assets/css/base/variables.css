@@ -44,7 +44,7 @@
     --font-main: 'Arial', 'Helvetica', sans-serif;
     
     /* Dimensioni font */
-    --text-sm: 0.3rem;
+    --text-sm: 0.875rem;
     --text-base: 1rem;
     --text-lg: 1.25rem;
     --text-xl: 2rem; /* Usata per .title */

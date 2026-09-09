@@ -15,3 +15,79 @@
 
 @import url("./utilities/utilities.css");
 
+#riassunto-dashboard {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-lg);
+	width: min(calc(100% - 2rem), var(--content-max-width));
+	margin: 0 auto var(--space-xl);
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+#riassunto-dashboard > div {
+	min-width: 0;
+	padding: var(--space-lg);
+	background-color: var(--color-surface);
+	border: 2px solid var(--color-border);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-sm);
+}
+
+#riassunto-dashboard h2 {
+	margin: 0 0 var(--space-lg);
+	font-size: 1.4rem;
+	line-height: 1.25;
+}
+
+#riassunto-dashboard h3 {
+	margin: var(--space-lg) 0 var(--space-sm);
+	font-size: 1.15rem;
+	line-height: 1.3;
+}
+
+#riassunto-dashboard h3:first-of-type {
+	margin-top: 0;
+}
+
+#riassunto-dashboard .prenotazione {
+	margin-bottom: var(--space-md);
+	padding: var(--space-md);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	background-color: var(--color-background);
+	text-align: center;
+}
+
+#riassunto-dashboard button:focus-visible,
+#riassunto-dashboard a:focus-visible {
+	outline: 3px solid var(--color-focus);
+	outline-offset: 3px;
+}
+
+@media (min-width: 769px) {
+	#riassunto-dashboard {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		align-items: start;
+		font-size: 1.125rem;
+	}
+
+	#riassunto-dashboard > div {
+		padding: var(--space-xl);
+	}
+
+	#riassunto-dashboard h2 {
+		font-size: 1.6rem;
+	}
+
+	#riassunto-dashboard h3 {
+		font-size: 1.25rem;
+	}
+}
+
+@media (min-width: 1200px) {
+	#riassunto-dashboard {
+		font-size: 1.2rem;
+	}
+}
+

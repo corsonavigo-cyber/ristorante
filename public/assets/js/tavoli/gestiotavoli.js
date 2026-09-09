@@ -40,7 +40,7 @@ async function caricaTavoli (){
     lavagna.innerHTML = tavoli.map(tavolo => `
     <div class="tavolo" id="${tavolo.id_tavolo}">
        
-       <h3 class="comment"><b>Numero Tavolo ${tavolo.numero_tavolo}</b></h3><a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">✏️</a>
+       <h3 class="comment"><b>Tavolo ${tavolo.numero_tavolo}</b></h3><br><a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">✏️</a>
        <button type="button" class="btn-elimina" data-id="${tavolo.id_tavolo}">🗑️</button>
        <p class="comment">Posti max ${tavolo.posti_max} </p>
        <!--per visualizzazione in caso di tavolo prenotato-->
@@ -105,12 +105,9 @@ function mostraTavoloLibero(contenitore, id_tavolo) {
            class="btn btn-inserisci-prenotazione">
            Prenota
         </a>
-
-        <h4>LIBERO</h4>
-
         <a href="../ordini/inserisciordine.php?id=${id_tavolo}"
            class="btn btn-inserisci-comanda">
-           +Comanda
+           Comanda
         </a>
     `;
 }

@@ -12,16 +12,20 @@ function getServizioDaOra(ora) {
   return h < 15 ? 'pranzo' : 'cena';
 }
 
+function formatOra(ora) {
+  return ora ? ora.slice(0, 5) : '';
+}
+
 function renderPrenotazioneCard(prenotazione) {
   return `
     <div class="prenotazione">
-      ${prenotazione.nome_prenotazione},
-      numero persone: ${prenotazione.numero_persone},
-      ${prenotazione.numero_tavoli ? 'numero tavolo ' + prenotazione.numero_tavoli : 'Non Ancora Assegnata A Un Tavolo'},
-      ora ${prenotazione.ora_prenotazione} data ${prenotazione.data_in_prenotazione}
-      <button type="button" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli}" class="btn-attiva-prenotazione">Attiva Prenotazione</button>
-      <a href="./prenotazioni/modificaprenotazioni.php?id=${prenotazione.id_prenotazione}" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli ? prenotazione.id_tavoli : 0}" class="btn-modifica-prenotazione">Modifica Prenotazione</a>
-      <button class="btn-elimina-prenotazione" data-id="${prenotazione.id_prenotazione}">Elimina 🗑️</button>
+      ${prenotazione.nome_prenotazione.toUpperCase()},
+      ${prenotazione.numero_persone} persone,
+      ${prenotazione.numero_tavoli ? ' tavolo ' + prenotazione.numero_tavoli : 'Non Ancora Assegnata A Un Tavolo'},
+      ora ${formatOra(prenotazione.ora_prenotazione)} del ${prenotazione.data_in_prenotazione}<br>
+      ${prenotazione.attiva ? '' : `<button type="button" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli}" class="btn-attiva-prenotazione btn">Attiva</button>`}
+      <a href="./prenotazioni/modificaprenotazioni.php?id=${prenotazione.id_prenotazione}" data-id="${prenotazione.id_prenotazione}" data-id-tavolo="${prenotazione.id_tavoli ? prenotazione.id_tavoli : 0}" class="btn-modifica-prenotazione btn">✏️ </a> &nbsp
+      <button class="btn-elimina-prenotazione btn" data-id="${prenotazione.id_prenotazione}">🗑️</button>
     </div>`;
 }
 

@@ -1,7 +1,8 @@
 import { apiGet } from '../apigeneric.js'; 
 import * as API_scontrino from './logica-scontrino.js';
 import { showError } from './variabilistato.js';
-import { caricaOrdine } from './ordine.js';
+import { cambiaOrdineDalTavolo, caricaOrdine, inserisciOrdineStato } from './ordine.js';
+import { ripristinaOrdineLocale, svuotaOrdineSalvato } from './localstorage.js';
 
 let totaleIvaOrdine = 0;
 
@@ -292,7 +293,12 @@ async function emettiScontrino(e) {
         await API_scontrino.stampaScontrino(
            idScontrinoParsed
         );
-
+        inserisciOrdineStato(
+            Number(ordine.id_ordine),
+            2
+        );
+        svuotaOrdineSalvato();
+        
 
         alert('Scontrino emesso e stampato con successo!' );
 

@@ -1,7 +1,7 @@
 <?php
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
-$title = 'Gestione Tavoli';
+$title = 'Gestione Prenotazioni';
 ?>
 
 <?php 
@@ -11,20 +11,14 @@ require_once __DIR__ . '/bootstrap.php';
 //pagina di esempio AJAX fetch API
 ?>
 <body>
-    <h1>Dashboard sei loggatto!!</h1>
-    <a class="btn" href="menu/gestionemenuchevedonoiclienti.php">Gestione Menu Per I Clienti</a>
-    <a class="btn" href="tavoli/gestionetavoli.php">Gestione Tavoli</a>
-    <a class="btn" href="prenotazioni/inserisciprenotazioni.php">Inserisci Una Prenotazione</a>
-    <a class="btn" href="ordini/inserisciordine.php">Inserisci Comanda</a>
-    <a class="btn" href="tavoli/inseriscitavolo.php">Inserisci Nuovo Tavolo</a>
-    <a class="btn" href="ordini/visualizzascontrini.php">Storico Scontrini</a>
-    <a class="btn" href="ordini/visualizzacomandebevande.php">Elenco Comande Bar</a>
-    <a class="btn" href="ordini/visualizzacomandepiatti.php">Elenco Comande Cucina</a>
+    <h1 class="supporto-titolo"><?=$title?></h1>
+   
     <div id="riassunto-dashboard" class="schermata-tre">   
         <div id="lista_prenotazioni_non_attive"></div>
         <div id="lista_prenotazioni_oggi"></div>
     
         <div id="lista_prenotazioni_future_attive">
+        </div>
     </div>
 </body>
 <script>

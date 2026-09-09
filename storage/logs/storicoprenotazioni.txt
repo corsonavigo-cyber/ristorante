@@ -14,3 +14,7 @@
 [2026-08-06 15:48:28] [NON PRESENTATI] Prenotazione 22 : annullata con successo 
 [2026-08-07 10:23:24] [CANCELLATA] Prenotazione 7 : eliminata con successo dal tavolo
 [2026-08-27 13:25:34] [CANCELLATA] Prenotazione id 22 (Roberto) rimossa
+[2026-09-09 13:51:54] [EFFETTUATA] Prenotazione inserita correttamente id_prenotazione 24 sul tavolo 4
+[2026-09-09 14:13:25] [SPOSTATA] Prenotazione 24: modificata con successo sia il tavolo che la prenotazione
+[2026-09-09 14:21:51] [INSERITA] Prenotazione 24 : confermata con successo 
+[2026-09-09 14:23:17] [SPOSTATA] Prenotazione 24: modificata con successo sia il tavolo che la prenotazione
