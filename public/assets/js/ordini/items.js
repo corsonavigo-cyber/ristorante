@@ -5,7 +5,7 @@ function aggiornaLinkFuoriMenu() {
     const link = document.getElementById("linkbev");
     if (!link) return;
 
-    link.href = `nuovopiattofuorimenu.php?id=${state.idOrdineInserito ?? ""}`;
+    link.href = `nuovofuorimenu.php?id=${state.idOrdineInserito ?? ""}`;
 }
 
 function separaItems(items) {

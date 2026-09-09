@@ -35,19 +35,22 @@ form label {
 }
 
 #form_modifica_item,
-#form_inserisci_item {
+#form_inserisci_item,
+#form-inserisci-fuorimenu-piat {
     display: grid;
     gap: var(--space-sm);
     width: 100%;
 }
 
 #form_modifica_item > label,
-#form_inserisci_item > label {
+#form_inserisci_item > label,
+#form-inserisci-fuorimenu-piat > label {
     margin-top: var(--space-sm);
 }
 
 #form_modifica_item fieldset,
-#form_inserisci_item fieldset {
+#form_inserisci_item fieldset,
+#form-inserisci-fuorimenu-piat fieldset {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -61,7 +64,8 @@ form label {
 }
 
 #form_modifica_item fieldset legend,
-#form_inserisci_item fieldset legend {
+#form_inserisci_item fieldset legend,
+#form-inserisci-fuorimenu-piat fieldset legend {
     width: 100%;
     margin-bottom: var(--space-xs);
     color: var(--color-text);
@@ -69,7 +73,8 @@ form label {
 }
 
 #form_modifica_item fieldset label,
-#form_inserisci_item fieldset label {
+#form_inserisci_item fieldset label,
+#form-inserisci-fuorimenu-piat fieldset label {
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
@@ -82,7 +87,9 @@ form label {
 #form_modifica_item input[type="radio"],
 #form_modifica_item input[type="checkbox"],
 #form_inserisci_item input[type="radio"],
-#form_inserisci_item input[type="checkbox"] {
+#form_inserisci_item input[type="checkbox"],
+#form-inserisci-fuorimenu-piat input[type="radio"],
+#form-inserisci-fuorimenu-piat input[type="checkbox"] {
     width: auto;
     min-width: 1.1rem;
     min-height: 1.1rem;
@@ -91,12 +98,18 @@ form label {
 }
 
 #form_modifica_item textarea,
-#form_inserisci_item textarea {
+#form_inserisci_item textarea,
+#form-inserisci-fuorimenu-piat textarea {
     min-height: 7rem;
 }
 
 #form_modifica_item .btn-modifica-item,
-#form_inserisci_item .btn-inserisci-item {
+#form_inserisci_item .btn-inserisci-item,
+.btn-inserisci-item,
+.btn-inserisci-piattomenu-ordine {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     min-height: 2.75rem;
     margin-top: var(--space-sm);
@@ -107,13 +120,19 @@ form label {
     background: var(--color-primary);
     font-weight: 700;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
 #form_modifica_item .btn-modifica-item:hover,
 #form_modifica_item .btn-modifica-item:focus-visible,
 #form_inserisci_item .btn-inserisci-item:hover,
-#form_inserisci_item .btn-inserisci-item:focus-visible {
+#form_inserisci_item .btn-inserisci-item:focus-visible,
+.btn-inserisci-item:hover,
+.btn-inserisci-item:focus-visible,
+.btn-inserisci-piattomenu-ordine:hover,
+.btn-inserisci-piattomenu-ordine:focus-visible {
     background: var(--color-primary-hover);
+    transform: translateY(-1px);
 }
 
 #form_inserisci_ordine {
