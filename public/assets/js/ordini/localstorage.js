@@ -20,7 +20,8 @@ export function salvaOrdine(id_ordine, salvaTavoli = true) {
         id_ordine,
         step,
         comanda: state.comanda,
-        tavoli: salvaTavoli ? tavoliSelezionati : state.tavoliInUso
+        tavoli: salvaTavoli ? tavoliSelezionati : state.tavoliInUso,
+        numeroPersone: state.numeroPersone || Number(document.getElementById('numero-persone')?.value) || 0
     };
 
     localStorage.setItem(CHIAVE_ORDINE, JSON.stringify(ordine));

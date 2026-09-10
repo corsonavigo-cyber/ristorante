@@ -7,14 +7,14 @@ import { ripristinaOrdine, salvaOrdine, svuotaOrdineSalvato, leggiOrdineSalvato 
 import { precaricaTavoliForm, controllaTavoloDisponibile } from './tavoli-ordine.js';
 import { stampaOrdine, aggiornaComandaNelDb } from './ordine.js';
 import { caricaOrdine,  cambiaOrdineDalTavolo } from './ordine.js'; 
-
-//document.addEventListener('input', gestisciInputGlobali);
+document.addEventListener('input', gestisciInputGlobali);
 document.addEventListener('click', globalClick);
 document.addEventListener('DOMContentLoaded', initPaginaModificaOrdine); 
 const primo_step = document.getElementById('primo-step');
 const secondo_step = document.getElementById('secondo-step');
 const hid = document.getElementById('per_ordine_id');
-const id_ordine_arrivato = new URLSearchParams(window.location.search).get('id_ordine');
+const parametriUrl = new URLSearchParams(window.location.search);
+const id_ordine_arrivato = parametriUrl.get('id') ?? parametriUrl.get('id_ordine');
 const idSalvato = Number(id_ordine_arrivato);
 if (!idSalvato) {
             throw new Error('ID  in URL non letto.');
@@ -28,21 +28,23 @@ async function initPaginaModificaOrdine() {
         // 2. Carica l'ordine da modificare e popola lo state (comanda, tavoliInUso, momenti...)
         const ordineLocale = leggiOrdineSalvato();
         console.log(ordineLocale)
-        if (ordineLocale && ordineLocale.idOrdineInserito == id_ordine_arrivato) {
+        const idOrdineLocale = ordineLocale?.id_ordine ?? ordineLocale?.idOrdineInserito;
+
+        if (ordineLocale && Number(idOrdineLocale) === idSalvato) {
             console.log("Ripristino ordine dal localStorage (modifica locale)");
             // Carica dallo stato locale, non dal DB
-            state.comanda = ordineLocale.comanda;
-            state.tavoliInUso = ordineLocale.tavoliInUso;
-            state.idOrdineInserito = ordineLocale.idOrdineInserito;
-            state.momentoAttivo = ordineLocale.momentoAttivo;   
-            state.comandaOriginale = JSON.parse(JSON.stringify(ordineLocale.comanda)); // Copia profonda
-            state.numeroPersone = ordineLocale.numeroPersone;
-            state.confirmGiaChiesto = ordineLocale.confirmGiaChiesto;
-            state.momenti = ordineLocale.momenti;
-            state.piatti = ordineLocale.piatti;
-            state.bevande = ordineLocale.bevande;
-            document.getElementById('per_ordine_id').value = ordineLocale.idOrdineInserito;
-            document.getElementById('numero-persone').value = ordineLocale.numeroPersone;
+            state.comanda = ordineLocale.comanda ?? [];
+            state.tavoliInUso = ordineLocale.tavoliInUso ?? ordineLocale.tavoli ?? [];
+            state.idOrdineInserito = idSalvato;
+            state.momentoAttivo = ordineLocale.momentoAttivo ?? 1;
+            state.comandaOriginale = JSON.parse(JSON.stringify(state.comanda)); // Copia profonda
+            state.numeroPersone = ordineLocale.numeroPersone ?? 0;
+            state.confirmGiaChiesto = ordineLocale.confirmGiaChiesto ?? false;
+            state.momenti = ordineLocale.momenti ?? [];
+            state.piatti = ordineLocale.piatti ?? [];
+            state.bevande = ordineLocale.bevande ?? [];
+            document.getElementById('per_ordine_id').value = idSalvato;
+            document.getElementById('numero-persone').value = state.numeroPersone || '';
             
         } else {
             console.log("Primo caricamento dal DB");
@@ -208,7 +210,7 @@ async function globalClick(e) {
 }
 
     //3.bottone Salva&Stampa
-        const btnSalvaStampa = e.target.closest('#salva-ordine-stampa');
+        const btnSalvaStampa = e.target.closest('.salva-ordine-stampa');
         if (btnSalvaStampa) {
             e.preventDefault();
     
@@ -330,15 +332,6 @@ async function globalClick(e) {
         cambiaMomento(Number(btnMomento.dataset.id));
 
 
-        return;
-    }
-
-    const btnInserisciOrdine = e.target.closest('.btn-inserisci-ordine');
-    if (btnInserisciOrdine) {
-        e.preventDefault();
-        if (!controllaMomentoSelezionato()) {
-            if (!confirm('Vuoi stampare la comanda?')) return;
-        }
         return;
     }
 

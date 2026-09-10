@@ -1,6 +1,57 @@
-/* css/layout/navigation.css */
+/* css/layout/navigation.css  menu hamburger fatto con js*/
+.menu{
+    width: 32px;
+    height: 32px;
+    position:relative;
+    background: var(--color-menu);
+}
+.menu-icona,
+.menu-icona::before,
+.menu-icona::after{
+    content: '';
+    display: block;
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: var(--color-text-menu);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.menu-icona{
+    top: 15px;
+    left:4px;
+}
+.menu-icona::before{ top: -8px; left: 0; }
+.menu-icona::after{ top: 8px; left: 0; }
 
+.menu[aria-expanded="true"] .menu-icona {
+  background: transparent;
+}
+.menu[aria-expanded="true"] .menu-icona::before {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+.menu[aria-expanded="true"] .menu-icona::after {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
 
+.mobile-menu{
+    position: fixed;
+    inset:0;
+    background: var(--color-menu);
+    z-index: 1000;
+}
+.menu-chiuso{
+    font-size: 2rem;
+    background: none;
+    color: var(--color-text-menu);
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+}
+
+.mobile-menu[hidden]{
+    display:none;
+}
 nav {
     background: var(--color-menu);
     color: var(--color-text-menu);
@@ -38,16 +89,21 @@ nav a {
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-nav a:hover,
-nav a:focus-visible {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.1);
+nav a:hover {
+    color: var(--color-text-menu);
+    background-color: var(--color-primary-hover);
+}
+
+nav a[aria-current="page"] {
+    color: var(--color-text-menu);
+    background-color: var(--color-primary);
 }
 
 nav a:focus-visible {
-    outline: 3px solid var(--color-primary);
+    outline: 3px solid var(--color-focus);
     outline-offset: 2px;
 }
+
 
 
 /* Gestione generale delle liste se serve */
@@ -79,8 +135,7 @@ footer {
     }
 
     nav ul li {
-        display: flex;
-        flex: 1 1 8rem;
+        flex: 1 1 19rem;
         min-width: 0;
     }
 

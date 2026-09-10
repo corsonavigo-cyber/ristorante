@@ -1,0 +1,14 @@
+================================
+  CUCINA
+  *** ORDINE MODIFICATO ***
+  ORDINE #6
+  Tavolo/i: 6
+  2026-08-05 16:04:25
+================================
+
+[prima portata]
+  1x Bruschetta al pomodoro
+
+[seconda portata]
+  1x gelato
+================================
