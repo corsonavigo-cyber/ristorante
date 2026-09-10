@@ -28,7 +28,7 @@ nav a {
     display: flex;
     align-items: center;
     min-height: 2.75rem;
-    padding: 0.55rem 0.75rem;
+    padding: 0.35rem 0.55rem;
     color: var(--color-text-menu);
     text-decoration: none;
     font-weight: bold;
@@ -71,19 +71,24 @@ footer {
 
 @media (min-width: 769px) {
     nav ul {
+        display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        gap: var(--space-sm);
     }
 
     nav ul li {
-        display: inline-block;
+        display: flex;
+        flex: 1 1 8rem;
+        min-width: 0;
     }
 
     nav a {
+        justify-content: center;
+        width: 100%;
         min-height: 2.75rem;
-        padding: 0.65rem 0.85rem;
+        text-align: center;
     }
 }
 

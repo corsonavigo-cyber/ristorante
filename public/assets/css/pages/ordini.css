@@ -694,3 +694,28 @@ main > .piatti > .piatto:has(> #form_modifica_ordine) {
         font-size: 1.4rem;
     }
 }
+
+@media (max-width: 768px) {
+    #form_inserisci_ordine .controllo-quantita,
+    #form_modifica_ordine .controllo-quantita {
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    #form_inserisci_ordine .controllo-quantita button,
+    #form_modifica_ordine .controllo-quantita button {
+        min-width: 2.25rem;
+        min-height: 2.5rem;
+        max-width: 100%;
+        padding: 0.35rem;
+        font-size: 0.95rem;
+    }
+
+    #form_inserisci_ordine .quantita-display,
+    #form_modifica_ordine .quantita-display {
+        min-width: 1.75rem;
+    }
+}

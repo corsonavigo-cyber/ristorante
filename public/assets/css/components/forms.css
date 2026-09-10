@@ -747,15 +747,15 @@ input:focus, textarea:focus, select:focus {
 
     #form_inserisci_ordine .componi-comanda,
     #form_modifica_ordine .componi-comanda {
-        flex: 1 1 58%;
+        flex: 1 1 0;
         min-width: 0;
     }
 
     #form_inserisci_ordine .riassunto1,
     #form_modifica_ordine .riassunto1 {
-        flex: 1 1 42%;
+        flex: 1 1 0;
         width: auto;
-        min-width: 22rem;
+        min-width: 0;
         order: 0;
     }
 
@@ -769,5 +769,45 @@ input:focus, textarea:focus, select:focus {
     #form_modifica_ordine #bevande {
         flex: 1 1 calc(50% - var(--space-sm));
         padding: var(--space-md);
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+    #form_inserisci_ordine #contenitore,
+    #form_modifica_ordine #contenitore {
+        flex-direction: column;
+    }
+
+    #form_inserisci_ordine .componi-comanda,
+    #form_inserisci_ordine .riassunto1,
+    #form_modifica_ordine .componi-comanda,
+    #form_modifica_ordine .riassunto1 {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    #form_inserisci_ordine .componi-comanda,
+    #form_modifica_ordine .componi-comanda {
+        order: -1;
+    }
+
+    #form_inserisci_ordine .riassunto1,
+    #form_modifica_ordine .riassunto1 {
+        order: 0;
+    }
+
+    #form_inserisci_ordine #piatti,
+    #form_inserisci_ordine #bevande,
+    #form_modifica_ordine #piatti,
+    #form_modifica_ordine #bevande {
+        flex: 1 1 100%;
+    }
+
+    #form_inserisci_ordine #piatti_input,
+    #form_inserisci_ordine #bevande_input,
+    #form_modifica_ordine #piatti_input,
+    #form_modifica_ordine #bevande_input {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+        gap: var(--space-md);
     }
 }

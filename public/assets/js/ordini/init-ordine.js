@@ -141,6 +141,8 @@ async function globalClick(e) {
         window.location.href = '../tavoli/gestionetavoli.php';
         return;
     }
+    
+    
     // 2. Pulsante Avanti (Creazione o Ripresa Ordine)
     const btnAvanti = e.target.closest('.btn-avanti');
     if (btnAvanti) {
