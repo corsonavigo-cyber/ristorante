@@ -76,7 +76,6 @@ export async function precaricaTavoliForm() {
     if(prenotazione){
         const prenotazione_tavoli = await apiGet(API_PRENOTAZIONI, { type: 'prenotazioni', id: prenotazione });
         selezionatavolo(prenotazione_tavoli.id_tavoli );
-
     }else{
         selezionatavolo(parseInt(id_tavolo_arrivato_url));
     }
