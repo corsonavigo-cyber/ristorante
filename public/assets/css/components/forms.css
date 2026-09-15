@@ -1,4 +1,4 @@
-input, textarea, select {
+input, textarea {
     font: inherit;
     width: 100%;
     min-height: 2.5rem;
@@ -11,6 +11,20 @@ input, textarea, select {
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
+select {
+    font: inherit;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #9aada4;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 1px 2px rgba(15, 54, 35, 0.08);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+select[multiple] option::selection {
+    background-color: #007bff linear-gradient(0deg, #007bff 0%, #007bff 100%);
+    color: white;
+}
 form label {
     display: block;
     margin-bottom: var(--space-xs);
@@ -328,7 +342,7 @@ form label {
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
-    min-height: 12rem;
+    min-height: 25rem;
     gap: var(--space-sm);
     padding: var(--space-md);
     overflow-wrap: anywhere;
