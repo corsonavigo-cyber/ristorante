@@ -396,14 +396,6 @@ form label {
     max-width: 100%;
 }
 
-.tavoli .tavolo {
-    width: min(100%, 32rem);
-    min-width: 0;
-    flex-wrap: wrap;
-    margin: 0 auto;
-    padding: var(--space-md);
-}
-
 .tavoli .tavolo form,
 .bevanda form,
 .piatto form {
@@ -576,9 +568,6 @@ input:focus, textarea:focus, select:focus {
         padding: var(--space-md);
     }
 
-    .tavoli .tavolo {
-        padding: var(--space-lg);
-    }
 
     #form_inserisci,
     #form_modifica {

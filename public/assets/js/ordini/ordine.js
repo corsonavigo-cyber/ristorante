@@ -104,6 +104,8 @@ export function leggiTavoliSelezionati() {
         )
     ].map(input => Number(input.value));
 
+    console.log(document.querySelectorAll('select[name=tavoliSelezionati]'));
+
     if (tavoli.length === 0) {
         throw new Error('Seleziona almeno un tavolo.');
     }

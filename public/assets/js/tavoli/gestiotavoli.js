@@ -39,12 +39,14 @@ async function caricaTavoli (){
     //da aggiungere la visualizzazione delle prenotazioni e dei conti e delle comande
     lavagna.innerHTML = tavoli.map(tavolo => `
     <div class="tavolo" id="${tavolo.id_tavolo}">
-       
-       <h3 class="comment"><b>Tavolo ${tavolo.numero_tavolo}</b></h3><br><a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">✏️</a>
+     <div class="tavolo-heading">
+       <h3 class="comment"><b>Tavolo ${tavolo.numero_tavolo}</b></h3>
+       <a class="btn" href="modificatavolo.php?id=${tavolo.id_tavolo}">✏️</a>
        <button type="button" class="btn-elimina" data-id="${tavolo.id_tavolo}">🗑️</button>
+     </div>
        <p class="comment">Posti max ${tavolo.posti_max} </p>
        <!--per visualizzazione in caso di tavolo prenotato-->
-       <div class="tavolo prenotato" id="prenotato${tavolo.id_tavolo}" data-id_tavolo="${tavolo.id_tavolo}" style="">  </div> 
+       <div class="tavolo-actions prenotato" id="prenotato${tavolo.id_tavolo}" data-id_tavolo="${tavolo.id_tavolo}" style="">  </div> 
        <!--link AJAX per inviare la modifica tavolo-->
        
     </div>`).join('');

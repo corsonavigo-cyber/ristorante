@@ -4,7 +4,7 @@
 .tavoli {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
     text-align: center;
     justify-content: center;
     background-color: var(--color-surface);
@@ -22,6 +22,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     background-color: var(--color-surface);
     flex: 1 1 100%;
     min-width: 0;
@@ -31,6 +32,31 @@
     border: 2px solid var(--color-border);
     box-shadow: var(--shadow-md);
     color: var(--color-text);
+    width: min(100%, 32rem);
+}
+
+.tavolo-heading {
+    display: flex;
+    align-items: center;
+}
+
+.tavolo-actions {
+    margin: 0;
+    display: flex;
+    flex-flow: row wrap;
+    margin-top: var(--space-lg);
+    gap: var(--space-sm);
+}
+
+.tavolo-actions .btn {
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: #fff
+}
+
+.tavolo-actions .btn:hover {
+    color: #fff;
+    background-color: var(--color-border);
 }
 
 /* Area interna al tavolo (dove si trascinano gli elementi) */
@@ -52,6 +78,12 @@
     outline: 3px dashed var(--color-primary);
     outline-offset: 2px;
     background: rgba(4, 73, 41, 0.1); /* Variabile primary con opacità */
+}
+
+.tavolo .elemento {
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm)
 }
 
 /* Titolo di supporto */

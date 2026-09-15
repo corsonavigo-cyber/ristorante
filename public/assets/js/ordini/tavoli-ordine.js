@@ -62,6 +62,14 @@ export async function precaricaTavoliForm() {
         await controllaPostiTavoloDisponibili();
         return;
     }
+    // let htmlFormTavoli = '<select name="tavoliSelezionati" multiple><option value="">Seleziona i tavoli</option>';
+    // data.forEach(tavolo => {
+    //     htmlFormTavoli += `<option value="${tavolo.id_tavolo}" data-posti="${tavolo.posti_max}">Numero Tavolo ${tavolo.numero_tavolo} posti ${tavolo.posti_max}</option>`
+    // });
+    // htmlFormTavoli += '</select>';
+
+    // lavagna.innerHTML = htmlFormTavoli;
+
     lavagna.innerHTML = data.map(tavolo => `
        <li><label><input type="checkbox" name="tavoliSelezionati[]" id="id_${tavolo.id_tavolo}" value="${tavolo.id_tavolo}" data-posti="${tavolo.posti_max}">Numero Tavolo ${tavolo.numero_tavolo} posti ${tavolo.posti_max}</label></li>`).join('');
     console.log("ID Tavolo arrivato dall'URL:", parseInt(id_tavolo_arrivato_url));
