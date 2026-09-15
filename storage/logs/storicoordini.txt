@@ -48,3 +48,8 @@
 [2026-09-15 13:05:31] [APERTO] Ordine inserito correttamente id_ordine 34 sul tavolo: inserito con successo
 [2026-09-15 13:05:42] [APERTO] Ordine inserito correttamente id_ordine 35 sul tavolo: inserito con successo
 [2026-09-15 13:06:28] [APERTO] Ordine inserito correttamente id_ordine 36 sul tavolo: inserito con successo
+[2026-09-15 13:47:55] [APERTO] Ordine inserito correttamente id_ordine 37 sul tavolo: inserito con successo
+[2026-09-15 13:51:27] [APERTO] Ordine inserito correttamente id_ordine 38 sul tavolo: inserito con successo
+[2026-09-15 14:00:01] [APERTO] Ordine inserito correttamente id_ordine 39 sul tavolo: inserito con successo
+[2026-09-15 14:24:57] [INVIATO A SCONTRINO] Nuovo scontrino inserito con successo! 17 rif. ordine 39
+[2026-09-15 14:25:14] [INVIATO A SCONTRINO] Scontrino stornato con successo! 17 

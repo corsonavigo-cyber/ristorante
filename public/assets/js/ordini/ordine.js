@@ -98,13 +98,9 @@ export async function aggiornaComandaNelDb(idOrdine, state) {
 }
 
 export function leggiTavoliSelezionati() {
-    const tavoli = [
-        ...document.querySelectorAll(
-            'input[name="tavoliSelezionati[]"]:checked'
-        )
-    ].map(input => Number(input.value));
+    const select = document.querySelector('select[name="tavoliSelezionati[]"]');
 
-    console.log(document.querySelectorAll('select[name=tavoliSelezionati]'));
+    const tavoli = [...select.selectedOptions].map(option => Number(option.value));
 
     if (tavoli.length === 0) {
         throw new Error('Seleziona almeno un tavolo.');

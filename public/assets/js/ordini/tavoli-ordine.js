@@ -62,17 +62,17 @@ export async function precaricaTavoliForm() {
         await controllaPostiTavoloDisponibili();
         return;
     }
-    // let htmlFormTavoli = '<select name="tavoliSelezionati" multiple><option value="">Seleziona i tavoli</option>';
-    // data.forEach(tavolo => {
-    //     htmlFormTavoli += `<option value="${tavolo.id_tavolo}" data-posti="${tavolo.posti_max}">Numero Tavolo ${tavolo.numero_tavolo} posti ${tavolo.posti_max}</option>`
-    // });
-    // htmlFormTavoli += '</select>';
+    let htmlFormTavoli = '<select name="tavoliSelezionati[]"  size="6" multiple><option value="">Seleziona i tavoli</option>';
+    data.forEach(tavolo => {
+        htmlFormTavoli += `<option id="${tavolo.id_tavolo}" value="${tavolo.id_tavolo}" data-posti="${tavolo.posti_max}">Numero Tavolo ${tavolo.numero_tavolo} posti ${tavolo.posti_max}</option>`
+    });
+    htmlFormTavoli += '</select>';
 
-    // lavagna.innerHTML = htmlFormTavoli;
+   lavagna.innerHTML = htmlFormTavoli;
 
-    lavagna.innerHTML = data.map(tavolo => `
-       <li><label><input type="checkbox" name="tavoliSelezionati[]" id="id_${tavolo.id_tavolo}" value="${tavolo.id_tavolo}" data-posti="${tavolo.posti_max}">Numero Tavolo ${tavolo.numero_tavolo} posti ${tavolo.posti_max}</label></li>`).join('');
-    console.log("ID Tavolo arrivato dall'URL:", parseInt(id_tavolo_arrivato_url));
+    //lavagna.innerHTML = data.map(tavolo => `
+    //   <li><label><input type="checkbox" name="tavoliSelezionati[]" id="id_${tavolo.id_tavolo}" value="${tavolo.id_tavolo}" data-posti="${tavolo.posti_max}">Numero Tavolo ${tavolo.numero_tavolo} posti ${tavolo.posti_max}</label></li>`).join('');
+    //console.log("ID Tavolo arrivato dall'URL:", parseInt(id_tavolo_arrivato_url));
     if(prenotazione){
         const prenotazione_tavoli = await apiGet(API_PRENOTAZIONI, { type: 'prenotazioni', id: prenotazione });
         selezionatavolo(prenotazione_tavoli.id_tavoli );
@@ -85,13 +85,14 @@ export async function precaricaTavoliForm() {
 
 
 export function controllaPostiOrdineTavolo(tavoliSelezione) {
-    // FIX: sezione/avviso non erano definite nell'originale — mancava questo blocco
     const avviso = document.getElementById("avviso1");
     const sezione = document.querySelector('#controllo1');
 
+    const select = document.querySelector('select[name="tavoliSelezionati[]"]');
+
     const postiTotali = tavoliSelezione.reduce((acc, id) => {
-        const checkbox = document.querySelector(`input[name="tavoliSelezionati[]"][value="${id}"]`);
-        return acc + (parseInt(checkbox?.dataset.posti, 10) || 0);
+        const option = select?.querySelector(`option[value="${id}"]`);
+        return acc + (parseInt(option?.dataset.posti, 10) || 0);
     }, 0);
 
     const numeroPersone = parseInt(document.getElementById('numero-persone').value, 10);
@@ -122,13 +123,20 @@ export function disattivaBottoneTavolo(tavoli) {
 
 export function selezionatavolo(idTavoloArrivatoUrl) {
     if (!idTavoloArrivatoUrl) return;
-    document.querySelectorAll('input[name="tavoliSelezionati[]"]').forEach(checkbox => {
-        checkbox.checked = parseInt(idTavoloArrivatoUrl) === parseInt(checkbox.value);
+
+    const select = document.querySelector('select[name="tavoliSelezionati[]"]');
+    if (!select) return;
+
+    // scorre le option e imposta .selected solo su quella che matcha l'id arrivato da URL
+    let optionSelezionata = null;
+    select.querySelectorAll('option').forEach(option => {
+        const match = parseInt(idTavoloArrivatoUrl) === parseInt(option.value);
+        option.selected = match;
+        if (match) optionSelezionata = option;
     });
 
-    const checkboxSelezionata = document.querySelector(`input[name="tavoliSelezionati[]"][value="${idTavoloArrivatoUrl}"]`);
-    if (!checkboxSelezionata) return;
-    document.getElementById('numero-persone').value = checkboxSelezionata.dataset.posti;
+    if (!optionSelezionata) return;
+    document.getElementById('numero-persone').value = optionSelezionata.dataset.posti;
 }
 
 export function inserisciOrdineTavolo(id_ordine, tavoli) {

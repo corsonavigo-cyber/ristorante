@@ -22,3 +22,4 @@
 [2026-09-09 14:52:30] [NON PRESENTATI] Prenotazione 24 : annullata con successo 
 [2026-09-09 14:57:13] [NON PRESENTATI] Prenotazione 24 : annullata con successo 
 [2026-09-15 10:42:10] [EFFETTUATA] Prenotazione inserita correttamente id_prenotazione 25 sul tavolo 4
+[2026-09-15 13:37:44] [NON PRESENTATI] Prenotazione 25 : annullata con successo 
