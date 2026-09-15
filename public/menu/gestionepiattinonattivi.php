@@ -19,7 +19,7 @@ require_once __DIR__ . '/../navbar.php';
     <a class="btn" href="gestionemenuchevedonoiclienti.php">Torna Ai Piatti Visualizzabili Dai Clienti</a>
     <a class="btn" href="inserisciitem.php">+ Inserisci Una Nuovo Prodotto</a>
     </div>
-    <div class="menu" id="lavagna_piatti_non_attivi">
+    <div class="menunonattivo"  id="lavagna_piatti_non_attivi">
        
     </div>
     

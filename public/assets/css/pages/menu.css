@@ -1,5 +1,7 @@
 /* --- Pagina Menu --- */
-
+main{
+    align-items: center;
+}
 main > .supporto-titolo, .schermata-divisa{
 
     width: min(1180px, calc(100% - 32px));
