@@ -1,6 +1,7 @@
 /* --- Pagina Menu --- */
 
-main > .supporto-titolo {
+main > .supporto-titolo, .schermata-divisa{
+
     width: min(1180px, calc(100% - 32px));
     margin: var(--space-lg) auto;
     padding: var(--space-lg);
@@ -28,11 +29,15 @@ main > .supporto-titolo h2 {
     font-size: var(--text-page-title);
     line-height: 1.2;
 }
+.schermata-divisa{
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+     }
 
 .menu-actions {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
     gap: var(--space-sm);
     width: min(100% - 2rem, var(--content-max-width));
     margin: 0 auto var(--space-md);
@@ -45,11 +50,11 @@ main > .supporto-titolo h2 {
 
 #lavagna_bevande_non_attive,
 #lavagna_piatti_non_attivi {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: var(--space-sm);
-    width: min(100% - 2rem, var(--content-max-width));
-    margin: 0 auto;
+    width:fit-content;
+    margin: 10px;
     padding: var(--space-md);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -57,26 +62,15 @@ main > .supporto-titolo h2 {
     box-shadow: var(--shadow-md);
 }
 
-.schermata-divisa {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-lg);
-    width: 100%;
-    margin: 0 auto;
-    padding: var(--space-sm);
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    align-items: start;
-}
+
+
 
 #lavagna_piatti_attivo,
 #lavagna_bevande_attive {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: var(--space-sm);
-    min-width: 0;
-    min-height: 220px;
+    min-width: fit-content;
     padding: var(--space-md);
     background: var(--color-surface);
     border: 1px solid #d5e0da;
@@ -94,7 +88,6 @@ main > .supporto-titolo h2 {
 
 #lavagna_piatti_attivo > h3,
 #lavagna_bevande_attive > h3 {
-    grid-column: 1 / -1;
     margin: 0 0 var(--space-md);
     padding-bottom: var(--space-sm);
     border-bottom: 1px solid var(--color-border);
@@ -219,29 +212,30 @@ main > .supporto-titolo h2 {
     outline-offset: 3px;
 }
 
-@media (min-width: 721px) {
-    main > .supporto-titolo {
+@media (min-width: 1000px) {
+    
+
+    main > .supporto-titolo{
         width: min(1180px, calc(100% - 32px));
         padding: var(--space-lg);
-    }
+    } 
+
 
     .schermata-divisa {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: var(--space-md);
-    }
-
-    .schermata-divisa > .btn {
-        justify-self: center;
+        flex-direction: row;
+        align-items: stretch;
     }
 
     .schermata-divisa > #lavagna_piatti_attivo,
     .schermata-divisa > #lavagna_bevande_attive {
-        width: 100%;
+        display: grid;
+        align-items: center;
+        min-width: fit-content;
+        flex: 1 1 0;
     }
 
     #lavagna_piatti_attivo,
     #lavagna_bevande_attive {
-        grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
         gap: var(--space-md);
         padding: var(--space-lg);
     }
@@ -264,6 +258,7 @@ main > .supporto-titolo h2 {
     }
 
     .item {
+        max-width: fit-content;
         padding: var(--space-md);
     }
 }
@@ -290,13 +285,7 @@ main > .supporto-titolo h2 {
         overflow-x: auto;
     }
 
-    .schermata-divisa {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        width: min(100%, var(--content-max-width));
-        padding: var(--space-lg);
-        gap: var(--space-lg);
-        justify-items: center;
-    }
+ 
 
     .schermata-divisa > .btn {
         width: auto;
@@ -311,3 +300,4 @@ main > .supporto-titolo h2 {
         margin-top: 0;
     }
 }
+

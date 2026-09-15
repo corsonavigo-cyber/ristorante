@@ -10,7 +10,6 @@ $linkAttivo = static fn(string $pagina): string =>
     <span class="menu-icona"></span>
   </button>
   <nav class="mobile-menu" id="mobile" hidden>
-      <button class="menu-chiuso"  aria-label="Chiudi menu">&times;</button>
 
     <ul>
       <li><a class="btn" href="/ristorante/public/tavoli/gestionetavoli.php"<?= $linkAttivo('gestionetavoli.php') ?>>Dashboard Tavoli</a></li>

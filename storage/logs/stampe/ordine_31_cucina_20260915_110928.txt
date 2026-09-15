@@ -1,0 +1,18 @@
+================================
+  CUCINA
+  ORDINE #31
+  Tavolo/i: 3
+  2026-09-15 11:08:17
+================================
+
+[prima portata]
+  1x Bruschetta al pomodoro
+
+[terza portata]
+  1x Spaghetti alla carbonara
+     nota: u7ud
+  1x Spaghetti alla carbonara
+
+[dolci]
+  1x gelato
+================================

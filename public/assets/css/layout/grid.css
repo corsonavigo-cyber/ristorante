@@ -1,10 +1,6 @@
 /* --- Layout Pagina e Contenitori --- */
 
-.schermata-divisa {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-}
+
 .schermata-tre {
     display: grid;
     grid-template-columns: 1fr;
@@ -68,9 +64,7 @@
 }
 
 @media (min-width: 769px) {
-    .schermata-divisa {
-        grid-template-columns: 1fr 1fr;
-    }
+
 
     .schermata-tre {
         grid-template-columns: 1fr 1fr 1fr;

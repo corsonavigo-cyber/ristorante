@@ -60,7 +60,7 @@ const adesso = new Date();
 const minutiAttuali = adesso.getHours() * 60 + adesso.getMinutes();
 
 const fasceOrarie = [
-    { inizio: "12:00", fine: "18:59" },
+    { inizio: "10:00", fine: "18:59" },
     { inizio: "19:00", fine: "23:30" }
 ];
 
@@ -113,7 +113,7 @@ function mostraTavoloLibero(contenitore, id_tavolo) {
 }
 
 function mostraPrenotazioni(contenitore, prenotazioni, id_tavolo) {
-    
+    console.log('eseguo mostra prenotazioni')
     contenitore.innerHTML = prenotazioni.map(p => `
         <div class="elemento" data-id_elemento_da_mettere_in_evidenza="${p.id_prenotazione}">
         <h4 class="comment"><b>${p.nome_prenotazione.toUpperCase()}</b></h4>

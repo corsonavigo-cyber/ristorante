@@ -126,6 +126,12 @@ footer {
 }
 
 @media (min-width: 769px) {
+
+    .mobile-menu{
+    position: relative;
+    inset:0;
+    background: var(--color-menu);
+    }
     nav ul {
         display: flex;
         flex-direction: row;
@@ -137,6 +143,7 @@ footer {
     nav ul li {
         flex: 1 1 19rem;
         min-width: 0;
+        gap: 0.5rem;
     }
 
     nav a {

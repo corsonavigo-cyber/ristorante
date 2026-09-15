@@ -1,7 +1,15 @@
 const toggleBtn = document.querySelector('.menu');
 const closeBtn = document.querySelector('.menu-chiuso');
 const menu = document.querySelector('#mobile');
+const mediaQuery = window.matchMedia('(min-width: 769px)');
 
+function menuDesktop(){
+  if(mediaQuery.matches){
+     apriMenu();
+  }else{
+     chiudiMenu();
+  }
+}
 function apriMenu(){
     menu.hidden = false;
     toggleBtn.setAttribute('aria-expanded', 'true');
@@ -24,7 +32,6 @@ toggleBtn.addEventListener('click',()=>{
 });
 
 
-closeBtn.addEventListener('click', chiudiMenu);
 
 // Chiusura con tasto Esc
 document.addEventListener('keydown', (e) => {
@@ -35,3 +42,5 @@ document.addEventListener('keydown', (e) => {
 menu.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', chiudiMenu);
 });
+//menu desktop
+mediaQuery.addEventListener('change', menuDesktop);

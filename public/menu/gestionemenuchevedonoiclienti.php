@@ -16,14 +16,15 @@ $title = 'Gestione Menu Attivo';
 <main> 
     <div class="supporto-titolo">
         <h2  class="title"><?= $title ?></h2>
-    
-    <div >
-    
-    <div class="schermata-divisa">
+        
+    </div>
     <a class="btn" href="gestionepiattinonattivi.php">Gestisci La Visualizzazione Dei Piatti </a>
     <a class="btn" href="gestionebevandenonattive.php">Gestisci La Visualizzazione Delle Bevanda </a>
+    
+    <div class="schermata-divisa">
+    
    
-    <div class="menu" id="lavagna_piatti_attivo">
+    <div class="menupiatti" id="lavagna_piatti_attivo">
        
     </div>
 

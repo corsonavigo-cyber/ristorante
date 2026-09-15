@@ -50,7 +50,7 @@
     --text-lg: 1.25rem;
     --text-xl: 2rem; /* Usata per .title */
     --text-page-title: 1.8rem;
-    --text-nav: 1rem;
+    --text-nav: 0.8rem;
     --text-page-title-wide: 2.6rem;
-    --text-nav-wide: 1.25rem;
+    --text-nav-wide: 0.8rem;
 }
